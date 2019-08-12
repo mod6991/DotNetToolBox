@@ -1,0 +1,428 @@
+﻿#region license
+
+//DotNetToolBox.FileEncryptor .NET file encryptor
+//Copyright (C) 2015  Josué Clément
+//mod6991@gmail.com
+
+//This program is free software: you can redistribute it and/or modify
+//it under the terms of the GNU General Public License as published by
+//the Free Software Foundation, either version 3 of the License, or
+//any later version.
+
+//This program is distributed in the hope that it will be useful,
+//but WITHOUT ANY WARRANTY; without even the implied warranty of
+//MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+//GNU General Public License for more details.
+
+//You should have received a copy of the GNU General Public License
+//along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+#endregion
+
+using DotNetToolBox.Utils;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
+
+namespace DotNetToolBox.Cryptography
+{
+    public static class DNTBEnc
+    {
+        private const string _header = "DNTBENC!";
+        private const byte _version = 0x04;
+        private const Int32 _sizeofInt = sizeof(int);
+
+        #region Encrypt/Decrypt with password
+
+        /// <summary>
+        /// Encrypt with password
+        /// </summary>
+        /// <param name="input">Input stream</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="password">Password</param>
+        /// <param name="algorithm">Algorithm</param>
+        public static void EncryptWithPassword(Stream input, Stream output, string password, Algorithm algorithm = Algorithm.AES)
+        {
+            byte[] salt, key, iv;
+            salt = RandomHelper.GenerateBytes(16);
+
+            switch (algorithm)
+            {
+                case Algorithm.AES:
+                    AESEncryptor.GenerateKeyFromPassword(password, salt, out key);
+                    AESEncryptor.GenerateIV(out iv);
+                    break;
+                case Algorithm.TripleDES:
+                    TripleDESEncryptor.GenerateKeyFromPassword(password, salt, out key);
+                    TripleDESEncryptor.GenerateIV(out iv);
+                    break;
+                default:
+                    throw new Exception("Invalid algorithm !");
+            }
+
+            InternalEncryptWithPassword(input, output, salt, key, iv, algorithm);
+        }
+
+        /// <summary>
+        /// Encrypt with password
+        /// </summary>
+        /// <param name="inputFile">Input file</param>
+        /// <param name="outputFile">Output file</param>
+        /// <param name="password">Password</param>
+        /// <param name="algorithm">Algorithm</param>
+        public static void EncryptWithPassword(string inputFile, string outputFile, string password, Algorithm algorithm = Algorithm.AES)
+        {
+            using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
+                {
+                    EncryptWithPassword(fsInput, fsOutput, password, algorithm);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Encrypt with password
+        /// </summary>
+        /// <param name="input">Input stream</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="salt">Salt</param>
+        /// <param name="key">Key</param>
+        /// <param name="iv">IV</param>
+        /// <param name="algorithm">Algorithm</param>
+        private static void InternalEncryptWithPassword(Stream input, Stream output, byte[] salt, byte[] key, byte[] iv, Algorithm algorithm = Algorithm.AES)
+        {
+            //Write header
+            output.Write(Encoding.ASCII.GetBytes(_header), 0, 8);
+            //Write version
+            output.Write(new byte[] { _version }, 0, 1);
+            //Write encryption type
+            output.Write(new byte[] { (byte)EncryptionType.Password }, 0, 1);
+            //Write algorithm
+            output.Write(new byte[] { (byte)algorithm }, 0, 1);
+            //Write salt length
+            output.Write(BitConverter.GetBytes(salt.Length), 0, _sizeofInt);
+            //Write salt
+            output.Write(salt, 0, salt.Length);
+            //Write iv length
+            output.Write(BitConverter.GetBytes(iv.Length), 0, _sizeofInt);
+            //Write iv
+            output.Write(iv, 0, iv.Length);
+
+            switch (algorithm)
+            {
+                case Algorithm.AES:
+                    AESEncryptor.Encrypt(input, output, key, iv);
+                    break;
+                case Algorithm.TripleDES:
+                    TripleDESEncryptor.Encrypt(input, output, key, iv);
+                    break;
+                default:
+                    throw new Exception("Invalid algorithm !");
+            }
+        }
+
+        /// <summary>
+        /// Decrypt with password
+        /// </summary>
+        /// <param name="input">input stream</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="password">Password</param>
+        public static void DecryptWithPassword(Stream input, Stream output, string password)
+        {
+            byte[] buffer = new byte[8];
+            int read = 0;
+
+            //Read header
+            read = input.Read(buffer, 0, 8);
+            if (read != 8 || Encoding.ASCII.GetString(buffer) != _header)
+                throw new Exception("The file is not encrypted with DotNetToolBox.FileEncryptor !");
+
+            //Read version
+            buffer = new byte[1];
+            read = input.Read(buffer, 0, 1);
+            if (read != 1 || buffer[0] != _version)
+                throw new Exception("Invalid version !");
+
+            //Read encryption type
+            read = input.Read(buffer, 0, 1);
+            EncryptionType encryptionType = (EncryptionType)Enum.Parse(typeof(EncryptionType), buffer[0].ToString());
+            if (read != 1 || encryptionType != EncryptionType.Password)
+                throw new Exception("The file has not been encrypted with a password !");
+
+            //Read algorithm
+            read = input.Read(buffer, 0, 1);
+            Algorithm algorithm = (Algorithm)Enum.Parse(typeof(Algorithm), buffer[0].ToString());
+            if (read != 1 || (algorithm != Algorithm.AES && algorithm != Algorithm.TripleDES))
+                throw new Exception("Invalid algorithm !");
+
+            //Read salt length
+            buffer = new byte[_sizeofInt];
+            read = input.Read(buffer, 0, _sizeofInt);
+            if (read != _sizeofInt)
+                throw new Exception("Cannot read salt length !");
+            int saltLength = BitConverter.ToInt32(buffer, 0);
+
+            //Read salt
+            byte[] salt = new byte[saltLength];
+            read = input.Read(salt, 0, saltLength);
+            if (read != saltLength)
+                throw new Exception("Cannot read salt !");
+
+            //Read IV length
+            buffer = new byte[_sizeofInt];
+            read = input.Read(buffer, 0, _sizeofInt);
+            if (read != _sizeofInt)
+                throw new Exception("Cannot read iv length !");
+            int ivLength = BitConverter.ToInt32(buffer, 0);
+
+            //Read IV
+            byte[] iv = new byte[ivLength];
+            read = input.Read(iv, 0, ivLength);
+            if (read != ivLength)
+                throw new Exception("Cannot read iv");
+
+            byte[] key;
+
+            switch (algorithm)
+            {
+                case Algorithm.AES:
+                    AESEncryptor.GenerateKeyFromPassword(password, salt, out key);
+                    AESEncryptor.Decrypt(input, output, key, iv);
+                    break;
+                case Algorithm.TripleDES:
+                    TripleDESEncryptor.GenerateKeyFromPassword(password, salt, out key);
+                    TripleDESEncryptor.Decrypt(input, output, key, iv);
+                    break;
+                default:
+                    throw new Exception("Invalid algorithm !");
+            }
+        }
+
+        /// <summary>
+        /// Decrypt with password
+        /// </summary>
+        /// <param name="inputFile">Input file</param>
+        /// <param name="outputFile">Output file</param>
+        /// <param name="password">Password</param>
+        public static void DecryptWithPassword(string inputFile, string outputFile, string password)
+        {
+            using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
+                {
+                    DecryptWithPassword(fsInput, fsOutput, password);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Encrypt/Decrypt with RSA
+
+        /// <summary>
+        /// Encrypt with RSA
+        /// </summary>
+        /// <param name="input">Input stream</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="rsa">RSA key</param>
+        /// <param name="keyName">Key name</param>
+        /// <param name="keyType">Key type</param>
+        /// <param name="algorithm">Algorithm</param>
+        public static void EncryptWithRSA(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName, KeyType keyType, Algorithm algorithm = Algorithm.AES)
+        {
+            //Write header
+            output.Write(Encoding.ASCII.GetBytes(_header), 0, 8);
+            //Write version
+            output.Write(new byte[] { _version }, 0, 1);
+            //Write encryption type
+            output.Write(new byte[] { (byte)EncryptionType.RSA }, 0, 1);
+            //Write algorithm
+            output.Write(new byte[] { (byte)algorithm }, 0, 1);
+            //Write key type
+            output.Write(new byte[] { (byte)keyType }, 0, 1);
+            //Write key name length
+            output.Write(BitConverter.GetBytes(keyName.Length), 0, _sizeofInt);
+            //Write key name
+            output.Write(Encoding.ASCII.GetBytes(keyName), 0, keyName.Length);
+
+            byte[] key, iv, encKey;
+
+            switch (algorithm)
+            {
+                case Algorithm.AES:
+                    //Generate random AES key + IV
+                    AESEncryptor.GenerateKeyIV(out key, out iv);
+                    //Encrypt the AES key with the RSA key
+                    encKey = RSAEncryptor.Encrypt(rsa, key);
+                    //Write the encrypted AES key length
+                    output.Write(BitConverter.GetBytes(encKey.Length), 0, _sizeofInt);
+                    //Write the encrypted AES key
+                    output.Write(encKey, 0, encKey.Length);
+                    //Write the IV length
+                    output.Write(BitConverter.GetBytes(iv.Length), 0, _sizeofInt);
+                    //Write the IV
+                    output.Write(iv, 0, iv.Length);
+                    //Encrypt the input file with the AES key + IV
+                    AESEncryptor.Encrypt(input, output, key, iv);
+                    break;
+                case Algorithm.TripleDES:
+                    //Generate random TripleDES key + IV
+                    TripleDESEncryptor.GenerateKeyIV(out key, out iv);
+                    //Encrypt the TripleDES key with the RSA key
+                    encKey = RSAEncryptor.Encrypt(rsa, key);
+                    //Write the encrypted TripleDES key length
+                    output.Write(BitConverter.GetBytes(encKey.Length), 0, _sizeofInt);
+                    //Write the encrypted TripleDES key
+                    output.Write(encKey, 0, encKey.Length);
+                    //Write the IV length
+                    output.Write(BitConverter.GetBytes(iv.Length), 0, _sizeofInt);
+                    //Write the IV
+                    output.Write(iv, 0, iv.Length);
+                    //Encrypt the input file with the TripleDES key + IV
+                    TripleDESEncryptor.Encrypt(input, output, key, iv);
+                    break;
+                default:
+                    throw new Exception("Invalid algorithm !");
+            }
+        }
+
+        /// <summary>
+        /// Encrypt with RSA
+        /// </summary>
+        /// <param name="inputFile">Input file</param>
+        /// <param name="outputFile">Output file</param>
+        /// <param name="rsa">RSA key</param>
+        /// <param name="keyName">Key name</param>
+        /// <param name="keyType">Key type</param>
+        /// <param name="algorithm">Algorithm</param>
+        public static void EncryptWithRSA(string inputFile, string outputFile, RSACryptoServiceProvider rsa, string keyName, KeyType keyType, Algorithm algorithm = Algorithm.AES)
+        {
+            using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
+                {
+                    EncryptWithRSA(fsInput, fsOutput, rsa, keyName, keyType, algorithm);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Decrypt with RSA
+        /// </summary>
+        /// <param name="input">Input stream</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="rsa">RSA key</param>
+        public static void DecryptWithRSA(Stream input, Stream output, RSACryptoServiceProvider rsa)
+        {
+            byte[] buffer = new byte[8];
+            int read = 0;
+
+            //Read header
+            read = input.Read(buffer, 0, 8);
+            if (read != 8 || Encoding.ASCII.GetString(buffer) != _header)
+                throw new Exception("The file is not encrypted with DNTBEnc !");
+
+            //Read version
+            buffer = new byte[1];
+            read = input.Read(buffer, 0, 1);
+            if (read != 1 || buffer[0] != _version)
+                throw new Exception("Invalid version !");
+
+            //Read encryption type
+            read = input.Read(buffer, 0, 1);
+            EncryptionType encryptionType = (EncryptionType)Enum.Parse(typeof(EncryptionType), buffer[0].ToString());
+            if (read != 1 || encryptionType != EncryptionType.RSA)
+                throw new Exception("The file has not been encrypted with a password !");
+
+            //Read algorithm
+            read = input.Read(buffer, 0, 1);
+            Algorithm algorithm = (Algorithm)Enum.Parse(typeof(Algorithm), buffer[0].ToString());
+            if (read != 1 || (algorithm != Algorithm.AES))
+                throw new Exception("Invalid algorithm !");
+
+            //Read key type
+            read = input.Read(buffer, 0, 1);
+            KeyType readKeyType = (KeyType)Enum.Parse(typeof(KeyType), buffer[0].ToString());
+
+            //Read the key name length
+            buffer = new byte[_sizeofInt];
+            read = input.Read(buffer, 0, _sizeofInt);
+            //Ignore the key name by seeking the end of it
+            input.Seek(BitConverter.ToInt32(buffer, 0), SeekOrigin.Current);
+
+            //Read the encrypted symmetric key size
+            buffer = new byte[_sizeofInt];
+            read = input.Read(buffer, 0, _sizeofInt);
+            int encKeySize = BitConverter.ToInt32(buffer, 0);
+
+            //Read the symmetric key
+            byte[] encKey = new byte[encKeySize];
+            read = input.Read(encKey, 0, encKeySize);
+
+            //Read the IV size
+            buffer = new byte[_sizeofInt];
+            read = input.Read(buffer, 0, _sizeofInt);
+            int ivSize = BitConverter.ToInt32(buffer, 0);
+
+            //Read the IV
+            byte[] iv = new byte[ivSize];
+            read = input.Read(iv, 0, ivSize);
+
+            //Decrypt the symmetric key with the RSA key
+            byte[] key = RSAEncryptor.Decrypt(rsa, encKey);
+
+            switch (algorithm)
+            {
+                case Algorithm.AES:
+                    AESEncryptor.Decrypt(input, output, key, iv);
+                    break;
+                case Algorithm.TripleDES:
+                    TripleDESEncryptor.Decrypt(input, output, key, iv);
+                    break;
+                default:
+                    throw new Exception("Invalid algorithm !");
+            }
+        }
+
+        /// <summary>
+        /// Decrypt with RSA
+        /// </summary>
+        /// <param name="inputFile">Input file</param>
+        /// <param name="outputFile">Output file</param>
+        /// <param name="rsa">RSA key</param>
+        public static void DecryptWithRSA(string inputFile, string outputFile, RSACryptoServiceProvider rsa)
+        {
+            using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
+                {
+                    DecryptWithRSA(fsInput, fsOutput, rsa);
+                }
+            }
+        }
+
+        #endregion
+
+        public enum Algorithm
+        {
+            AES = 0x01,
+            TripleDES = 0x02
+        }
+
+        public enum KeyType
+        {
+            PEM = 0x01,
+            XML = 0x02,
+            WinKS = 0x03
+        }
+
+        public enum EncryptionType
+        {
+            Password = 0x01,
+            RSA = 0x02
+        }
+    }
+}
