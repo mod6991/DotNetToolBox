@@ -15,7 +15,7 @@ namespace DotNetToolBox.Tester
         {
             try
             {
-                DbManager db = new DbManager("Data Source=ARGAN;Persist Security Info=True;User ID=serviceuser;Password=svcnagra", "System.Data.OracleClient");
+                DbManager db = new DbManager("Data Source=ProdDatabase;Persist Security Info=True;User ID=username;Password=mypass", "System.Data.OracleClient");
                 db.Open();
 
                 List<DbParameter> parameters = new List<DbParameter>();

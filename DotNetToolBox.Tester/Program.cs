@@ -21,7 +21,8 @@
 
             //DbManagerTest.Test();
 
-            IOTest.Test();
+            //IOTest.Test();
+            ReportTest.Test();
         }
     }
 }
