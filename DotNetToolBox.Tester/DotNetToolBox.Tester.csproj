@@ -77,8 +77,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationTest.cs" />
+    <Compile Include="DbManagerTest.cs" />
+    <Compile Include="DNTBEncTest.cs" />
+    <Compile Include="HashTest.cs" />
+    <Compile Include="IOTest.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="RSATest.cs" />
+    <Compile Include="SymCryptoTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetToolBox\DotNetToolBox.csproj">
