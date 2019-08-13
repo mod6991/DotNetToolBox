@@ -9,7 +9,7 @@ using System.Text;
 
 namespace DotNetToolBox.Reporting
 {
-    public class Rdlc14Manager
+    public class RdlcManager
     {
         private ReportViewer _report;
         private List<ReportParameter> _parameters;
@@ -22,7 +22,7 @@ namespace DotNetToolBox.Reporting
 
         #region Constructor
 
-        public Rdlc14Manager(string reportPath)
+        public RdlcManager(string reportPath)
         {
             _report = new ReportViewer();
             _report.LocalReport.ReportPath = reportPath;

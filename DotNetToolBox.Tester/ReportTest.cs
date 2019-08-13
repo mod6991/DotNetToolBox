@@ -23,7 +23,7 @@ namespace DotNetToolBox.Tester
         }
     }
 
-    public class SampleReport : Rdlc14Manager
+    public class SampleReport : RdlcManager
     {
         public SampleReport(string path)
             : base(path)
