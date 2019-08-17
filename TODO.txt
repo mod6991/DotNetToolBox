@@ -1,0 +1,2 @@
+ - create interface for visual progress (int percent, string title, ...)
+ - create visual methods for IO.StreamHelper + Crypto
