@@ -43,7 +43,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="password">Password</param>
         /// <param name="algorithm">Algorithm</param>
-        public static void EncryptWithPassword(Stream input, Stream output, string password, Algorithm algorithm = Algorithm.AES)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void EncryptWithPassword(Stream input, Stream output, string password, Algorithm algorithm = Algorithm.AES, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             byte[] salt, key, iv;
             salt = RandomHelper.GenerateBytes(16);
@@ -62,7 +64,7 @@ namespace DotNetToolBox.Cryptography
                     throw new Exception("Invalid algorithm !");
             }
 
-            InternalEncryptWithPassword(input, output, salt, key, iv, algorithm);
+            InternalEncryptWithPassword(input, output, salt, key, iv, algorithm, bufferSize, notifyProgression);
         }
 
         /// <summary>
@@ -72,13 +74,15 @@ namespace DotNetToolBox.Cryptography
         /// <param name="outputFile">Output file</param>
         /// <param name="password">Password</param>
         /// <param name="algorithm">Algorithm</param>
-        public static void EncryptWithPassword(string inputFile, string outputFile, string password, Algorithm algorithm = Algorithm.AES)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void EncryptWithPassword(string inputFile, string outputFile, string password, Algorithm algorithm = Algorithm.AES, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
                 {
-                    EncryptWithPassword(fsInput, fsOutput, password, algorithm);
+                    EncryptWithPassword(fsInput, fsOutput, password, algorithm, bufferSize, notifyProgression);
                 }
             }
         }
@@ -92,7 +96,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
         /// <param name="algorithm">Algorithm</param>
-        private static void InternalEncryptWithPassword(Stream input, Stream output, byte[] salt, byte[] key, byte[] iv, Algorithm algorithm = Algorithm.AES)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        private static void InternalEncryptWithPassword(Stream input, Stream output, byte[] salt, byte[] key, byte[] iv, Algorithm algorithm = Algorithm.AES, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             //Write header
             output.Write(Encoding.ASCII.GetBytes(_header), 0, 8);
@@ -114,10 +120,10 @@ namespace DotNetToolBox.Cryptography
             switch (algorithm)
             {
                 case Algorithm.AES:
-                    AESEncryptor.Encrypt(input, output, key, iv);
+                    AESEncryptor.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 case Algorithm.TripleDES:
-                    TripleDESEncryptor.Encrypt(input, output, key, iv);
+                    TripleDESEncryptor.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");
@@ -130,7 +136,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="password">Password</param>
-        public static void DecryptWithPassword(Stream input, Stream output, string password)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void DecryptWithPassword(Stream input, Stream output, string password, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             byte[] buffer = new byte[8];
             int read = 0;
@@ -184,17 +192,20 @@ namespace DotNetToolBox.Cryptography
             if (read != ivLength)
                 throw new Exception("Cannot read iv");
 
+            if (notifyProgression != null)
+                notifyProgression(11 + (2 * _sizeofInt) + saltLength + ivLength);
+
             byte[] key;
 
             switch (algorithm)
             {
                 case Algorithm.AES:
                     AESEncryptor.GenerateKeyFromPassword(password, salt, out key);
-                    AESEncryptor.Decrypt(input, output, key, iv);
+                    AESEncryptor.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 case Algorithm.TripleDES:
                     TripleDESEncryptor.GenerateKeyFromPassword(password, salt, out key);
-                    TripleDESEncryptor.Decrypt(input, output, key, iv);
+                    TripleDESEncryptor.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");
@@ -207,13 +218,15 @@ namespace DotNetToolBox.Cryptography
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
         /// <param name="password">Password</param>
-        public static void DecryptWithPassword(string inputFile, string outputFile, string password)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void DecryptWithPassword(string inputFile, string outputFile, string password, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
                 {
-                    DecryptWithPassword(fsInput, fsOutput, password);
+                    DecryptWithPassword(fsInput, fsOutput, password, bufferSize, notifyProgression);
                 }
             }
         }
@@ -231,7 +244,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="keyName">Key name</param>
         /// <param name="keyType">Key type</param>
         /// <param name="algorithm">Algorithm</param>
-        public static void EncryptWithRSA(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName, KeyType keyType, Algorithm algorithm = Algorithm.AES)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void EncryptWithRSA(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName, KeyType keyType, Algorithm algorithm = Algorithm.AES, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             //Write header
             output.Write(Encoding.ASCII.GetBytes(_header), 0, 8);
@@ -266,7 +281,7 @@ namespace DotNetToolBox.Cryptography
                     //Write the IV
                     output.Write(iv, 0, iv.Length);
                     //Encrypt the input file with the AES key + IV
-                    AESEncryptor.Encrypt(input, output, key, iv);
+                    AESEncryptor.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 case Algorithm.TripleDES:
                     //Generate random TripleDES key + IV
@@ -282,7 +297,7 @@ namespace DotNetToolBox.Cryptography
                     //Write the IV
                     output.Write(iv, 0, iv.Length);
                     //Encrypt the input file with the TripleDES key + IV
-                    TripleDESEncryptor.Encrypt(input, output, key, iv);
+                    TripleDESEncryptor.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");
@@ -298,13 +313,15 @@ namespace DotNetToolBox.Cryptography
         /// <param name="keyName">Key name</param>
         /// <param name="keyType">Key type</param>
         /// <param name="algorithm">Algorithm</param>
-        public static void EncryptWithRSA(string inputFile, string outputFile, RSACryptoServiceProvider rsa, string keyName, KeyType keyType, Algorithm algorithm = Algorithm.AES)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void EncryptWithRSA(string inputFile, string outputFile, RSACryptoServiceProvider rsa, string keyName, KeyType keyType, Algorithm algorithm = Algorithm.AES, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
                 {
-                    EncryptWithRSA(fsInput, fsOutput, rsa, keyName, keyType, algorithm);
+                    EncryptWithRSA(fsInput, fsOutput, rsa, keyName, keyType, algorithm, bufferSize, notifyProgression);
                 }
             }
         }
@@ -315,7 +332,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="rsa">RSA key</param>
-        public static void DecryptWithRSA(Stream input, Stream output, RSACryptoServiceProvider rsa)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void DecryptWithRSA(Stream input, Stream output, RSACryptoServiceProvider rsa, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             byte[] buffer = new byte[8];
             int read = 0;
@@ -350,8 +369,9 @@ namespace DotNetToolBox.Cryptography
             //Read the key name length
             buffer = new byte[_sizeofInt];
             read = input.Read(buffer, 0, _sizeofInt);
+            int keyNameLength = BitConverter.ToInt32(buffer, 0);
             //Ignore the key name by seeking the end of it
-            input.Seek(BitConverter.ToInt32(buffer, 0), SeekOrigin.Current);
+            input.Seek(keyNameLength, SeekOrigin.Current);
 
             //Read the encrypted symmetric key size
             buffer = new byte[_sizeofInt];
@@ -374,13 +394,16 @@ namespace DotNetToolBox.Cryptography
             //Decrypt the symmetric key with the RSA key
             byte[] key = RSAEncryptor.Decrypt(rsa, encKey);
 
+            if (notifyProgression != null)
+                notifyProgression(12 + (3 * _sizeofInt) + keyNameLength + encKeySize + ivSize);
+
             switch (algorithm)
             {
                 case Algorithm.AES:
-                    AESEncryptor.Decrypt(input, output, key, iv);
+                    AESEncryptor.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 case Algorithm.TripleDES:
-                    TripleDESEncryptor.Decrypt(input, output, key, iv);
+                    TripleDESEncryptor.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");
@@ -393,13 +416,15 @@ namespace DotNetToolBox.Cryptography
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
         /// <param name="rsa">RSA key</param>
-        public static void DecryptWithRSA(string inputFile, string outputFile, RSACryptoServiceProvider rsa)
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void DecryptWithRSA(string inputFile, string outputFile, RSACryptoServiceProvider rsa, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (FileStream fsInput = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (FileStream fsOutput = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
                 {
-                    DecryptWithRSA(fsInput, fsOutput, rsa);
+                    DecryptWithRSA(fsInput, fsOutput, rsa, bufferSize, notifyProgression);
                 }
             }
         }

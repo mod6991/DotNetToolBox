@@ -31,6 +31,7 @@ namespace DotNetToolBox.IO
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static void Compress(Stream input, Stream output, int bufferSize = 4096)
         {
             using (GZipStream compress = new GZipStream(output, CompressionMode.Compress))
@@ -43,6 +44,7 @@ namespace DotNetToolBox.IO
         /// Compress data with GZip
         /// </summary>
         /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static byte[] Compress(Stream input, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -56,6 +58,7 @@ namespace DotNetToolBox.IO
         /// Compress data with GZip
         /// </summary>
         /// <param name="inputData">Data to compress</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static byte[] Compress(byte[] inputData, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream(inputData))
@@ -69,6 +72,7 @@ namespace DotNetToolBox.IO
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static void Compress(string inputFile, string outputFile, int bufferSize = 4096)
         {
             using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -85,6 +89,7 @@ namespace DotNetToolBox.IO
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static void Decompress(Stream input, Stream output, int bufferSize = 4096)
         {
             using (GZipStream compress = new GZipStream(input, CompressionMode.Decompress))
@@ -97,6 +102,7 @@ namespace DotNetToolBox.IO
         /// Decompress data with GZip
         /// </summary>
         /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static byte[] Decompress(Stream input, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -110,6 +116,7 @@ namespace DotNetToolBox.IO
         /// Decompress data with GZip
         /// </summary>
         /// <param name="inputData">Data to decompress</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static byte[] Decompress(byte[] inputData, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream(inputData))
@@ -123,6 +130,7 @@ namespace DotNetToolBox.IO
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static void Decompress(string inputFile, string outputFile, int bufferSize = 4096)
         {
             using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))

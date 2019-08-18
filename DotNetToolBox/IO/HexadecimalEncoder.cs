@@ -67,6 +67,7 @@ namespace DotNetToolBox.IO
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static void Encode(Stream input, Stream output, int bufferSize = 4096)
         {
             byte[] buffer = new byte[bufferSize];
@@ -89,6 +90,7 @@ namespace DotNetToolBox.IO
         /// Encode data with Hexadecimal
         /// </summary>
         /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static string Encode(Stream input, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -102,6 +104,7 @@ namespace DotNetToolBox.IO
         /// Encode data with Hexadecimal
         /// </summary>
         /// <param name="inputData">Data to encode</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static string Encode(byte[] inputData, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream(inputData))
@@ -115,6 +118,7 @@ namespace DotNetToolBox.IO
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static void Encode(string inputFile, string outputFile, int bufferSize = 4096)
         {
             using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -131,6 +135,7 @@ namespace DotNetToolBox.IO
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static void Decode(Stream input, Stream output, int bufferSize = 4096)
         {
             byte[] buffer = new byte[bufferSize];
@@ -153,6 +158,7 @@ namespace DotNetToolBox.IO
         /// Decode data with Hexadecimal
         /// </summary>
         /// <param name="input">Input Stream</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static byte[] Decode(Stream input, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream())
@@ -166,6 +172,7 @@ namespace DotNetToolBox.IO
         /// Decode data with Hexadecimal
         /// </summary>
         /// <param name="hexString">Data to decode</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static byte[] Decode(string hexString, int bufferSize = 4096)
         {
             byte[] hexData = Encoding.ASCII.GetBytes(hexString);
@@ -180,6 +187,7 @@ namespace DotNetToolBox.IO
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
+        /// <param name="bufferSize">Buffer size</param>
         public static void Decode(string inputFile, string outputFile, int bufferSize = 4096)
         {
             using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))

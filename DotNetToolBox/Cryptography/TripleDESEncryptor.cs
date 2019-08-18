@@ -19,6 +19,7 @@
 
 #endregion
 
+using System;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -30,7 +31,7 @@ namespace DotNetToolBox.Cryptography
         public const int IV_SIZE = 16;
 
         /// <summary>
-        /// Encrypt data with the AES algorithm
+        /// Encrypt data with the TripleDES algorithm
         /// </summary>
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
@@ -39,7 +40,8 @@ namespace DotNetToolBox.Cryptography
         /// <param name="cipherMode">Cipher mode</param>
         /// <param name="paddingMode">Padding mode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider())
             {
@@ -48,13 +50,13 @@ namespace DotNetToolBox.Cryptography
                 ICryptoTransform cryptor = tdes.CreateEncryptor(key, iv);
                 using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
                 {
-                    IO.StreamHelper.WriteStream(input, cs, bufferSize);
+                    IO.StreamHelper.WriteStream(input, cs, bufferSize, notifyProgression);
                 }
             }
         }
 
         /// <summary>
-        /// Encrypt data with the AES algorithm
+        /// Encrypt data with the TripleDES algorithm
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="key">Key</param>
@@ -62,17 +64,18 @@ namespace DotNetToolBox.Cryptography
         /// <param name="cipherMode">Cipher mode</param>
         /// <param name="paddingMode">Padding mode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Encrypt(Stream input, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static byte[] Encrypt(Stream input, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                Encrypt(input, ms, key, iv, cipherMode, paddingMode, bufferSize);
+                Encrypt(input, ms, key, iv, cipherMode, paddingMode, bufferSize, notifyProgression);
                 return ms.ToArray();
             }
         }
 
         /// <summary>
-        /// Encrypt data with the AES algorithm
+        /// Encrypt data with the TripleDES algorithm
         /// </summary>
         /// <param name="data">Input data</param>
         /// <param name="key">Key</param>
@@ -80,16 +83,17 @@ namespace DotNetToolBox.Cryptography
         /// <param name="cipherMode">Cipher mode</param>
         /// <param name="paddingMode">Padding mode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (MemoryStream ms = new MemoryStream(data))
             {
-                return Encrypt(ms, key, iv, cipherMode, paddingMode, bufferSize);
+                return Encrypt(ms, key, iv, cipherMode, paddingMode, bufferSize, notifyProgression);
             }
         }
 
         /// <summary>
-        /// Encrypt data with the AES algorithm
+        /// Encrypt data with the TripleDES algorithm
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
@@ -98,19 +102,20 @@ namespace DotNetToolBox.Cryptography
         /// <param name="cipherMode">Cipher mode</param>
         /// <param name="paddingMode">Padding mode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Encrypt(string inputFile, string outputFile, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void Encrypt(string inputFile, string outputFile, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (FileStream output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
                 {
-                    Encrypt(input, output, key, iv, cipherMode, paddingMode, bufferSize);
+                    Encrypt(input, output, key, iv, cipherMode, paddingMode, bufferSize, notifyProgression);
                 }
             }
         }
 
         /// <summary>
-        /// Decrypt data with the AES algorithm
+        /// Decrypt data with the TripleDES algorithm
         /// </summary>
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
@@ -119,7 +124,8 @@ namespace DotNetToolBox.Cryptography
         /// <param name="cipherMode">Cipher mode</param>
         /// <param name="paddingMode">Padding mode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider())
             {
@@ -128,13 +134,13 @@ namespace DotNetToolBox.Cryptography
                 ICryptoTransform cryptor = tdes.CreateDecryptor(key, iv);
                 using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
                 {
-                    IO.StreamHelper.WriteStream(input, cs, bufferSize);
+                    IO.StreamHelper.WriteStream(input, cs, bufferSize, notifyProgression);
                 }
             }
         }
 
         /// <summary>
-        /// Decrypt data with the AES algorithm
+        /// Decrypt data with the TripleDES algorithm
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="key">Key</param>
@@ -142,17 +148,18 @@ namespace DotNetToolBox.Cryptography
         /// <param name="cipherMode">Cipher mode</param>
         /// <param name="paddingMode">Padding mode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Decrypt(Stream input, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static byte[] Decrypt(Stream input, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                Decrypt(input, ms, key, iv, cipherMode, paddingMode, bufferSize);
+                Decrypt(input, ms, key, iv, cipherMode, paddingMode, bufferSize, notifyProgression);
                 return ms.ToArray();
             }
         }
 
         /// <summary>
-        /// Decrypt data with the AES algorithm
+        /// Decrypt data with the TripleDES algorithm
         /// </summary>
         /// <param name="data">Input data</param>
         /// <param name="key">Key</param>
@@ -160,16 +167,17 @@ namespace DotNetToolBox.Cryptography
         /// <param name="cipherMode">Cipher mode</param>
         /// <param name="paddingMode">Padding mode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (MemoryStream ms = new MemoryStream(data))
             {
-                return Decrypt(ms, key, iv, cipherMode, paddingMode, bufferSize);
+                return Decrypt(ms, key, iv, cipherMode, paddingMode, bufferSize, notifyProgression);
             }
         }
 
         /// <summary>
-        /// Decrypt data with the AES algorithm
+        /// Decrypt data with the TripleDES algorithm
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
@@ -178,13 +186,14 @@ namespace DotNetToolBox.Cryptography
         /// <param name="cipherMode">Cipher mode</param>
         /// <param name="paddingMode">Padding mode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Decrypt(string inputFile, string outputFile, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void Decrypt(string inputFile, string outputFile, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (FileStream output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
                 {
-                    Decrypt(input, output, key, iv, cipherMode, paddingMode, bufferSize);
+                    Decrypt(input, output, key, iv, cipherMode, paddingMode, bufferSize, notifyProgression);
                 }
             }
         }

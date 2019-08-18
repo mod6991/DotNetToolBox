@@ -134,7 +134,6 @@
     <Compile Include="Cryptography\SHA256Hasher.cs" />
     <Compile Include="Cryptography\SHA512Hasher.cs" />
     <Compile Include="Cryptography\TripleDESEncryptor.cs" />
-    <Compile Include="Cryptography\VernamEncryptor.cs" />
     <Compile Include="Database\DbManager.cs" />
     <Compile Include="Database\IDbObject.cs" />
     <Compile Include="Database\RequestFileManager.cs" />

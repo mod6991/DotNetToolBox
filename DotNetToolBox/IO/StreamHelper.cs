@@ -21,37 +21,58 @@
 
 using System.Text;
 using System.IO;
+using System;
 
 namespace DotNetToolBox.IO
 {
     public static class StreamHelper
     {
         /// <summary>
-        /// Read an input Stream and write it into an output Stream
+        /// Write the input stream into the output stream
         /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="output">Output Stream</param>
-        public static void WriteStream(Stream input, Stream output, int bufferSize = 4096)
+        /// <param name="input">Input stream</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void WriteStream(Stream input, Stream output, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             byte[] buffer = new byte[bufferSize];
             int bytesRead;
-            do
+
+            if (notifyProgression == null)
             {
-                bytesRead = input.Read(buffer, 0, bufferSize);
-                if (bytesRead > 0)
-                    output.Write(buffer, 0, bytesRead);
-            } while (bytesRead == bufferSize);
+                do
+                {
+                    bytesRead = input.Read(buffer, 0, bufferSize);
+                    if (bytesRead > 0)
+                        output.Write(buffer, 0, bytesRead);
+                } while (bytesRead == bufferSize);
+            }
+            else
+            {
+                do
+                {
+                    bytesRead = input.Read(buffer, 0, bufferSize);
+                    if (bytesRead > 0)
+                    {
+                        output.Write(buffer, 0, bytesRead);
+                        notifyProgression(bytesRead);
+                    }
+                } while (bytesRead == bufferSize);
+            }
         }
 
         /// <summary>
-        /// Read bytes from Stream
+        /// Read bytes from stream
         /// </summary>
-        /// <param name="input">Input Stream</param>
-        public static byte[] ReadBytes(Stream input, int bufferSize = 4096)
+        /// <param name="input">Input stream</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static byte[] ReadBytes(Stream input, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                WriteStream(input, ms, bufferSize);
+                WriteStream(input, ms, bufferSize, notifyProgression);
                 return ms.ToArray();
             }
         }
@@ -59,38 +80,44 @@ namespace DotNetToolBox.IO
         /// <summary>
         /// Read bytes from file
         /// </summary>
-        /// <param name="file">Input file</param>
-        public static byte[] ReadBytes(string file, int bufferSize = 4096)
+        /// <param name="file">File path</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static byte[] ReadBytes(string file, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                return ReadBytes(fs, bufferSize);
+                return ReadBytes(fs, bufferSize, notifyProgression);
             }
         }
 
         /// <summary>
         /// Write bytes to stream
         /// </summary>
-        /// <param name="data">Input data</param>
-        /// <param name="output">Output Stream</param>
-        public static void WriteBytes(byte[] data, Stream output, int bufferSize = 4096)
+        /// <param name="data">Bytes</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void WriteBytes(byte[] data, Stream output, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (MemoryStream ms = new MemoryStream(data))
             {
-                WriteStream(ms, output, bufferSize);
+                WriteStream(ms, output, bufferSize, notifyProgression);
             }
         }
 
         /// <summary>
         /// Write bytes to file
         /// </summary>
-        /// <param name="data">Input data</param>
-        /// <param name="file">Output file</param>
-        public static void WriteBytes(byte[] data, string file, int bufferSize = 4096)
+        /// <param name="data">Bytes</param>
+        /// <param name="file">File path</param>
+        /// <param name="bufferSize">Buffer size</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void WriteBytes(byte[] data, string file, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
             using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
             {
-                WriteBytes(data, fs, bufferSize);
+                WriteBytes(data, fs, bufferSize, notifyProgression);
             }
         }
 
