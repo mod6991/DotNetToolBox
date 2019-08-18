@@ -143,22 +143,5 @@ namespace DotNetToolBox.Tester
                 Console.WriteLine(ex.ToString());
             }
         }
-
-        public static void Vernam()
-        {
-            try
-            {
-                byte[] data = Encoding.Default.GetBytes("this is a secret message");
-                byte[] key = RandomHelper.GenerateBytes(data.Length);
-                byte[] enc = VernamEncryptor.EncryptDecrypt(data, key);
-                string sEnc = Encoding.Default.GetString(enc);
-                byte[] dec = VernamEncryptor.EncryptDecrypt(enc, key);
-                string sdec = Encoding.Default.GetString(dec);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-            }
-        }
     }
 }
