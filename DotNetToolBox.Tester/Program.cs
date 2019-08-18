@@ -1,4 +1,6 @@
-﻿namespace DotNetToolBox.Tester
+﻿using System;
+
+namespace DotNetToolBox.Tester
 {
     class Program
     {
@@ -17,12 +19,14 @@
             //HashTest.Sha256();
             //HashTest.Sha512();
             //RSATest.Test();
-            //DNTBEncTest.Test();
+            DNTBEncTest.Test();
 
             //DbManagerTest.Test();
 
             //IOTest.Test();
-            ReportTest.Test();
+            //ReportTest.Test();
+
+            Console.Read();
         }
     }
 }
