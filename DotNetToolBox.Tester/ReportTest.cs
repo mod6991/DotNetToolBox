@@ -26,7 +26,7 @@ namespace DotNetToolBox.Tester
     public class SampleReport : RdlcManager
     {
         public SampleReport(string path)
-            : base(path)
+            : base(path, "sample")
         {
             AddParameter("SampleParam", "test");
 
