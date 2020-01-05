@@ -31,6 +31,7 @@ namespace DotNetToolBox.Database
 {
     public class DbManager : IDisposable
     {
+        private bool _disposed;
         private DbConnection _connection;
         private DbProviderFactory _factory;
         private DbTransaction _transaction;
@@ -58,6 +59,11 @@ namespace DotNetToolBox.Database
             _typeAccessors = new Dictionary<Type, TypeAccessor>();
             _typeMappings = new Dictionary<Type, List<DbObjectMapping>>();
             _requestFileManagers = new Dictionary<string, RequestFileManager>();
+        }
+
+        ~DbManager()
+        {
+            Dispose(false);
         }
 
         #endregion
@@ -108,6 +114,9 @@ namespace DotNetToolBox.Database
         /// </summary>
         public void Open()
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             _connection.Open();
         }
 
@@ -116,6 +125,9 @@ namespace DotNetToolBox.Database
         /// </summary>
         public void Close()
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             _connection.Close();
         }
 
@@ -124,6 +136,9 @@ namespace DotNetToolBox.Database
         /// </summary>
         public void BeginTransaction()
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             _transaction = _connection.BeginTransaction();
         }
 
@@ -133,6 +148,9 @@ namespace DotNetToolBox.Database
         /// <param name="commit">Commits the transaction</param>
         public void EndTransaction(bool commit)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             if (_transaction != null)
             {
                 if (commit)
@@ -149,6 +167,9 @@ namespace DotNetToolBox.Database
         /// </summary>
         public DbParameter CreateParameter()
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             return _factory.CreateParameter();
         }
 
@@ -160,6 +181,9 @@ namespace DotNetToolBox.Database
         /// <param name="paramDirection">Parameter direction</param>
         public DbParameter CreateParameter(string name, object value, ParameterDirection paramDirection = ParameterDirection.Input)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             DbParameter param = _factory.CreateParameter();
             param.ParameterName = name;
             param.Value = value;
@@ -173,6 +197,9 @@ namespace DotNetToolBox.Database
         /// <param name="t">Object type</param>
         public void RegisterDbObject(Type t)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             _typeAccessors.Add(t, TypeAccessor.Create(t));
             IDbObject obj = (IDbObject)Activator.CreateInstance(t);
             _typeMappings.Add(t, obj.GetMapping());
@@ -186,6 +213,9 @@ namespace DotNetToolBox.Database
         /// <param name="table">DataTable</param>
         public void FillDataTableWithRequest(string request, List<DbParameter> parameters, DataTable table)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             using (DbCommand command = _connection.CreateCommand())
             {
                 command.CommandType = CommandType.Text;
@@ -216,6 +246,9 @@ namespace DotNetToolBox.Database
         /// <param name="table">DataTable</param>
         public void FillDataTableWithProcedure(string procedureName, List<DbParameter> parameters, DataTable table)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             using (DbCommand command = _connection.CreateCommand())
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -246,6 +279,9 @@ namespace DotNetToolBox.Database
         /// <param name="parameters">Parameters</param>
         public List<T> FillObjectsWithRequest<T>(string request, List<DbParameter> parameters)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             if (!_typeMappings.ContainsKey(typeof(T)) || !_typeAccessors.ContainsKey(typeof(T)))
                 throw new Exception(String.Format("The type '{0}' is not registered! Use DbManager RegisterDbObject method", typeof(T).FullName));
 
@@ -298,6 +334,9 @@ namespace DotNetToolBox.Database
         /// <param name="parameters">Parameters</param>
         public List<T> FillObjectsWithProcedure<T>(string procedureName, List<DbParameter> parameters)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             if (!_typeMappings.ContainsKey(typeof(T)) || !_typeAccessors.ContainsKey(typeof(T)))
                 throw new Exception(String.Format("The type '{0}' is not registered! Use DbManager RegisterDbObject method", typeof(T).FullName));
 
@@ -349,6 +388,9 @@ namespace DotNetToolBox.Database
         /// <param name="parameters">Parameters</param>
         public int ExecuteNonQueryWithRequest(string request, List<DbParameter> parameters)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             using (DbCommand command = _connection.CreateCommand())
             {
                 command.CommandType = CommandType.Text;
@@ -374,6 +416,9 @@ namespace DotNetToolBox.Database
         /// <param name="parameters">Parameters</param>
         public int ExecuteNonQueryWithProcedure(string procedureName, List<DbParameter> parameters)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             using (DbCommand command = _connection.CreateCommand())
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -399,6 +444,9 @@ namespace DotNetToolBox.Database
         /// <param name="parameters">Parameters</param>
         public object ExecuteScalarWithRequest(string request, List<DbParameter> parameters)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             using (DbCommand command = _connection.CreateCommand())
             {
                 command.CommandType = CommandType.Text;
@@ -424,6 +472,9 @@ namespace DotNetToolBox.Database
         /// <param name="parameters">Parameters</param>
         public object ExecuteScalarWithProcedure(string procedureName, List<DbParameter> parameters)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             using (DbCommand command = _connection.CreateCommand())
             {
                 command.CommandType = CommandType.StoredProcedure;
@@ -453,6 +504,9 @@ namespace DotNetToolBox.Database
         /// <param name="requestFile">Path of the file</param>
         public void AddRequestFile(string name, string filePath)
         {
+            if (_disposed)
+                throw new ObjectDisposedException(typeof(DbManager).FullName);
+
             if (!File.Exists(filePath))
                 throw new FileNotFoundException(String.Format("Request file '{0}' not found !", filePath), filePath);
 
@@ -483,6 +537,9 @@ namespace DotNetToolBox.Database
         {
             get
             {
+                if (_disposed)
+                    throw new ObjectDisposedException(typeof(DbManager).FullName);
+
                 if (!_requestFileManagers.ContainsKey(name))
                     throw new Exception(String.Format("The Request file '{0}' is not found", name));
                 return _requestFileManagers[name];
@@ -498,16 +555,34 @@ namespace DotNetToolBox.Database
         /// </summary>
         public void Dispose()
         {
-            if (_connection != null)
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases all resources used
+        /// </summary>
+        /// <param name="disposing"></param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+                return;
+
+            if (disposing)
             {
-                _connection.Dispose();
-                _connection = null;
+                if (_connection != null)
+                {
+                    _connection.Dispose();
+                    _connection = null;
+                }
+
+                _transaction = null;
+                _factory = null;
+                _connectionString = null;
+                _provider = null;
             }
 
-            _transaction = null;
-            _factory = null;
-            _connectionString = null;
-            _provider = null;
+            _disposed = true;
         }
         
         #endregion

@@ -119,6 +119,7 @@
     <Compile Include="Database\IDbObject.cs" />
     <Compile Include="Database\RequestFileManager.cs" />
     <Compile Include="IO\Base64Encoder.cs" />
+    <Compile Include="IO\CsvReader.cs" />
     <Compile Include="IO\GZipCompressor.cs" />
     <Compile Include="IO\HexadecimalEncoder.cs" />
     <Compile Include="IO\StreamHelper.cs" />
