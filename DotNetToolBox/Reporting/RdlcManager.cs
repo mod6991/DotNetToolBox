@@ -15,6 +15,7 @@ namespace DotNetToolBox.Reporting
         private List<ReportParameter> _parameters;
         private List<ReportDataSource> _dataSources;
         private string _printerName;
+        private string _documentName;
         private bool _isLandscape;
         private PageSettings _pageSettings;
         private List<Stream> _printStreams;
@@ -22,7 +23,7 @@ namespace DotNetToolBox.Reporting
 
         #region Constructor
 
-        public RdlcManager(string reportPath)
+        public RdlcManager(string reportPath, string documentName)
         {
             _report = new ReportViewer();
             _report.LocalReport.ReportPath = reportPath;
@@ -55,6 +56,12 @@ namespace DotNetToolBox.Reporting
         {
             get { return _printerName; }
             set { _printerName = value; }
+        }
+
+        public string DocumentName
+        {
+            get { return _documentName; }
+            set { _documentName = value; }
         }
 
         public bool IsLandscape
@@ -137,6 +144,7 @@ namespace DotNetToolBox.Reporting
                     foreach (Stream s in _printStreams)
                         s.Position = 0;
 
+                printDoc.DocumentName = _documentName;
                 printDoc.PrinterSettings.Copies = copies;
                 printDoc.DefaultPageSettings.Landscape = _isLandscape;
                 printDoc.DefaultPageSettings.PrinterSettings.DefaultPageSettings.Landscape = _isLandscape;
