@@ -31,6 +31,7 @@ namespace DotNetToolBox.Reporting
             _dataSources = new List<ReportDataSource>();
             _pageSettings = new PageSettings();
             _printStreams = new List<Stream>();
+            _documentName = documentName;
         }
 
         #endregion
