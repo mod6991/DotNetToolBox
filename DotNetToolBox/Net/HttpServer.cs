@@ -22,6 +22,7 @@
 using System;
 using System.Net;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DotNetToolBox.Net
 {
@@ -104,8 +105,8 @@ namespace DotNetToolBox.Net
             {
                 HttpListenerContext context = _listener.GetContext();
 
-                Thread requestThread = new Thread(new ParameterizedThreadStart(HandleRequest));
-                requestThread.Start(context);
+                Task task = new Task(() => HandleRequest(context));
+                task.Start();
             }
         }
 

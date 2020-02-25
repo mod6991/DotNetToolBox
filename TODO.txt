@@ -1,0 +1,17 @@
+OK!  Framework .NET -> 4.6.1 (because of FastMember 1.5)
+
+OK!  FastMember -> update to v1.5
+OK!  BouncyCastle -> update to 1.8.6
+
+OK!  Utils/PerformanceAnalyser
+ - add methods
+
+OK!  Utils
+ - Add utils to get resources and embedded resources from assembly
+
+OK!  Net/HttpServer & Net/TcpServer
+ - Replace threads with Tasks
+
+OK!  Version -> yyyy.mm.seq.build
+
+!! + add PresentationCore PresentationFramework WindowsBase SystemXaml

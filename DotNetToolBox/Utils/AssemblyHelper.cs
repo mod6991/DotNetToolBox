@@ -20,9 +20,13 @@
 #endregion
 
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Windows;
+using System.Windows.Media.Imaging;
+using System.Windows.Resources;
 
 namespace DotNetToolBox.Utils
 {
@@ -203,6 +207,35 @@ namespace DotNetToolBox.Utils
                 return ((GuidAttribute)attributes[0]).Value;
             else
                 return null;
+        }
+
+        /// <summary>
+        /// Get embedded resource stream from assembly
+        /// </summary>
+        /// <param name="assembly">Assembly</param>
+        /// <param name="path">Resource path</param>
+        public static Stream GetEmbeddedResourceStream(Assembly assembly, string path)
+        {
+            return assembly.GetManifestResourceStream(path);
+        }
+
+        /// <summary>
+        /// Get embedded image from assembly
+        /// </summary>
+        /// <param name="assembly">Assembly</param>
+        /// <param name="path">Image path</param>
+        public static BitmapImage GetEmbeddedImage(Assembly assembly, string path)
+        {
+            using (Stream stream = GetEmbeddedResourceStream(assembly, path))
+            {
+                BitmapImage image = new BitmapImage();
+                image.BeginInit();
+                image.StreamSource = stream;
+                image.CacheOption = BitmapCacheOption.OnLoad;
+                image.EndInit();
+
+                return image;
+            }
         }
 
         #endregion

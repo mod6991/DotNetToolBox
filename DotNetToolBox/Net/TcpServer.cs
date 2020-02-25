@@ -25,6 +25,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 
 namespace DotNetToolBox.Net
 {
@@ -73,8 +74,9 @@ namespace DotNetToolBox.Net
             while (true)
             {
                 TcpClient client = _tcpListener.AcceptTcpClient();
-                Thread requestThread = new Thread(new ParameterizedThreadStart(HandleRequest));
-                requestThread.Start(client);
+
+                Task task = new Task(() => HandleRequest(client));
+                task.Start();
             }
         }
 
