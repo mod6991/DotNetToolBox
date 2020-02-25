@@ -127,6 +127,12 @@
     <Compile Include="IO\GZipCompressor.cs" />
     <Compile Include="IO\HexadecimalEncoder.cs" />
     <Compile Include="IO\StreamHelper.cs" />
+    <Compile Include="MVVM\DefaultCommands.cs" />
+    <Compile Include="MVVM\ObservableObject.cs" />
+    <Compile Include="MVVM\RelayCommand.cs" />
+    <Compile Include="MVVM\RoutedEventToCommandHandler.cs" />
+    <Compile Include="MVVM\RoutedEventToCommandManager.cs" />
+    <Compile Include="MVVM\ViewModelBase.cs" />
     <Compile Include="Net\HttpServer.cs" />
     <Compile Include="Net\TcpServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -143,5 +149,6 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
