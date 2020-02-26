@@ -20,124 +20,128 @@
 #endregion
 
 using System.IO;
-using System.IO.Compression;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace DotNetToolBox.IO
 {
-    public static class GZipCompressor
+    public static class Base64
     {
         /// <summary>
-        /// Compress data with GZip
+        /// Encode data with base64
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Compress(Stream input, Stream output, int bufferSize = 4096)
+        public static void Encode(Stream input, Stream output, int bufferSize = 4096)
         {
-            using (GZipStream compress = new GZipStream(output, CompressionMode.Compress))
+            ICryptoTransform cryptor = new ToBase64Transform();
+            using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
             {
-                StreamHelper.WriteStream(input, compress, bufferSize);
+                StreamHelper.WriteStream(input, cs, bufferSize);
             }
         }
 
         /// <summary>
-        /// Compress data with GZip
+        /// Encode data with base64
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Compress(Stream input, int bufferSize = 4096)
+        public static string Encode(Stream input, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                Compress(input, ms, bufferSize);
-                return ms.ToArray();
+                Encode(input, ms, bufferSize);
+                return Encoding.ASCII.GetString(ms.ToArray());
             }
         }
 
         /// <summary>
-        /// Compress data with GZip
+        /// Encode data with base64
         /// </summary>
-        /// <param name="inputData">Data to compress</param>
+        /// <param name="inputData">Data to encode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Compress(byte[] inputData, int bufferSize = 4096)
+        public static string Encode(byte[] inputData, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream(inputData))
             {
-                return Compress(ms, bufferSize);
+                return Encode(ms, bufferSize);
             }
         }
 
         /// <summary>
-        /// Compress data with GZip
+        /// Encode data with base64
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Compress(string inputFile, string outputFile, int bufferSize = 4096)
+        public static void Encode(string inputFile, string outputFile, int bufferSize = 4096)
         {
             using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (FileStream output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
                 {
-                    Compress(input, output, bufferSize);
+                    Encode(input, output, bufferSize);
                 }
             }
         }
 
         /// <summary>
-        /// Decompress data with GZip
+        /// Decode data with base64
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="output">Output Stream</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Decompress(Stream input, Stream output, int bufferSize = 4096)
+        public static void Decode(Stream input, Stream output, int bufferSize = 4096)
         {
-            using (GZipStream compress = new GZipStream(input, CompressionMode.Decompress))
+            ICryptoTransform cryptor = new FromBase64Transform();
+            using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
             {
-                StreamHelper.WriteStream(compress, output, bufferSize);
+                StreamHelper.WriteStream(input, cs, bufferSize);
             }
         }
 
         /// <summary>
-        /// Decompress data with GZip
+        /// Decode data with base64
         /// </summary>
-        /// <param name="input">Input Stream</param>
+        /// <param name="input">Input stream</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Decompress(Stream input, int bufferSize = 4096)
+        public static byte[] Decode(Stream input, int bufferSize = 4096)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                Decompress(input, ms, bufferSize);
+                Decode(input, ms, bufferSize);
                 return ms.ToArray();
             }
         }
 
         /// <summary>
-        /// Decompress data with GZip
+        /// Decode data with base64
         /// </summary>
-        /// <param name="inputData">Data to decompress</param>
+        /// <param name="base64String">Data to decode</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Decompress(byte[] inputData, int bufferSize = 4096)
+        public static byte[] Decode(string base64String, int bufferSize = 4096)
         {
-            using (MemoryStream ms = new MemoryStream(inputData))
+            byte[] base64Data = Encoding.ASCII.GetBytes(base64String);
+            using (MemoryStream ms = new MemoryStream(base64Data))
             {
-                return Decompress(ms, bufferSize);
+                return Decode(ms, bufferSize);
             }
         }
 
         /// <summary>
-        /// Decompress data with GZip
+        /// Decode data with base64
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Decompress(string inputFile, string outputFile, int bufferSize = 4096)
+        public static void Decode(string inputFile, string outputFile, int bufferSize = 4096)
         {
             using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (FileStream output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
                 {
-                    Decompress(input, output, bufferSize);
+                    Decode(input, output, bufferSize);
                 }
             }
         }

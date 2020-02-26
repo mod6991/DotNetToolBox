@@ -24,22 +24,22 @@ using System.Security.Cryptography;
 
 namespace DotNetToolBox.Cryptography
 {
-    public static class SHA1Hasher
+    public static class SHA512
     {
         /// <summary>
-        /// Compute the SHA1 hash value
+        /// Compute the SHA512 hash value
         /// </summary>
         /// <param name="input">Input Stream</param>
         public static byte[] Hash(Stream input)
         {
-            using (SHA1CryptoServiceProvider sha1 = new SHA1CryptoServiceProvider())
+            using (SHA512CryptoServiceProvider sha512 = new SHA512CryptoServiceProvider())
             {
-                return sha1.ComputeHash(input);
+                return sha512.ComputeHash(input);
             }
         }
 
         /// <summary>
-        /// Compute the SHA1 hash value
+        /// Compute the SHA512 hash value
         /// </summary>
         /// <param name="data">Data to hash</param>
         public static byte[] Hash(byte[] data)
@@ -51,7 +51,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Compute the SHA1 hash value
+        /// Compute the SHA512 hash value
         /// </summary>
         /// <param name="file">Input file</param>
         public static byte[] Hash(string file)

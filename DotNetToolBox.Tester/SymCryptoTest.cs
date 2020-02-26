@@ -14,27 +14,27 @@ namespace DotNetToolBox.Tester
             {
                 //Generate new random Key + IV
                 byte[] key, iv;
-                AESEncryptor.GenerateKeyIV(out key, out iv);
+                AES.GenerateKeyIV(out key, out iv);
 
-                string skey = HexadecimalEncoder.Encode(key);
-                string siv = HexadecimalEncoder.Encode(iv);
+                string skey = Hex.Encode(key);
+                string siv = Hex.Encode(iv);
 
                 //Encrypt+Decrypt
                 byte[] data = Encoding.Default.GetBytes("This is a secret message");
-                byte[] enc = AESEncryptor.Encrypt(data, key, iv);
-                byte[] dec = AESEncryptor.Decrypt(enc, key, iv);
+                byte[] enc = AES.Encrypt(data, key, iv);
+                byte[] dec = AES.Decrypt(enc, key, iv);
                 string sDec = Encoding.Default.GetString(dec);
 
                 //Generate Key from password
                 byte[] key2, salt, iv2;
                 salt = RandomHelper.GenerateBytes(16);
-                AESEncryptor.GenerateIV(out iv2);
+                AES.GenerateIV(out iv2);
 
-                AESEncryptor.GenerateKeyFromPassword("test1234", salt, out key2);
+                AES.GenerateKeyFromPassword("test1234", salt, out key2);
 
-                string skey2 = HexadecimalEncoder.Encode(key2);
-                string ssalt = HexadecimalEncoder.Encode(salt);
-                string siv2 = HexadecimalEncoder.Encode(iv2);
+                string skey2 = Hex.Encode(key2);
+                string ssalt = Hex.Encode(salt);
+                string siv2 = Hex.Encode(iv2);
             }
             catch (Exception ex)
             {
@@ -48,27 +48,27 @@ namespace DotNetToolBox.Tester
             {
                 //Generate new random Key + IV
                 byte[] key, iv;
-                DESEncryptor.GenerateKeyIV(out key, out iv);
+                DES.GenerateKeyIV(out key, out iv);
 
-                string skey = HexadecimalEncoder.Encode(key);
-                string siv = HexadecimalEncoder.Encode(iv);
+                string skey = Hex.Encode(key);
+                string siv = Hex.Encode(iv);
 
                 //Encrypt+Decrypt
                 byte[] data = Encoding.Default.GetBytes("This is a secret message");
-                byte[] enc = DESEncryptor.Encrypt(data, key, iv);
-                byte[] dec = DESEncryptor.Decrypt(enc, key, iv);
+                byte[] enc = DES.Encrypt(data, key, iv);
+                byte[] dec = DES.Decrypt(enc, key, iv);
                 string sDec = Encoding.Default.GetString(dec);
 
                 //Generate Key from password
                 byte[] key2, salt, iv2;
                 salt = RandomHelper.GenerateBytes(16);
-                DESEncryptor.GenerateIV(out iv2);
+                DES.GenerateIV(out iv2);
 
-                DESEncryptor.GenerateKeyFromPassword("test1234", salt, out key2);
+                DES.GenerateKeyFromPassword("test1234", salt, out key2);
 
-                string skey2 = HexadecimalEncoder.Encode(key2);
-                string ssalt = HexadecimalEncoder.Encode(salt);
-                string siv2 = HexadecimalEncoder.Encode(iv2);
+                string skey2 = Hex.Encode(key2);
+                string ssalt = Hex.Encode(salt);
+                string siv2 = Hex.Encode(iv2);
             }
             catch (Exception ex)
             {
@@ -82,27 +82,27 @@ namespace DotNetToolBox.Tester
             {
                 //Generate new random Key + IV
                 byte[] key, iv;
-                RijndaelEncryptor.GenerateKeyIV(out key, out iv);
+                Cryptography.Rijndael.GenerateKeyIV(out key, out iv);
 
-                string skey = HexadecimalEncoder.Encode(key);
-                string siv = HexadecimalEncoder.Encode(iv);
+                string skey = Hex.Encode(key);
+                string siv = Hex.Encode(iv);
 
                 //Encrypt+Decrypt
                 byte[] data = Encoding.Default.GetBytes("This is a secret message");
-                byte[] enc = RijndaelEncryptor.Encrypt(data, key, iv);
-                byte[] dec = RijndaelEncryptor.Decrypt(enc, key, iv);
+                byte[] enc = Cryptography.Rijndael.Encrypt(data, key, iv);
+                byte[] dec = Cryptography.Rijndael.Decrypt(enc, key, iv);
                 string sDec = Encoding.Default.GetString(dec);
 
                 //Generate Key from password
                 byte[] key2, salt, iv2;
                 salt = RandomHelper.GenerateBytes(16);
-                RijndaelEncryptor.GenerateIV(out iv2);
+                Cryptography.Rijndael.GenerateIV(out iv2);
 
-                RijndaelEncryptor.GenerateKeyFromPassword("test1234", salt, out key2);
+                Cryptography.Rijndael.GenerateKeyFromPassword("test1234", salt, out key2);
 
-                string skey2 = HexadecimalEncoder.Encode(key2);
-                string ssalt = HexadecimalEncoder.Encode(salt);
-                string siv2 = HexadecimalEncoder.Encode(iv2);
+                string skey2 = Hex.Encode(key2);
+                string ssalt = Hex.Encode(salt);
+                string siv2 = Hex.Encode(iv2);
             }
             catch (Exception ex)
             {
@@ -116,27 +116,27 @@ namespace DotNetToolBox.Tester
             {
                 //Generate new random Key + IV
                 byte[] key, iv;
-                TripleDESEncryptor.GenerateKeyIV(out key, out iv);
+                TripleDES.GenerateKeyIV(out key, out iv);
 
-                string skey = HexadecimalEncoder.Encode(key);
-                string siv = HexadecimalEncoder.Encode(iv);
+                string skey = Hex.Encode(key);
+                string siv = Hex.Encode(iv);
 
                 //Encrypt+Decrypt
                 byte[] data = Encoding.Default.GetBytes("This is a secret message");
-                byte[] enc = TripleDESEncryptor.Encrypt(data, key, iv);
-                byte[] dec = TripleDESEncryptor.Decrypt(enc, key, iv);
+                byte[] enc = TripleDES.Encrypt(data, key, iv);
+                byte[] dec = TripleDES.Decrypt(enc, key, iv);
                 string sDec = Encoding.Default.GetString(dec);
 
                 //Generate Key from password
                 byte[] key2, salt, iv2;
                 salt = RandomHelper.GenerateBytes(16);
-                TripleDESEncryptor.GenerateIV(out iv2);
+                TripleDES.GenerateIV(out iv2);
 
-                TripleDESEncryptor.GenerateKeyFromPassword("test1234", salt, out key2);
+                TripleDES.GenerateKeyFromPassword("test1234", salt, out key2);
 
-                string skey2 = HexadecimalEncoder.Encode(key2);
-                string ssalt = HexadecimalEncoder.Encode(salt);
-                string siv2 = HexadecimalEncoder.Encode(iv2);
+                string skey2 = Hex.Encode(key2);
+                string ssalt = Hex.Encode(salt);
+                string siv2 = Hex.Encode(iv2);
             }
             catch (Exception ex)
             {

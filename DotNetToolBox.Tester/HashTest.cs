@@ -12,8 +12,8 @@ namespace DotNetToolBox.Tester
             try
             {
                 byte[] data = Encoding.Default.GetBytes("Data to hash");
-                byte[] hash = MD5Hasher.Hash(data);
-                string sHash = HexadecimalEncoder.Encode(hash);
+                byte[] hash = MD5.Hash(data);
+                string sHash = Hex.Encode(hash);
             }
             catch (Exception ex)
             {
@@ -26,8 +26,8 @@ namespace DotNetToolBox.Tester
             try
             {
                 byte[] data = Encoding.Default.GetBytes("Data to hash");
-                byte[] hash = SHA1Hasher.Hash(data);
-                string sHash = HexadecimalEncoder.Encode(hash);
+                byte[] hash = SHA1.Hash(data);
+                string sHash = Hex.Encode(hash);
             }
             catch (Exception ex)
             {
@@ -40,8 +40,8 @@ namespace DotNetToolBox.Tester
             try
             {
                 byte[] data = Encoding.Default.GetBytes("Data to hash");
-                byte[] hash = SHA256Hasher.Hash(data);
-                string sHash = HexadecimalEncoder.Encode(hash);
+                byte[] hash = SHA256.Hash(data);
+                string sHash = Hex.Encode(hash);
             }
             catch (Exception ex)
             {
@@ -54,8 +54,8 @@ namespace DotNetToolBox.Tester
             try
             {
                 byte[] data = Encoding.Default.GetBytes("Data to hash");
-                byte[] hash = SHA512Hasher.Hash(data);
-                string sHash = HexadecimalEncoder.Encode(hash);
+                byte[] hash = SHA512.Hash(data);
+                string sHash = Hex.Encode(hash);
             }
             catch (Exception ex)
             {

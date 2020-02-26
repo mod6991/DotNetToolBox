@@ -25,7 +25,7 @@ using System.Text;
 
 namespace DotNetToolBox.IO
 {
-    public static class HexadecimalEncoder
+    public static class Hex
     {
         /// <summary>
         /// Encode data with Hexadecimal

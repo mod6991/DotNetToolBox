@@ -24,7 +24,7 @@ using System.Security.Cryptography;
 
 namespace DotNetToolBox.Cryptography
 {
-    public static class MD5Hasher
+    public static class MD5
     {
         /// <summary>
         /// Compute the MD5 hash value

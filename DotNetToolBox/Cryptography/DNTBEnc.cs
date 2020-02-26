@@ -53,12 +53,12 @@ namespace DotNetToolBox.Cryptography
             switch (algorithm)
             {
                 case Algorithm.AES:
-                    AESEncryptor.GenerateKeyFromPassword(password, salt, out key);
-                    AESEncryptor.GenerateIV(out iv);
+                    AES.GenerateKeyFromPassword(password, salt, out key);
+                    AES.GenerateIV(out iv);
                     break;
                 case Algorithm.TripleDES:
-                    TripleDESEncryptor.GenerateKeyFromPassword(password, salt, out key);
-                    TripleDESEncryptor.GenerateIV(out iv);
+                    TripleDES.GenerateKeyFromPassword(password, salt, out key);
+                    TripleDES.GenerateIV(out iv);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");
@@ -120,10 +120,10 @@ namespace DotNetToolBox.Cryptography
             switch (algorithm)
             {
                 case Algorithm.AES:
-                    AESEncryptor.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
+                    AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 case Algorithm.TripleDES:
-                    TripleDESEncryptor.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
+                    TripleDES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");
@@ -200,12 +200,12 @@ namespace DotNetToolBox.Cryptography
             switch (algorithm)
             {
                 case Algorithm.AES:
-                    AESEncryptor.GenerateKeyFromPassword(password, salt, out key);
-                    AESEncryptor.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
+                    AES.GenerateKeyFromPassword(password, salt, out key);
+                    AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 case Algorithm.TripleDES:
-                    TripleDESEncryptor.GenerateKeyFromPassword(password, salt, out key);
-                    TripleDESEncryptor.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
+                    TripleDES.GenerateKeyFromPassword(password, salt, out key);
+                    TripleDES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");
@@ -269,9 +269,9 @@ namespace DotNetToolBox.Cryptography
             {
                 case Algorithm.AES:
                     //Generate random AES key + IV
-                    AESEncryptor.GenerateKeyIV(out key, out iv);
+                    AES.GenerateKeyIV(out key, out iv);
                     //Encrypt the AES key with the RSA key
-                    encKey = RSAEncryptor.Encrypt(rsa, key);
+                    encKey = RSA.Encrypt(rsa, key);
                     //Write the encrypted AES key length
                     output.Write(BitConverter.GetBytes(encKey.Length), 0, _sizeofInt);
                     //Write the encrypted AES key
@@ -281,13 +281,13 @@ namespace DotNetToolBox.Cryptography
                     //Write the IV
                     output.Write(iv, 0, iv.Length);
                     //Encrypt the input file with the AES key + IV
-                    AESEncryptor.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
+                    AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 case Algorithm.TripleDES:
                     //Generate random TripleDES key + IV
-                    TripleDESEncryptor.GenerateKeyIV(out key, out iv);
+                    TripleDES.GenerateKeyIV(out key, out iv);
                     //Encrypt the TripleDES key with the RSA key
-                    encKey = RSAEncryptor.Encrypt(rsa, key);
+                    encKey = RSA.Encrypt(rsa, key);
                     //Write the encrypted TripleDES key length
                     output.Write(BitConverter.GetBytes(encKey.Length), 0, _sizeofInt);
                     //Write the encrypted TripleDES key
@@ -297,7 +297,7 @@ namespace DotNetToolBox.Cryptography
                     //Write the IV
                     output.Write(iv, 0, iv.Length);
                     //Encrypt the input file with the TripleDES key + IV
-                    TripleDESEncryptor.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
+                    TripleDES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");
@@ -392,7 +392,7 @@ namespace DotNetToolBox.Cryptography
             read = input.Read(iv, 0, ivSize);
 
             //Decrypt the symmetric key with the RSA key
-            byte[] key = RSAEncryptor.Decrypt(rsa, encKey);
+            byte[] key = RSA.Decrypt(rsa, encKey);
 
             if (notifyProgression != null)
                 notifyProgression(12 + (3 * _sizeofInt) + keyNameLength + encKeySize + ivSize);
@@ -400,10 +400,10 @@ namespace DotNetToolBox.Cryptography
             switch (algorithm)
             {
                 case Algorithm.AES:
-                    AESEncryptor.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
+                    AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 case Algorithm.TripleDES:
-                    TripleDESEncryptor.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
+                    TripleDES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
                     throw new Exception("Invalid algorithm !");

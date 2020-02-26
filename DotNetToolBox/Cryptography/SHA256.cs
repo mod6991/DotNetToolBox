@@ -24,7 +24,7 @@ using System.Security.Cryptography;
 
 namespace DotNetToolBox.Cryptography
 {
-    public static class SHA256Hasher
+    public static class SHA256
     {
         /// <summary>
         /// Compute the SHA256 hash value

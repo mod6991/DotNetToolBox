@@ -94,7 +94,7 @@ namespace DotNetToolBox.Utils
         /// </summary>
         public static string EncodeBase64(this byte[] data)
         {
-            return IO.Base64Encoder.Encode(data);
+            return IO.Base64.Encode(data);
         }
 
         /// <summary>
@@ -102,7 +102,7 @@ namespace DotNetToolBox.Utils
         /// </summary>
         public static byte[] DecodeBase64(this string base64String)
         {
-            return IO.Base64Encoder.Decode(base64String);
+            return IO.Base64.Decode(base64String);
         }
 
         #endregion
@@ -114,7 +114,7 @@ namespace DotNetToolBox.Utils
         /// </summary>
         public static string EncodeHexadecimal(this byte[] data)
         {
-            return IO.HexadecimalEncoder.Encode(data);
+            return IO.Hex.Encode(data);
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace DotNetToolBox.Utils
         /// </summary>
         public static byte[] DecodeHexadecimal(this string hexadecimal)
         {
-            return IO.HexadecimalEncoder.Decode(hexadecimal);
+            return IO.Hex.Decode(hexadecimal);
         }
 
         #endregion
@@ -134,7 +134,7 @@ namespace DotNetToolBox.Utils
         /// </summary>
         public static byte[] CompressGZip(this byte[] data)
         {
-            return IO.GZipCompressor.Compress(data);
+            return IO.GZip.Compress(data);
         }
 
         /// <summary>
@@ -142,7 +142,7 @@ namespace DotNetToolBox.Utils
         /// </summary>
         public static byte[] DecompressGzip(this byte[] compressedData)
         {
-            return IO.GZipCompressor.Decompress(compressedData);
+            return IO.GZip.Decompress(compressedData);
         }
 
         #endregion

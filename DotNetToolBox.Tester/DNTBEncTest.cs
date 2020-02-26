@@ -16,7 +16,7 @@ namespace DotNetToolBox.Tester
         {
             try
             {
-                RSACryptoServiceProvider rsa = RSAEncryptor.GenerateKeyPair(4096);
+                RSACryptoServiceProvider rsa = Cryptography.RSA.GenerateKeyPair(4096);
                 string test = rsa.ToXmlString(true);
                 byte[] data = Encoding.Default.GetBytes("this is a secret message");
                 byte[] dec;

@@ -31,7 +31,7 @@ using System.Text;
 
 namespace DotNetToolBox.Cryptography
 {
-    public static class RSAEncryptor
+    public static class RSA
     {
         /// <summary>
         /// Generate a new RSA key pair
@@ -83,9 +83,9 @@ namespace DotNetToolBox.Cryptography
             switch (resultEncodingType)
             {
                 case EncodingType.Base64:
-                    return Base64Encoder.Encode(encryptedPassword);
+                    return Base64.Encode(encryptedPassword);
                 case EncodingType.Hexadecimal:
-                    return HexadecimalEncoder.Encode(encryptedPassword);
+                    return Hex.Encode(encryptedPassword);
                 default:
                     throw new Exception("Invalid encoding type !");
             }
@@ -105,10 +105,10 @@ namespace DotNetToolBox.Cryptography
             switch (passwordEncodingType)
             {
                 case EncodingType.Base64:
-                    encryptedPassword = Base64Encoder.Decode(encodedEncryptedPassword);
+                    encryptedPassword = Base64.Decode(encodedEncryptedPassword);
                     break;
                 case EncodingType.Hexadecimal:
-                    encryptedPassword = HexadecimalEncoder.Decode(encodedEncryptedPassword);
+                    encryptedPassword = Hex.Decode(encodedEncryptedPassword);
                     break;
                 default:
                     throw new Exception("Invalid encoding type !");

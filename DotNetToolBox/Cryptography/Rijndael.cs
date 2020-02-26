@@ -25,13 +25,13 @@ using System.Security.Cryptography;
 
 namespace DotNetToolBox.Cryptography
 {
-    public static class AESEncryptor
+    public static class Rijndael
     {
         public const int KEY_SIZE = 32;
         public const int IV_SIZE = 16;
 
         /// <summary>
-        /// Encrypt data with the AES algorithm
+        /// Encrypt data with the Rijndael algorithm
         /// </summary>
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
@@ -43,11 +43,11 @@ namespace DotNetToolBox.Cryptography
         /// <param name="notifyProgression">Notify progression method</param>
         public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
-            using (AesManaged aes = new AesManaged())
+            using (RijndaelManaged rij = new RijndaelManaged())
             {
-                aes.Mode = cipherMode;
-                aes.Padding = paddingMode;
-                ICryptoTransform cryptor = aes.CreateEncryptor(key, iv);
+                rij.Mode = cipherMode;
+                rij.Padding = paddingMode;
+                ICryptoTransform cryptor = rij.CreateEncryptor(key, iv);
                 using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
                 {
                     IO.StreamHelper.WriteStream(input, cs, bufferSize, notifyProgression);
@@ -56,7 +56,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Encrypt data with the AES algorithm
+        /// Encrypt data with the Rijndael algorithm
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="key">Key</param>
@@ -75,7 +75,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Encrypt data with the AES algorithm
+        /// Encrypt data with the Rijndael algorithm
         /// </summary>
         /// <param name="data">Input data</param>
         /// <param name="key">Key</param>
@@ -93,7 +93,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Encrypt data with the AES algorithm
+        /// Encrypt data with the Rijndael algorithm
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>
@@ -115,7 +115,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Decrypt data with the AES algorithm
+        /// Decrypt data with the Rijndael algorithm
         /// </summary>
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
@@ -127,11 +127,11 @@ namespace DotNetToolBox.Cryptography
         /// <param name="notifyProgression">Notify progression method</param>
         public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
         {
-            using (AesManaged aes = new AesManaged())
+            using (RijndaelManaged rij = new RijndaelManaged())
             {
-                aes.Mode = cipherMode;
-                aes.Padding = paddingMode;
-                ICryptoTransform cryptor = aes.CreateDecryptor(key, iv);
+                rij.Mode = cipherMode;
+                rij.Padding = paddingMode;
+                ICryptoTransform cryptor = rij.CreateDecryptor(key, iv);
                 using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
                 {
                     IO.StreamHelper.WriteStream(input, cs, bufferSize, notifyProgression);
@@ -140,7 +140,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Decrypt data with the AES algorithm
+        /// Decrypt data with the Rijndael algorithm
         /// </summary>
         /// <param name="input">Input Stream</param>
         /// <param name="key">Key</param>
@@ -159,7 +159,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Decrypt data with the AES algorithm
+        /// Decrypt data with the Rijndael algorithm
         /// </summary>
         /// <param name="data">Input data</param>
         /// <param name="key">Key</param>
@@ -177,7 +177,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Decrypt data with the AES algorithm
+        /// Decrypt data with the Rijndael algorithm
         /// </summary>
         /// <param name="inputFile">Input file</param>
         /// <param name="outputFile">Output file</param>

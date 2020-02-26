@@ -25,7 +25,7 @@ using System.Security.Cryptography;
 
 namespace DotNetToolBox.Cryptography
 {
-    public static class TripleDESEncryptor
+    public static class TripleDES
     {
         public const int KEY_SIZE = 24;
         public const int IV_SIZE = 16;

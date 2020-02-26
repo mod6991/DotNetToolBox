@@ -25,7 +25,7 @@ using System.Security.Cryptography;
 
 namespace DotNetToolBox.Cryptography
 {
-    public static class DESEncryptor
+    public static class DES
     {
         public const int KEY_SIZE = 8;
         public const int IV_SIZE = 8;
