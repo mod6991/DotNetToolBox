@@ -1,8 +1,10 @@
-Framework .NET -> 4.6.1 (because of FastMember 1.5)
-FastMember -> update to v1.5
-BouncyCastle -> update to 1.8.6
-Improve PerformanceAnalyser
-Add utils methods for embedded resources and images
-Replace threads with Tasks in HttpServer & TcpServer
-Add PresentationCore, PresentationFramework, WindowsBase & System.Xaml
-Add MVVM !
+v6.1 TODO list
+--------------
+
+- remove some "less used" methods in crypto + io ?
+- add new crypto classes for sha3, other sym ciphers (with BouncyCastle)
+- Make a real test solutions :
+  - app test all classes (with test vectors for crypto) -> show iterations and time with success/fail
+  - app test TcpServer
+  - app test HttpServer
+  - app test DB
