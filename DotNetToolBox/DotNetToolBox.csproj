@@ -92,8 +92,14 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.SqlServer.Types.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.Windows.Shell">
+      <HintPath>..\lib\Microsoft.Windows.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RibbonControlsLibrary">
+      <HintPath>..\lib\RibbonControlsLibrary.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Drawing" />
@@ -104,6 +110,21 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>..\lib\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>..\lib\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro">
+      <HintPath>..\lib\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010">
+      <HintPath>..\lib\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>..\lib\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Configuration\IConfigFileManager.cs" />
@@ -137,6 +158,22 @@
     <Compile Include="Net\TcpServer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Reporting\Rdlc.cs" />
+    <Compile Include="RibbonDock\DataTemplateHelper.cs" />
+    <Compile Include="RibbonDock\DockDataTemplateSelector.cs" />
+    <Compile Include="RibbonDock\DockPanesStyleSelector.cs" />
+    <Compile Include="RibbonDock\Dock\DockingDocumentViewModelBase.cs" />
+    <Compile Include="RibbonDock\Dock\DockingToolViewModelBase.cs" />
+    <Compile Include="RibbonDock\Dock\DockingViewModelBase.cs" />
+    <Compile Include="RibbonDock\RibbonDock.cs" />
+    <Compile Include="RibbonDock\RibbonDockWindow.xaml.cs">
+      <DependentUpon>RibbonDockWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="RibbonDock\RibbonDockWindowViewModel.cs" />
+    <Compile Include="RibbonDock\Ribbon\RibbonApplicationMenuItemViewModel.cs" />
+    <Compile Include="RibbonDock\Ribbon\RibbonButtonViewModel.cs" />
+    <Compile Include="RibbonDock\Ribbon\RibbonGroupViewModel.cs" />
+    <Compile Include="RibbonDock\Ribbon\RibbonItemViewModelBase.cs" />
+    <Compile Include="RibbonDock\Ribbon\RibbonTabViewModel.cs" />
     <Compile Include="Utils\AssemblyHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\LogHelper.cs" />
@@ -149,6 +186,11 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="RibbonDock\RibbonDockWindow.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

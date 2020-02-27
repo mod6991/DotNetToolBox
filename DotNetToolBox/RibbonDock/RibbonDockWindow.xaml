@@ -1,0 +1,136 @@
+﻿<Window x:Class="DotNetToolBox.RibbonDock.RibbonDockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ribbon="clr-namespace:Microsoft.Windows.Controls.Ribbon;assembly=RibbonControlsLibrary"
+        xmlns:ribbonVM="clr-namespace:DotNetToolBox.RibbonDock.Ribbon"
+        xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
+        xmlns:helpers="clr-namespace:DotNetToolBox.RibbonDock"
+        Title="{Binding Title}" Height="685" Width="696">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ribbon:Ribbon ItemsSource="{Binding Tabs}">
+            <ribbon:Ribbon.Resources>
+                <Style TargetType="{x:Type ribbon:RibbonTab}">
+                    <Setter Property="ContextualTabGroupHeader" Value="{Binding ContextualTabGroupHeader}" />
+                    <Setter Property="Header" Value="{Binding Header}" />
+                    <Setter Property="ItemsSource" Value="{Binding Groups}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected}" />
+                </Style>
+                <Style TargetType="{x:Type ribbon:RibbonContextualTabGroup}">
+                    <Setter Property="Header" Value="{Binding Header}" />
+                    <Setter Property="Background" Value="{Binding Background}" />
+                    <Setter Property="Visibility" Value="{Binding IsVisible}" />
+                </Style>
+                <Style x:Key="RibbonControlStyle">
+                    <Setter Property="ribbon:RibbonControlService.Label" Value="{Binding Label}" />
+                    <Setter Property="ribbon:RibbonControlService.LargeImageSource" Value="{Binding LargeImage}" />
+                    <Setter Property="ribbon:RibbonControlService.SmallImageSource" Value="{Binding SmallImage}" />
+                    <Setter Property="ribbon:RibbonControlService.ToolTipTitle" Value="{Binding ToolTipTitle}" />
+                    <Setter Property="ribbon:RibbonControlService.ToolTipDescription" Value="{Binding ToolTipDescription}" />
+                    <Setter Property="ribbon:RibbonControlService.ToolTipImageSource" Value="{Binding ToolTipImage}" />
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding LargeImage}" Value="{x:Null}">
+                            <Setter Property="ribbon:RibbonControlService.LargeImageSource" Value="{x:Null}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding SmallImage}" Value="{x:Null}">
+                            <Setter Property="ribbon:RibbonControlService.SmallImageSource" Value="{x:Null}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ToolTipImage}" Value="{x:Null}">
+                            <Setter Property="ribbon:RibbonControlService.ToolTipImageSource" Value="{x:Null}" />
+                        </DataTrigger>
+                        <DataTrigger Binding="{Binding ToolTipFooterImage}" Value="{x:Null}">
+                            <Setter Property="ribbon:RibbonControlService.ToolTipFooterImageSource" Value="{x:Null}" />
+                        </DataTrigger>
+                        <Trigger Property="ribbon:RibbonControlService.IsInQuickAccessToolBar" Value="False">
+                            <Setter Property="KeyTipService.KeyTip" Value="{Binding KeyTip}" />
+                        </Trigger>
+                    </Style.Triggers>
+                </Style>
+                <Style TargetType="{x:Type ribbon:RibbonGroup}" BasedOn="{StaticResource RibbonControlStyle}">
+                    <Setter Property="QuickAccessToolBarId" Value="{Binding Label}" />
+                    <Setter Property="Header" Value="{Binding Header}" />
+                    <Setter Property="ItemsSource" Value="{Binding Buttons}" />
+                    <Setter Property="Width" Value="{Binding Width}" />
+                    <Setter Property="Visibility" Value="{Binding Visibility}" />
+                </Style>
+                <Style TargetType="{x:Type ribbon:RibbonApplicationMenuItem}">
+                    <Setter Property="Header" Value="{Binding Header}" />
+                    <Setter Property="ImageSource" Value="{Binding ImageSource}" />
+                    <Setter Property="ToolTipTitle" Value="{Binding ToolTipTitle}" />
+                    <Setter Property="ToolTipDescription" Value="{Binding ToolTipDescription}" />
+                    <Setter Property="ToolTipImageSource" Value="{Binding ToolTipImage}" />
+                    <Setter Property="Command" Value="{Binding Command}" />
+                </Style>
+                <DataTemplate DataType="{x:Type ribbonVM:RibbonButtonViewModel}">
+                    <ribbon:RibbonButton Label="{Binding Label}" 
+                                         LargeImageSource="{Binding LargeImage}"
+                                         SmallImageSource="{Binding SmallImage}"
+                                         ToolTipTitle="{Binding ToolTipTitle}"
+                                         ToolTipDescription="{Binding ToolTipDescription}"
+                                         ToolTipImageSource="{Binding ToolTipImage}"
+                                         Command="{Binding Command}" />
+                </DataTemplate>
+            </ribbon:Ribbon.Resources>
+            <ribbon:Ribbon.ApplicationMenu>
+                <ribbon:RibbonApplicationMenu ItemsSource="{Binding ApplicationMenuItems}" />
+            </ribbon:Ribbon.ApplicationMenu>
+        </ribbon:Ribbon>
+
+        <ad:DockingManager Grid.Row="1" AllowMixedOrientation="True"
+                             BorderBrush="Black" BorderThickness="1"
+                             DocumentsSource="{Binding Documents}" 
+                             AnchorablesSource="{Binding Tools}" 
+                             ActiveContent="{Binding ActiveDocument, Mode=TwoWay}">
+            <ad:DockingManager.LayoutItemContainerStyleSelector>
+                <helpers:DockPanesStyleSelector>
+                    <helpers:DockPanesStyleSelector.ToolStyle>
+                        <Style TargetType="{x:Type ad:LayoutAnchorableItem}">
+                            <Setter Property="CanFloat" Value="{Binding Model.CanFloat, Mode=TwoWay}"/>
+                            <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                            <Setter Property="IconSource" Value="{Binding Model.IconSource}"/>
+                            <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}"/>
+                            <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
+                            <Setter Property="Title" Value="{Binding Model.Title}"/>
+                            <Setter Property="HideCommand" Value="{Binding Model.HideCommand}"/>
+                        </Style>
+                    </helpers:DockPanesStyleSelector.ToolStyle>
+                    <helpers:DockPanesStyleSelector.DocumentStyle>
+                        <Style TargetType="{x:Type ad:LayoutItem}">
+                            <Setter Property="CanClose" Value="{Binding Model.CanClose, Mode=TwoWay}"/>
+                            <Setter Property="CanFloat" Value="{Binding Model.CanFloat, Mode=TwoWay}"/>
+                            <Setter Property="ContentId" Value="{Binding Model.ContentId}"/>
+                            <Setter Property="IconSource" Value="{Binding Model.IconSource}"/>
+                            <Setter Property="IsActive" Value="{Binding Model.IsActive, Mode=TwoWay}"/>
+                            <Setter Property="IsSelected" Value="{Binding Model.IsSelected, Mode=TwoWay}"/>
+                            <Setter Property="Title" Value="{Binding Model.Title}"/>
+                            <Setter Property="CloseCommand" Value="{Binding Model.CloseCommand}"/>
+                            <Setter Property="CloseAllButThisCommand" Value="{Binding Model.CloseAllButThisCommand}"/>
+                        </Style>
+                    </helpers:DockPanesStyleSelector.DocumentStyle>
+                </helpers:DockPanesStyleSelector>
+            </ad:DockingManager.LayoutItemContainerStyleSelector>
+            <ad:DockingManager.LayoutItemTemplateSelector>
+                <helpers:DockDataTemplateSelector />
+            </ad:DockingManager.LayoutItemTemplateSelector>
+            <ad:DockingManager.DocumentHeaderTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <Image Source="{Binding Content.IconSource}" Margin="0 0 4 0"/>
+                        <TextBlock Text="{Binding Content.Title}" />
+                    </StackPanel>
+                </DataTemplate>
+            </ad:DockingManager.DocumentHeaderTemplate>
+            <ad:LayoutRoot>
+                <ad:LayoutPanel Orientation="Horizontal">
+                    <ad:LayoutDocumentPaneGroup>
+                        <ad:LayoutDocumentPane />
+                    </ad:LayoutDocumentPaneGroup>
+                </ad:LayoutPanel>
+            </ad:LayoutRoot>
+        </ad:DockingManager>
+    </Grid>
+</Window>
