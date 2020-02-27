@@ -5,8 +5,6 @@ VisualStudioVersion = 16.0.29201.188
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolBox", "DotNetToolBox\DotNetToolBox.csproj", "{72717138-6942-4BCB-81F0-B614E419B367}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolBox.Tester", "DotNetToolBox.Tester\DotNetToolBox.Tester.csproj", "{402BB53C-914B-4EDB-92D8-7E123C60B3EA}"
-EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{7A899C44-7D5E-4DF5-B188-E98B3FEE7FFF}"
 	ProjectSection(SolutionItems) = preProject
 		TODO.txt = TODO.txt
@@ -28,14 +26,6 @@ Global
 		{72717138-6942-4BCB-81F0-B614E419B367}.Release|x64.Build.0 = Release|x64
 		{72717138-6942-4BCB-81F0-B614E419B367}.Release|x86.ActiveCfg = Release|x86
 		{72717138-6942-4BCB-81F0-B614E419B367}.Release|x86.Build.0 = Release|x86
-		{402BB53C-914B-4EDB-92D8-7E123C60B3EA}.Debug|x64.ActiveCfg = Debug|x64
-		{402BB53C-914B-4EDB-92D8-7E123C60B3EA}.Debug|x64.Build.0 = Debug|x64
-		{402BB53C-914B-4EDB-92D8-7E123C60B3EA}.Debug|x86.ActiveCfg = Debug|x86
-		{402BB53C-914B-4EDB-92D8-7E123C60B3EA}.Debug|x86.Build.0 = Debug|x86
-		{402BB53C-914B-4EDB-92D8-7E123C60B3EA}.Release|x64.ActiveCfg = Release|x64
-		{402BB53C-914B-4EDB-92D8-7E123C60B3EA}.Release|x64.Build.0 = Release|x64
-		{402BB53C-914B-4EDB-92D8-7E123C60B3EA}.Release|x86.ActiveCfg = Release|x86
-		{402BB53C-914B-4EDB-92D8-7E123C60B3EA}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
