@@ -19,9 +19,9 @@
 
 #endregion
 
-
 namespace DotNetToolBox.RibbonDock
 {
+    //TODO: rename this class (because it's the same name as the namespace) /// OR /// maybe give this resposability to another existing class
     public static class RibbonDock
     {
         public static RibbonDockWindow RibbonDockWindow
