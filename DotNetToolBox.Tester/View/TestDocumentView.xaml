@@ -1,0 +1,8 @@
+﻿<UserControl x:Class="DotNetToolBox.Tester.View.TestDocumentView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             Background="LightBlue">
+    <Grid>
+        <TextBlock VerticalAlignment="Center" HorizontalAlignment="Center" Margin="4 0 4 0" Text="{Binding TestText}" />
+    </Grid>
+</UserControl>
