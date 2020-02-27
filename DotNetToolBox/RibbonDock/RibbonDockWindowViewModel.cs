@@ -92,6 +92,18 @@ namespace DotNetToolBox.RibbonDock
 
         #endregion
 
+        #region Methods
 
+        public void CloseDocument(DockingDocumentViewModelBase document)
+        {
+            _documents.Remove(document);
+        }
+
+        public void HideTool(DockingToolViewModelBase tool)
+        {
+            _tools.Remove(tool);
+        }
+
+        #endregion
     }
 }

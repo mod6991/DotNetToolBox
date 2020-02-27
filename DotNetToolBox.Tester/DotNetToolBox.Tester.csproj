@@ -138,20 +138,12 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModel\MainWindowViewModel.cs" />
+    <Compile Include="ViewModel\TestDocument.cs" />
     <Compile Include="View\TestDocumentView.xaml.cs">
       <DependentUpon>TestDocumentView.xaml</DependentUpon>
     </Compile>
-    <Page Include="MainWindow.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="View\TestDocumentView.xaml">
@@ -190,6 +182,13 @@
       <Project>{72717138-6942-4bcb-81f0-b614e419b367}</Project>
       <Name>DotNetToolBox</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Images\calendar.png" />
+    <EmbeddedResource Include="Images\list.png" />
+    <EmbeddedResource Include="Images\report.png" />
+    <EmbeddedResource Include="Images\save.png" />
+    <EmbeddedResource Include="Images\settings.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
