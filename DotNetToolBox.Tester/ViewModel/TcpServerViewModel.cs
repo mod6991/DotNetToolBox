@@ -7,41 +7,25 @@ using System.Windows.Input;
 
 namespace DotNetToolBox.Tester.ViewModel
 {
-    public class TestDocument : DockingDocumentViewModelBase
+    public class TcpServerViewModel : DockingDocumentViewModelBase
     {
         private RibbonDockWindowViewModel _rdVM;
         private ICommand _closeCommand;
         private ICommand _closeAllButThisCommand;
-        private string _testText;
 
         #region Constructor
 
-        public TestDocument(RibbonDockWindowViewModel rdVM)
+        public TcpServerViewModel(RibbonDockWindowViewModel rdVM)
         {
             _rdVM = rdVM;
             _closeCommand = new RelayCommand(Close, ReturnTrue);
             _closeAllButThisCommand = new RelayCommand(CloseAllButThis, ReturnTrue);
-            CanClose = true;
+            CanClose = false;
             CanFloat = true;
-            ContentId = Guid.NewGuid().ToString();
-            Title = "My document";
+            ContentId = "TcpServer";
+            Title = "TcpServer ";
             IsActive = true;
-            TestText = "no inspiration right now...";
-            IconSource = PngIcons.GetIcon(IconName.DocumentNew, IconSize.Size16);
-        }
-
-        #endregion
-
-        #region Properties
-
-        public string TestText
-        {
-            get { return _testText; }
-            set
-            {
-                _testText = value;
-                OnPropertyChanged("TestText");
-            }
+            IconSource = PngIcons.GetIcon(IconName.Settings, IconSize.Size16);
         }
 
         #endregion
@@ -69,7 +53,7 @@ namespace DotNetToolBox.Tester.ViewModel
 
         private void Close(object param)
         {
-            _rdVM.CloseDocument(this);
+
         }
 
         private void CloseAllButThis(object param)

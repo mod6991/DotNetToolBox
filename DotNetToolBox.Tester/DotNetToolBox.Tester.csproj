@@ -138,15 +138,55 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="ViewModel\TestDocument.cs" />
-    <Compile Include="View\TestDocumentView.xaml.cs">
-      <DependentUpon>TestDocumentView.xaml</DependentUpon>
+    <Compile Include="ViewModel\ConfigurationViewModel.cs" />
+    <Compile Include="ViewModel\DatabaseViewModel.cs" />
+    <Compile Include="ViewModel\GlobalViewModel.cs" />
+    <Compile Include="ViewModel\HttpServerViewModel.cs" />
+    <Compile Include="ViewModel\ReportingViewModel.cs" />
+    <Compile Include="ViewModel\TcpServerViewModel.cs" />
+    <Compile Include="View\ConfigurationView.xaml.cs">
+      <DependentUpon>ConfigurationView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\DatabaseView.xaml.cs">
+      <DependentUpon>DatabaseView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\GlobalView.xaml.cs">
+      <DependentUpon>GlobalView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\HttpServerView.xaml.cs">
+      <DependentUpon>HttpServerView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\ReportingView.xaml.cs">
+      <DependentUpon>ReportingView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\TcpServerView.xaml.cs">
+      <DependentUpon>TcpServerView.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\TestDocumentView.xaml">
+    <Page Include="View\ConfigurationView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\DatabaseView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\GlobalView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\HttpServerView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\ReportingView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\TcpServerView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

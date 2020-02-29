@@ -16,11 +16,11 @@ using System.Windows.Shapes;
 namespace DotNetToolBox.Tester.View
 {
     /// <summary>
-    /// Interaction logic for TestDocumentView.xaml
+    /// Interaction logic for ConfigurationView.xaml
     /// </summary>
-    public partial class TestDocumentView : UserControl
+    public partial class ConfigurationView : UserControl
     {
-        public TestDocumentView()
+        public ConfigurationView()
         {
             InitializeComponent();
         }
