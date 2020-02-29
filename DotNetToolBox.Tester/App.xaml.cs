@@ -1,4 +1,5 @@
-﻿using DotNetToolBox.MVVM;
+﻿using DotNetToolBox.Icons.OpenIconLibrary;
+using DotNetToolBox.MVVM;
 using DotNetToolBox.RibbonDock;
 using DotNetToolBox.RibbonDock.Dock;
 using DotNetToolBox.RibbonDock.Ribbon;
@@ -30,7 +31,8 @@ namespace DotNetToolBox.Tester
             RibbonGroupViewModel group = new RibbonGroupViewModel("1st group");
             RibbonButtonViewModel button = new RibbonButtonViewModel("test button");
             button.Command = new RelayCommand(ButtonClick, ReturnTrue);
-            button.LargeImage = AssemblyHelper.GetEmbeddedImage(Assembly.GetAssembly(typeof(App)), "DotNetToolBox.Tester.Images.calendar.png");
+            //button.LargeImage = AssemblyHelper.GetEmbeddedImage(Assembly.GetAssembly(typeof(App)), "DotNetToolBox.Tester.Images.calendar.png");
+            button.LargeImage = PngIcons.GetIcon(IconName.Home, IconSize.Size32);
             group.Buttons.Add(button);
             tab.Groups.Add(group);
             vm2.Tabs.Add(tab);

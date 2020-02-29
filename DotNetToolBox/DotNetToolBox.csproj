@@ -143,6 +143,8 @@
     <Compile Include="Database\DbManager.cs" />
     <Compile Include="Database\IDbObject.cs" />
     <Compile Include="Database\RequestFileManager.cs" />
+    <Compile Include="Icons\OpenIconLibrary\IconName.cs" />
+    <Compile Include="Icons\OpenIconLibrary\IconSize.cs" />
     <Compile Include="Icons\OpenIconLibrary\PngIcons.cs" />
     <Compile Include="IO\Base64.cs" />
     <Compile Include="IO\CsvReader.cs" />

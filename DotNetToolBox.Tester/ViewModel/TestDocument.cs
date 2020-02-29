@@ -1,4 +1,5 @@
-﻿using DotNetToolBox.MVVM;
+﻿using DotNetToolBox.Icons.OpenIconLibrary;
+using DotNetToolBox.MVVM;
 using DotNetToolBox.RibbonDock;
 using DotNetToolBox.RibbonDock.Dock;
 using System;
@@ -26,6 +27,7 @@ namespace DotNetToolBox.Tester.ViewModel
             Title = "My document";
             IsActive = true;
             TestText = "no inspiration right now...";
+            IconSource = PngIcons.GetIcon(IconName.DocumentNew, IconSize.Size16);
         }
 
         #endregion
