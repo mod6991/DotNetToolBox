@@ -53,11 +53,6 @@ namespace DotNetToolBox.RibbonDock
                     return kvp.Value;
             }
 
-            //if (item is ProductListViewModel)
-            //    return DataTemplateHelper.CreateTemplate(typeof(ViewModel.ProductListViewModel), typeof(View.ProductList));
-            //else if (item is ProductViewModel)
-            //    return DataTemplateHelper.CreateTemplate(typeof(ViewModel.ProductViewModel), typeof(View.ProductView));
-
             return base.SelectTemplate(item, container);
         }
     }

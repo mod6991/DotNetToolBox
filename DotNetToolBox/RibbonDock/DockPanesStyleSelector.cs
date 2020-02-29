@@ -27,19 +27,11 @@ namespace DotNetToolBox.RibbonDock
 {
     public class DockPanesStyleSelector : StyleSelector
     {
-        public Style ToolStyle
-        {
-            get;
-            set;
-        }
+        public Style ToolStyle { get; set; }
 
-        public Style DocumentStyle
-        {
-            get;
-            set;
-        }
+        public Style DocumentStyle { get; set; }
 
-        public override System.Windows.Style SelectStyle(object item, System.Windows.DependencyObject container)
+        public override Style SelectStyle(object item, DependencyObject container)
         {
             if (item is DockingToolViewModelBase)
                 return ToolStyle;
