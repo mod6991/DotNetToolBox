@@ -34,6 +34,17 @@ namespace DotNetToolBox.Reporting
             _documentName = documentName;
         }
 
+        public Rdlc(Stream reportStream, string documentName)
+        {
+            _report = new ReportViewer();
+            _report.LocalReport.LoadReportDefinition(reportStream);
+            _parameters = new List<ReportParameter>();
+            _dataSources = new List<ReportDataSource>();
+            _pageSettings = new PageSettings();
+            _printStreams = new List<Stream>();
+            _documentName = documentName;
+        }
+
         #endregion
 
         #region Properties
