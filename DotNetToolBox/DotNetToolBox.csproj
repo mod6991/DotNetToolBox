@@ -167,7 +167,6 @@
     <Compile Include="RibbonDock\Dock\DockingDocumentViewModelBase.cs" />
     <Compile Include="RibbonDock\Dock\DockingToolViewModelBase.cs" />
     <Compile Include="RibbonDock\Dock\DockingViewModelBase.cs" />
-    <Compile Include="RibbonDock\RibbonDock.cs" />
     <Compile Include="RibbonDock\RibbonDockWindow.xaml.cs">
       <DependentUpon>RibbonDockWindow.xaml</DependentUpon>
     </Compile>

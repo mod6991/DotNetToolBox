@@ -1,15 +1,10 @@
 ﻿using DotNetToolBox.Icons.OpenIconLibrary;
 using DotNetToolBox.MVVM;
 using DotNetToolBox.RibbonDock;
-using DotNetToolBox.RibbonDock.Dock;
 using DotNetToolBox.RibbonDock.Ribbon;
 using DotNetToolBox.Tester.View;
 using DotNetToolBox.Tester.ViewModel;
-using DotNetToolBox.Utils;
-using System;
-using System.Reflection;
 using System.Windows;
-using System.Windows.Input;
 
 namespace DotNetToolBox.Tester
 {
@@ -18,30 +13,29 @@ namespace DotNetToolBox.Tester
     /// </summary>
     public partial class App : Application
     {
-        protected RibbonDockWindowViewModel vm2;
+        protected RibbonDockWindowViewModel vm;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             base.OnStartup(e);
 
-            RibbonDock.RibbonDockWindow win2 = RibbonDock.RibbonDock.RibbonDockWindow;
-            vm2 = (RibbonDockWindowViewModel)win2.DataContext;
+            RibbonDock.RibbonDockWindow win = RibbonDockWindowViewModel.GetNewWindow();
+            vm = (RibbonDockWindowViewModel)win.DataContext;
 
-            RibbonTabViewModel tab = new RibbonTabViewModel("HomeTab");
-            RibbonGroupViewModel group = new RibbonGroupViewModel("1st group");
             RibbonButtonViewModel button = new RibbonButtonViewModel("test button");
             button.Command = new RelayCommand(ButtonClick, ReturnTrue);
-            //button.LargeImage = AssemblyHelper.GetEmbeddedImage(Assembly.GetAssembly(typeof(App)), "DotNetToolBox.Tester.Images.calendar.png");
             button.LargeImage = PngIcons.GetIcon(IconName.Home, IconSize.Size32);
-            group.Buttons.Add(button);
-            tab.Groups.Add(group);
-            vm2.Tabs.Add(tab);
+            vm.AddRibbonButton("HomeTab", "1st group", button);
+
+            RibbonButtonViewModel button2 = new RibbonButtonViewModel("test button 2");
+            button2.Command = new RelayCommand(ButtonClick2, ReturnTrue);
+            button2.LargeImage = PngIcons.GetIcon(IconName.Help, IconSize.Size32);
+            vm.AddRibbonButton("HomeTab", "1st group", button2);
 
             DockDataTemplateSelector.RegisterDockViewModel(typeof(TestDocument), typeof(TestDocumentView));
-            vm2.Documents.Add(new TestDocument(vm2));
+            vm.Documents.Add(new TestDocument(vm));
 
-            win2.Show();
-
+            win.Show();
         }
 
         private bool ReturnTrue(object param)
@@ -51,7 +45,12 @@ namespace DotNetToolBox.Tester
 
         private void ButtonClick(object param)
         {
-            vm2.Documents.Add(new TestDocument(vm2));
+            vm.Documents.Add(new TestDocument(vm));
+        }
+
+        private void ButtonClick2(object param)
+        {
+            MessageBox.Show("Test !!!!!");
         }
     }
 

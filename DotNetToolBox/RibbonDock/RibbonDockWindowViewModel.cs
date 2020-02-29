@@ -23,6 +23,7 @@ using DotNetToolBox.MVVM;
 using DotNetToolBox.RibbonDock.Dock;
 using DotNetToolBox.RibbonDock.Ribbon;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace DotNetToolBox.RibbonDock
 {
@@ -93,6 +94,29 @@ namespace DotNetToolBox.RibbonDock
         #endregion
 
         #region Methods
+
+        public static RibbonDockWindow GetNewWindow()
+        {
+            RibbonDockWindow window = new RibbonDockWindow();
+            RibbonDockWindowViewModel vm = new RibbonDockWindowViewModel(window);
+            window.DataContext = vm;
+            return window;
+        }
+
+        public void AddRibbonButton(string tab, string group, RibbonButtonViewModel button)
+        {
+            if (!_tabs.Any(x => x.Header == tab))
+                _tabs.Add(new RibbonTabViewModel(tab));
+
+            RibbonTabViewModel tabvm = _tabs.First(x => x.Header == tab);
+
+            if (!tabvm.Groups.Any(x => x.Header == group))
+                tabvm.Groups.Add(new RibbonGroupViewModel(group));
+
+            RibbonGroupViewModel groupVM = tabvm.Groups.First(x => x.Header == group);
+
+            groupVM.Buttons.Add(button);
+        }
 
         public void CloseDocument(DockingDocumentViewModelBase document)
         {
