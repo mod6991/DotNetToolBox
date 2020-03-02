@@ -5,7 +5,10 @@
         xmlns:ribbonVM="clr-namespace:DotNetToolBox.RibbonDock.Ribbon"
         xmlns:ad="http://schemas.xceed.com/wpf/xaml/avalondock"
         xmlns:helpers="clr-namespace:DotNetToolBox.RibbonDock"
-        Title="{Binding Title}" Height="685" Width="696">
+        xmlns:mvvm="clr-namespace:DotNetToolBox.MVVM"
+        Title="{Binding Title}" Height="685" Width="800"
+        mvvm:DefaultCommands.LoadedEventCommand="{Binding LoadedCommand}"
+        mvvm:DefaultCommands.UnloadedEventCommand="{Binding UnloadedCommand}">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -81,10 +84,11 @@
         </ribbon:Ribbon>
 
         <ad:DockingManager Grid.Row="1" AllowMixedOrientation="True"
-                             BorderBrush="Black" BorderThickness="1"
-                             DocumentsSource="{Binding Documents}" 
-                             AnchorablesSource="{Binding Tools}" 
-                             ActiveContent="{Binding ActiveDocument, Mode=TwoWay}">
+                           BorderBrush="Black" BorderThickness="1"
+                           DocumentsSource="{Binding Documents}" 
+                           AnchorablesSource="{Binding Tools}" 
+                           ActiveContent="{Binding ActiveDocument, Mode=TwoWay}"
+                           Theme="{Binding Theme}">
             <ad:DockingManager.LayoutItemContainerStyleSelector>
                 <helpers:DockPanesStyleSelector>
                     <helpers:DockPanesStyleSelector.ToolStyle>

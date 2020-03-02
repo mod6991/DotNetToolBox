@@ -22,19 +22,25 @@
 using DotNetToolBox.MVVM;
 using DotNetToolBox.RibbonDock.Dock;
 using DotNetToolBox.RibbonDock.Ribbon;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Windows.Input;
+using Xceed.Wpf.AvalonDock.Themes;
 
 namespace DotNetToolBox.RibbonDock
 {
     public class RibbonDockWindowViewModel : ViewModelBase<RibbonDockWindow>
     {
+        private Theme _theme;
         private ObservableCollection<RibbonTabViewModel> _tabs;
         private ObservableCollection<RibbonApplicationMenuItemViewModel> _applicationMenuItems;
         private ObservableCollection<DockingDocumentViewModelBase> _documents;
         private ObservableCollection<DockingToolViewModelBase> _tools;
         private DockingDocumentViewModelBase _activeDocument;
         private string _title;
+        private ICommand _loadedCommand;
+        private ICommand _unloadedCommand;
 
         #region Constructor
 
@@ -78,6 +84,7 @@ namespace DotNetToolBox.RibbonDock
             {
                 _activeDocument = value;
                 OnPropertyChanged("ActiveDocument");
+                OnActiveDocumentChanged(new ActiveDocumentChangedEventArgs() { Document = value });
             }
         }
 
@@ -89,6 +96,43 @@ namespace DotNetToolBox.RibbonDock
                 _title = value;
                 OnPropertyChanged("Title");
             }
+        }
+
+        public Theme Theme
+        {
+            get { return _theme; }
+            set
+            {
+                _theme = value;
+                OnPropertyChanged("Theme");
+            }
+        }
+
+        #endregion
+
+        #region Commands
+
+        public ICommand LoadedCommand
+        {
+            get { return _loadedCommand; }
+            set { _loadedCommand = value; }
+        }
+
+        public ICommand UnloadedCommand
+        {
+            get { return _unloadedCommand; }
+            set { _unloadedCommand = value; }
+        }
+
+        #endregion
+
+        #region Event
+
+        public event ActiveDocumentChangedEventHandler ActiveDocumentChanged;
+
+        protected virtual void OnActiveDocumentChanged(ActiveDocumentChangedEventArgs e)
+        {
+            ActiveDocumentChanged?.Invoke(this, e);
         }
 
         #endregion
@@ -118,6 +162,36 @@ namespace DotNetToolBox.RibbonDock
             groupVM.Buttons.Add(button);
         }
 
+        public void AddRibbonButton(string tab, string tabId, string group, RibbonButtonViewModel button)
+        {
+            if (!_tabs.Any(x => x.Header == tab))
+                _tabs.Add(new RibbonTabViewModel(tab, tabId));
+
+            RibbonTabViewModel tabvm = _tabs.First(x => x.Header == tab);
+
+            if (!tabvm.Groups.Any(x => x.Header == group))
+                tabvm.Groups.Add(new RibbonGroupViewModel(group));
+
+            RibbonGroupViewModel groupVM = tabvm.Groups.First(x => x.Header == group);
+
+            groupVM.Buttons.Add(button);
+        }
+
+        public void SelectRibbonTabById(string tabId)
+        {
+            _tabs.First(x => x.Id == tabId).IsSelected = true;
+        }
+
+        public void SelectRibbonTabByHeader(string header)
+        {
+            _tabs.First(x => x.Header == header).IsSelected = true;
+        }
+
+        public void SetActiveDocument(string contentId)
+        {
+            ActiveDocument = _documents.First(x => x.ContentId == contentId);
+        }
+
         public void CloseDocument(DockingDocumentViewModelBase document)
         {
             _documents.Remove(document);
@@ -130,4 +204,11 @@ namespace DotNetToolBox.RibbonDock
 
         #endregion
     }
+
+    public class ActiveDocumentChangedEventArgs : EventArgs
+    {
+        public DockingDocumentViewModelBase Document { get; set; }
+    }
+
+    public delegate void ActiveDocumentChangedEventHandler(Object sender, ActiveDocumentChangedEventArgs e);
 }

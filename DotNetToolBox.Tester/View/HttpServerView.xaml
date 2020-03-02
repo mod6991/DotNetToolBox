@@ -17,7 +17,7 @@
         <TextBox Grid.Row="0" Grid.Column="1" VerticalAlignment="Center" Margin="4 0 4 0" Text="{Binding Port}" />
         <Button Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="4 0 4 0" Content="Start" Command="{Binding StartCommand}" />
         <Button Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" VerticalAlignment="Center" Margin="4 0 4 0" Content="Stop" Command="{Binding StopCommand}" />
-        <DataGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding EventList}"
+        <DataGrid Grid.Row="3" Grid.Column="0" Grid.ColumnSpan="2" ItemsSource="{Binding EventList}" SelectedItem="{Binding SelectedEvent}"
                   AutoGenerateColumns="True">
             
         </DataGrid>

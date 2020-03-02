@@ -23,6 +23,7 @@ namespace DotNetToolBox.Tester.ViewModel
         private int _port = 8885;
         private HttpServer _server;
         private ObservableCollection<HttpListenerContext> _eventList;
+        private HttpListenerContext _selectedEvent;
 
         #region Constructor
 
@@ -59,6 +60,22 @@ namespace DotNetToolBox.Tester.ViewModel
         public ObservableCollection<HttpListenerContext> EventList
         {
             get { return _eventList; }
+        }
+
+        public HttpListenerContext SelectedEvent
+        {
+            get { return _selectedEvent; }
+            set
+            {
+                _selectedEvent = value;
+                OnPropertyChanged("SelectedEvent");
+
+                PropertyViewModel propVM = (PropertyViewModel)_rdVM.Tools[0];
+                if (value != null)
+                    propVM.PropertiesObj = value.Request;
+                else
+                    propVM.PropertiesObj = null;
+            }
         }
 
         #endregion
@@ -106,21 +123,41 @@ namespace DotNetToolBox.Tester.ViewModel
 
         private void Start()
         {
-            _server = new HttpServer(new string[] { "http://*:8885/" });
-            _server.RequestHandler = HandleRequest;
-            _server.Start();
+            try
+            {
+                _server = new HttpServer(new string[] { $"http://*:{Port}/" });
+                _server.RequestHandler = HandleRequest;
+                _server.Start();
+            throw new NotImplementedException();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void Stop()
         {
-            _server.Close();
+            try
+            {
+                _server.Close();
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void HandleRequest(HttpListenerContext context)
         {
-            _eventList.Add(context);
+            App.VM.VisualObject.Dispatcher.Invoke(() =>
+            {
+
+                _eventList.Add(context);
+            });
             byte[] data = Encoding.ASCII.GetBytes("Hello world !");
             context.Response.OutputStream.Write(data, 0, data.Length);
+            context.Response.OutputStream.Close();
 
         }
 

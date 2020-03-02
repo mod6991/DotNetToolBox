@@ -28,6 +28,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
     {
         private string _header;
         private bool _isSelected;
+        private string _id;
         private ObservableCollection<RibbonGroupViewModel> _groups;
 
         #region Constructors
@@ -41,6 +42,13 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             : this()
         {
             _header = header;
+        }
+
+        public RibbonTabViewModel(string header, string id)
+            : this()
+        {
+            _header = header;
+            _id = id;
         }
 
         #endregion
@@ -64,6 +72,16 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             {
                 _isSelected = value;
                 OnPropertyChanged("IsSelected");
+            }
+        }
+
+        public string Id
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                OnPropertyChanged("Id");
             }
         }
 
