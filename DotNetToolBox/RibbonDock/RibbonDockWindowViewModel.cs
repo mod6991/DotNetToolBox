@@ -139,6 +139,9 @@ namespace DotNetToolBox.RibbonDock
 
         #region Methods
 
+        /// <summary>
+        /// Get a new RibbonDock window with a VM attached
+        /// </summary>
         public static RibbonDockWindow GetNewWindow()
         {
             RibbonDockWindow window = new RibbonDockWindow();
@@ -147,6 +150,12 @@ namespace DotNetToolBox.RibbonDock
             return window;
         }
 
+        /// <summary>
+        /// Add a button to the ribbon
+        /// </summary>
+        /// <param name="tab">Tab header</param>
+        /// <param name="group">Group header</param>
+        /// <param name="button">Button</param>
         public void AddRibbonButton(string tab, string group, RibbonButtonViewModel button)
         {
             if (!_tabs.Any(x => x.Header == tab))
@@ -162,6 +171,13 @@ namespace DotNetToolBox.RibbonDock
             groupVM.Buttons.Add(button);
         }
 
+        /// <summary>
+        /// Add a button to the ribbon
+        /// </summary>
+        /// <param name="tab">Tab header</param>
+        /// <param name="tabId">Tab id</param>
+        /// <param name="group">Group header</param>
+        /// <param name="button">Button</param>
         public void AddRibbonButton(string tab, string tabId, string group, RibbonButtonViewModel button)
         {
             if (!_tabs.Any(x => x.Header == tab))
@@ -177,26 +193,64 @@ namespace DotNetToolBox.RibbonDock
             groupVM.Buttons.Add(button);
         }
 
+        /// <summary>
+        /// Select a ribbon tab by its id
+        /// </summary>
+        /// <param name="tabId"></param>
         public void SelectRibbonTabById(string tabId)
         {
             _tabs.First(x => x.Id == tabId).IsSelected = true;
         }
 
+        /// <summary>
+        /// Select a ribbon tab by header name
+        /// </summary>
+        /// <param name="header"></param>
         public void SelectRibbonTabByHeader(string header)
         {
             _tabs.First(x => x.Header == header).IsSelected = true;
         }
 
+        /// <summary>
+        /// Get a document by its id
+        /// </summary>
+        /// <param name="contentId">Document id</param>
+        public DockingDocumentViewModelBase GetDocument(string contentId)
+        {
+            return _documents.First(x => x.ContentId == contentId);
+        }
+
+        /// <summary>
+        /// Set a document active by its id
+        /// </summary>
+        /// <param name="contentId">Document id</param>
         public void SetActiveDocument(string contentId)
         {
             ActiveDocument = _documents.First(x => x.ContentId == contentId);
         }
 
+        /// <summary>
+        /// Get a tool by its id
+        /// </summary>
+        /// <param name="contentId">Tool id</param>
+        public DockingToolViewModelBase GetTool(string contentId)
+        {
+            return _tools.First(x => x.ContentId == contentId);
+        }
+
+        /// <summary>
+        /// Remove a document
+        /// </summary>
+        /// <param name="document">Document to remove</param>
         public void CloseDocument(DockingDocumentViewModelBase document)
         {
             _documents.Remove(document);
         }
 
+        /// <summary>
+        /// Remove a tool
+        /// </summary>
+        /// <param name="tool">Tool to remove</param>
         public void HideTool(DockingToolViewModelBase tool)
         {
             _tools.Remove(tool);
