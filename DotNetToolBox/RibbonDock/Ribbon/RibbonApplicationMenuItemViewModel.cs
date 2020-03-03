@@ -33,12 +33,13 @@ namespace DotNetToolBox.RibbonDock.Ribbon
         private string _toolTipDescription;
         private ImageSource _toolTipImage;
         private ICommand _command;
+        private bool _isEnabled;
 
         #region Constructors
 
         public RibbonApplicationMenuItemViewModel()
         {
-
+            _isEnabled = true;
         }
 
         public RibbonApplicationMenuItemViewModel(string header)
@@ -108,6 +109,16 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             {
                 _command = value;
                 OnPropertyChanged("Command");
+            }
+        }
+
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                _isEnabled = value;
+                OnPropertyChanged("IsEnabled");
             }
         }
 

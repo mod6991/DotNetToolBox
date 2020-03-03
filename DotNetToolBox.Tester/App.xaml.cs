@@ -29,25 +29,5 @@ namespace DotNetToolBox.Tester
                 Application.Current.Shutdown();
             }
         }
-
-        private bool ReturnTrue(object param)
-        {
-            return true;
-        }
-
-        private void ButtonClick(object param)
-        {
-
-        }
-
-        private void ButtonClick2(object param)
-        {
-            MessageBox.Show("Test !!!!!");
-        }
-
-        private void ButtonClick3(object param)
-        {
-            MessageBox.Show("click 3");
-        }
     }
 }

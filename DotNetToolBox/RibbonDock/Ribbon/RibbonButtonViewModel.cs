@@ -34,6 +34,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
         private string _toolTipDescription;
         private ImageSource _toolTipImage;
         private ICommand _command;
+        private bool _isEnabled;
 
         #region Constructor
 
@@ -47,6 +48,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             : this()
         {
             _label = label;
+            _isEnabled = true;
         }
 
         #endregion
@@ -130,6 +132,16 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             {
                 _command = value;
                 OnPropertyChanged("Command");
+            }
+        }
+
+        public bool IsEnabled
+        {
+            get { return _isEnabled; }
+            set
+            {
+                _isEnabled = value;
+                OnPropertyChanged("IsEnabled");
             }
         }
 

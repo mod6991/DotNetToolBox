@@ -4,12 +4,7 @@ using DotNetToolBox.RibbonDock;
 using DotNetToolBox.RibbonDock.Ribbon;
 using DotNetToolBox.Tester.View;
 using DotNetToolBox.Tester.ViewModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Input;
+using System.Windows;
 
 namespace DotNetToolBox.Tester
 {
@@ -148,7 +143,9 @@ namespace DotNetToolBox.Tester
 
         private static void Exit(object param)
         {
+            VM.ActiveDocumentChanged -= VM_ActiveDocumentChanged;
             Window.Close();
+            Application.Current.Shutdown();
         }
     }
 }
