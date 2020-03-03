@@ -4,6 +4,7 @@ using DotNetToolBox.RibbonDock;
 using DotNetToolBox.RibbonDock.Ribbon;
 using DotNetToolBox.Tester.View;
 using DotNetToolBox.Tester.ViewModel;
+using System;
 using System.Windows;
 
 namespace DotNetToolBox.Tester
@@ -128,12 +129,26 @@ namespace DotNetToolBox.Tester
 
         private static void Loaded(object param)
         {
+            try
+            {
 
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private static void Unloaded(object param)
         {
+            try
+            {
 
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show(ex.ToString(), "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private static bool ReturnTrue(object param)
