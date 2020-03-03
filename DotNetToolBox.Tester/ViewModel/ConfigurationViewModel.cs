@@ -2,7 +2,9 @@
 using DotNetToolBox.MVVM;
 using DotNetToolBox.RibbonDock;
 using DotNetToolBox.RibbonDock.Dock;
+using DotNetToolBox.Tester.Model;
 using System;
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 
 namespace DotNetToolBox.Tester.ViewModel
@@ -12,6 +14,7 @@ namespace DotNetToolBox.Tester.ViewModel
         private RibbonDockWindowViewModel _rdVM;
         private ICommand _closeCommand;
         private ICommand _closeAllButThisCommand;
+        private ObservableCollection<SettingModel> _settings;
 
         #region Constructor
 
@@ -21,11 +24,20 @@ namespace DotNetToolBox.Tester.ViewModel
             _closeCommand = new RelayCommand(Close, ReturnTrue);
             _closeAllButThisCommand = new RelayCommand(CloseAllButThis, ReturnTrue);
             CanClose = false;
-            CanFloat = true;
+            CanFloat = false;
             ContentId = "Configuration";
             Title = "Configuration ";
-            IsActive = true;
             IconSource = PngIcons.GetIcon(IconName.Settings, IconSize.Size16);
+            _settings = new ObservableCollection<SettingModel>();
+        }
+
+        #endregion
+
+        #region Properties
+
+        public ObservableCollection<SettingModel> Settings
+        {
+            get { return _settings; }
         }
 
         #endregion
@@ -57,6 +69,16 @@ namespace DotNetToolBox.Tester.ViewModel
         }
 
         private void CloseAllButThis(object param)
+        {
+
+        }
+
+        public void SaveConfig(object param)
+        {
+
+        }
+
+        public void LoadConfig(object param)
         {
 
         }

@@ -35,10 +35,9 @@ namespace DotNetToolBox.Tester.ViewModel
             _startCommand = new RelayCommand((param) => Start(), ReturnTrue);
             _stopCommand = new RelayCommand((param) => Stop(), ReturnTrue);
             CanClose = false;
-            CanFloat = true;
+            CanFloat = false;
             ContentId = "HttpServer";
             Title = "HttpServer ";
-            IsActive = true;
             IconSource = PngIcons.GetIcon(IconName.Settings, IconSize.Size16);
             _eventList = new ObservableCollection<HttpListenerContext>();
         }
@@ -128,7 +127,6 @@ namespace DotNetToolBox.Tester.ViewModel
                 _server = new HttpServer(new string[] { $"http://*:{Port}/" });
                 _server.RequestHandler = HandleRequest;
                 _server.Start();
-            throw new NotImplementedException();
             }
             catch(Exception ex)
             {
@@ -150,9 +148,8 @@ namespace DotNetToolBox.Tester.ViewModel
 
         private void HandleRequest(HttpListenerContext context)
         {
-            App.VM.VisualObject.Dispatcher.Invoke(() =>
+            WindowManager.Window.Dispatcher.Invoke(() =>
             {
-
                 _eventList.Add(context);
             });
             byte[] data = Encoding.ASCII.GetBytes("Hello world !");

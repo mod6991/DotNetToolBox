@@ -20,7 +20,7 @@ namespace DotNetToolBox.Tester.ViewModel
             _rdVM = rdVM;
             _hideCommand = new RelayCommand(Hide, ReturnTrue);
             CanClose = false;
-            CanFloat = true;
+            CanFloat = false;
             ContentId = "Properties";
             Title = "Properties ";
             IconSource = PngIcons.GetIcon(IconName.Settings, IconSize.Size16);

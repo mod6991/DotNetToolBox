@@ -21,10 +21,9 @@ namespace DotNetToolBox.Tester.ViewModel
             _closeCommand = new RelayCommand(Close, ReturnTrue);
             _closeAllButThisCommand = new RelayCommand(CloseAllButThis, ReturnTrue);
             CanClose = false;
-            CanFloat = true;
+            CanFloat = false;
             ContentId = "TcpServer";
             Title = "TcpServer ";
-            IsActive = true;
             IconSource = PngIcons.GetIcon(IconName.Settings, IconSize.Size16);
         }
 

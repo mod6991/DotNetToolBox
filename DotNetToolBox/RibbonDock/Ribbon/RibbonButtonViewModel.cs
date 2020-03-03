@@ -26,6 +26,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
 {
     public class RibbonButtonViewModel : RibbonItemViewModelBase
     {
+        private string _id;
         private string _label;
         private ImageSource _largeImage;
         private ImageSource _smallImage;
@@ -51,6 +52,16 @@ namespace DotNetToolBox.RibbonDock.Ribbon
         #endregion
 
         #region Properties
+
+        public string Id
+        {
+            get { return _id; }
+            set
+            {
+                _id = value;
+                OnPropertyChanged("Id");
+            }
+        }
 
         public string Label
         {
