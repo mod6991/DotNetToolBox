@@ -21,6 +21,7 @@ namespace DotNetToolBox.Tester
                 
                 WindowManager.VM.Theme = new Xceed.Wpf.AvalonDock.Themes.MetroTheme();
                 WindowManager.Window.WindowState = WindowState.Maximized;
+                WindowManager.VM.Title = "DotNetToolBox.Tester";
                 WindowManager.Window.Show();
             }
             catch(Exception ex)
