@@ -39,7 +39,7 @@ namespace DotNetToolBox.Tester
         public static void Init()
         {
             Window = RibbonDockWindowViewModel.GetNewWindow();
-            VM = (RibbonDockWindowViewModel)WindowManager.Window.DataContext;
+            VM = (RibbonDockWindowViewModel)Window.DataContext;
 
             VM.ActiveDocumentChanged += VM_ActiveDocumentChanged;
 
