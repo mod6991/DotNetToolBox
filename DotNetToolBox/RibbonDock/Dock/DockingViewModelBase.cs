@@ -42,7 +42,7 @@ namespace DotNetToolBox.RibbonDock.Dock
             set
             {
                 _canClose = value;
-                OnPropertyChanged("CanClose");
+                OnPropertyChanged(nameof(CanClose));
             }
         }
 
@@ -52,7 +52,7 @@ namespace DotNetToolBox.RibbonDock.Dock
             set
             {
                 _canFloat = value;
-                OnPropertyChanged("CanFloat");
+                OnPropertyChanged(nameof(CanFloat));
             }
         }
 
@@ -62,7 +62,7 @@ namespace DotNetToolBox.RibbonDock.Dock
             set
             {
                 _contentId = value;
-                OnPropertyChanged("ContentId");
+                OnPropertyChanged(nameof(ContentId));
             }
         }
 
@@ -72,7 +72,7 @@ namespace DotNetToolBox.RibbonDock.Dock
             set
             {
                 _iconSource = value;
-                OnPropertyChanged("IconSource");
+                OnPropertyChanged(nameof(IconSource));
             }
         }
 
@@ -82,7 +82,7 @@ namespace DotNetToolBox.RibbonDock.Dock
             set
             {
                 _isActive = value;
-                OnPropertyChanged("IsActive");
+                OnPropertyChanged(nameof(IsActive));
             }
         }
 
@@ -92,7 +92,7 @@ namespace DotNetToolBox.RibbonDock.Dock
             set
             {
                 _isSelected = value;
-                OnPropertyChanged("IsSelected");
+                OnPropertyChanged(nameof(IsSelected));
             }
         }
 
@@ -102,7 +102,7 @@ namespace DotNetToolBox.RibbonDock.Dock
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
+                OnPropertyChanged(nameof(Title));
             }
         }
 

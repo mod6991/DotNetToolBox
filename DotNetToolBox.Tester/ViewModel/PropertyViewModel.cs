@@ -36,7 +36,7 @@ namespace DotNetToolBox.Tester.ViewModel
             set
             {
                 _propertiesObj = value;
-                OnPropertyChanged("PropertiesObj");
+                OnPropertyChanged(nameof(PropertiesObj));
             }
         }
 

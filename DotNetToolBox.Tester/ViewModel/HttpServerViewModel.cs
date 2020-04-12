@@ -52,7 +52,7 @@ namespace DotNetToolBox.Tester.ViewModel
             set
             {
                 _port = value;
-                OnPropertyChanged("Port");
+                OnPropertyChanged(nameof(Port));
             }
         }
 
@@ -67,7 +67,7 @@ namespace DotNetToolBox.Tester.ViewModel
             set
             {
                 _selectedEvent = value;
-                OnPropertyChanged("SelectedEvent");
+                OnPropertyChanged(nameof(SelectedEvent));
 
                 PropertyViewModel propVM = (PropertyViewModel)_rdVM.Tools[0];
                 if (value != null)

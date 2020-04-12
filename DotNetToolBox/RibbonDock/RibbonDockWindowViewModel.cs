@@ -83,7 +83,7 @@ namespace DotNetToolBox.RibbonDock
             set
             {
                 _activeDocument = value;
-                OnPropertyChanged("ActiveDocument");
+                OnPropertyChanged(nameof(ActiveDocument));
                 OnActiveDocumentChanged(new ActiveDocumentChangedEventArgs() { Document = value });
             }
         }
@@ -94,7 +94,7 @@ namespace DotNetToolBox.RibbonDock
             set
             {
                 _title = value;
-                OnPropertyChanged("Title");
+                OnPropertyChanged(nameof(Title));
             }
         }
 
@@ -104,7 +104,7 @@ namespace DotNetToolBox.RibbonDock
             set
             {
                 _theme = value;
-                OnPropertyChanged("Theme");
+                OnPropertyChanged(nameof(Theme));
             }
         }
 

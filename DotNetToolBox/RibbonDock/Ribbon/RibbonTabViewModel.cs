@@ -61,7 +61,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _header = value;
-                OnPropertyChanged("Header");
+                OnPropertyChanged(nameof(Header));
             }
         }
 
@@ -71,7 +71,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _isSelected = value;
-                OnPropertyChanged("IsSelected");
+                OnPropertyChanged(nameof(IsSelected));
             }
         }
 
@@ -81,7 +81,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged(nameof(Id));
             }
         }
 

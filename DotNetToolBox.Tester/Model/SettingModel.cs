@@ -19,7 +19,7 @@ namespace DotNetToolBox.Tester.Model
             set
             {
                 _section = value;
-                OnPropertyChanged("Section");
+                OnPropertyChanged(nameof(Section));
             }
         }
 
@@ -29,7 +29,7 @@ namespace DotNetToolBox.Tester.Model
             set
             {
                 _setting = value;
-                OnPropertyChanged("Setting");
+                OnPropertyChanged(nameof(Setting));
             }
         }
 
@@ -39,7 +39,7 @@ namespace DotNetToolBox.Tester.Model
             set
             {
                 _value = value;
-                OnPropertyChanged("Value");
+                OnPropertyChanged(nameof(Value));
             }
         }
     }

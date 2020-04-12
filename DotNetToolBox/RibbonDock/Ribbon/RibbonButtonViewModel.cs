@@ -34,6 +34,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
         private string _toolTipDescription;
         private ImageSource _toolTipImage;
         private ICommand _command;
+        private object _commandParameter;
         private bool _isEnabled;
 
         #region Constructor
@@ -61,7 +62,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _id = value;
-                OnPropertyChanged("Id");
+                OnPropertyChanged(nameof(Id));
             }
         }
 
@@ -71,7 +72,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _label = value;
-                OnPropertyChanged("Label");
+                OnPropertyChanged(nameof(Label));
             }
         }
 
@@ -81,7 +82,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _largeImage = value;
-                OnPropertyChanged("LargeImage");
+                OnPropertyChanged(nameof(LargeImage));
             }
         }
 
@@ -91,7 +92,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _smallImage = value;
-                OnPropertyChanged("SmallImage");
+                OnPropertyChanged(nameof(SmallImage));
             }
         }
 
@@ -101,7 +102,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _toolTipTitle = value;
-                OnPropertyChanged("ToolTipTitle");
+                OnPropertyChanged(nameof(ToolTipTitle));
             }
         }
 
@@ -111,7 +112,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _toolTipDescription = value;
-                OnPropertyChanged("ToolTipDescription");
+                OnPropertyChanged(nameof(ToolTipDescription));
             }
         }
 
@@ -121,7 +122,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _toolTipImage = value;
-                OnPropertyChanged("ToolTipImage");
+                OnPropertyChanged(nameof(ToolTipImage));
             }
         }
 
@@ -131,7 +132,17 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _command = value;
-                OnPropertyChanged("Command");
+                OnPropertyChanged(nameof(Command));
+            }
+        }
+
+        public object CommandParameter
+        {
+            get { return _commandParameter; }
+            set
+            {
+                _commandParameter = value;
+                OnPropertyChanged(nameof(CommandParameter));
             }
         }
 
@@ -141,7 +152,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _isEnabled = value;
-                OnPropertyChanged("IsEnabled");
+                OnPropertyChanged(nameof(IsEnabled));
             }
         }
 

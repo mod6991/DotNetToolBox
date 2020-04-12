@@ -57,7 +57,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _header = value;
-                OnPropertyChanged("Header");
+                OnPropertyChanged(nameof(Header));
             }
         }
 
@@ -67,7 +67,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _label = value;
-                OnPropertyChanged("Label");
+                OnPropertyChanged(nameof(Label));
             }
         }
 
@@ -77,7 +77,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _width = value;
-                OnPropertyChanged("Width");
+                OnPropertyChanged(nameof(Width));
             }
         }
 
@@ -87,7 +87,7 @@ namespace DotNetToolBox.RibbonDock.Ribbon
             set
             {
                 _visibility = value;
-                OnPropertyChanged("Visibility");
+                OnPropertyChanged(nameof(Visibility));
             }
         }
 

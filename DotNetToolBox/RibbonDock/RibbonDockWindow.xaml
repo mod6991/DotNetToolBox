@@ -67,6 +67,7 @@
                     <Setter Property="ToolTipDescription" Value="{Binding ToolTipDescription}" />
                     <Setter Property="ToolTipImageSource" Value="{Binding ToolTipImage}" />
                     <Setter Property="Command" Value="{Binding Command}" />
+                    <Setter Property="CommandParameter" Value="{Binding CommandParameter}" />
                     <Setter Property="IsEnabled" Value="{Binding IsEnabled}" />
                 </Style>
                 <DataTemplate DataType="{x:Type ribbonVM:RibbonButtonViewModel}">
@@ -77,6 +78,7 @@
                                          ToolTipDescription="{Binding ToolTipDescription}"
                                          ToolTipImageSource="{Binding ToolTipImage}"
                                          Command="{Binding Command}"
+                                         CommandParameter="{Binding CommandParameter}"
                                          IsEnabled="{Binding IsEnabled}" />
                 </DataTemplate>
             </ribbon:Ribbon.Resources>
