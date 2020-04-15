@@ -2,7 +2,7 @@
 --------------
 
  - DotNetToolBox.IO
-    - remove useless methods in StreamHelper (Read/WriteString, Read/WriteBytes)
+    - [DONE] remove useless methods in StreamHelper (Read/WriteString, Read/WriteBytes)
     - add File methods (copy, move)
  - DotNetToolBox.Database
     - Add Disposed public property?

@@ -19,7 +19,6 @@
 
 #endregion
 
-using System.Text;
 using System.IO;
 using System;
 
@@ -60,115 +59,6 @@ namespace DotNetToolBox.IO
                     }
                 } while (bytesRead == bufferSize);
             }
-        }
-
-        /// <summary>
-        /// Read bytes from stream
-        /// </summary>
-        /// <param name="input">Input stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="notifyProgression">Notify progression method</param>
-        public static byte[] ReadBytes(Stream input, int bufferSize = 4096, Action<int> notifyProgression = null)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                WriteStream(input, ms, bufferSize, notifyProgression);
-                return ms.ToArray();
-            }
-        }
-
-        /// <summary>
-        /// Read bytes from file
-        /// </summary>
-        /// <param name="file">File path</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="notifyProgression">Notify progression method</param>
-        public static byte[] ReadBytes(string file, int bufferSize = 4096, Action<int> notifyProgression = null)
-        {
-            using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return ReadBytes(fs, bufferSize, notifyProgression);
-            }
-        }
-
-        /// <summary>
-        /// Write bytes to stream
-        /// </summary>
-        /// <param name="data">Bytes</param>
-        /// <param name="output">Output stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="notifyProgression">Notify progression method</param>
-        public static void WriteBytes(byte[] data, Stream output, int bufferSize = 4096, Action<int> notifyProgression = null)
-        {
-            using (MemoryStream ms = new MemoryStream(data))
-            {
-                WriteStream(ms, output, bufferSize, notifyProgression);
-            }
-        }
-
-        /// <summary>
-        /// Write bytes to file
-        /// </summary>
-        /// <param name="data">Bytes</param>
-        /// <param name="file">File path</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="notifyProgression">Notify progression method</param>
-        public static void WriteBytes(byte[] data, string file, int bufferSize = 4096, Action<int> notifyProgression = null)
-        {
-            using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
-            {
-                WriteBytes(data, fs, bufferSize, notifyProgression);
-            }
-        }
-
-        /// <summary>
-        /// Read String from Stream
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="encoding">String encoding</param>
-        public static string ReadString(Stream input, Encoding encoding = null, int bufferSize = 4096)
-        {
-            encoding = encoding ?? Encoding.Default;
-            byte[] data = ReadBytes(input, bufferSize);
-            return encoding.GetString(data);
-        }
-
-        /// <summary>
-        /// Read String from file
-        /// </summary>
-        /// <param name="file">Input file</param>
-        /// <param name="encoding">String encoding</param>
-        public static string ReadString(string file, Encoding encoding = null, int bufferSize = 4096)
-        {
-            encoding = encoding ?? Encoding.Default;
-            byte[] data = ReadBytes(file, bufferSize);
-            return encoding.GetString(data);
-        }
-
-        /// <summary>
-        /// Write String to Stream
-        /// </summary>
-        /// <param name="str">Input String</param>
-        /// <param name="output">Output Stream</param>
-        /// <param name="encoding">String Encoding</param>
-        public static void WriteString(string str, Stream output, Encoding encoding = null, int bufferSize = 4096)
-        {
-            encoding = encoding ?? Encoding.Default;
-            byte[] data = encoding.GetBytes(str);
-            WriteBytes(data, output, bufferSize);
-        }
-
-        /// <summary>
-        /// Write String to file
-        /// </summary>
-        /// <param name="str">Input String</param>
-        /// <param name="file">Output file</param>
-        /// <param name="encoding">String encoding</param>
-        public static void WriteString(string str, string file, Encoding encoding = null, int bufferSize = 4096)
-        {
-            encoding = encoding ?? Encoding.Default;
-            byte[] data = encoding.GetBytes(str);
-            WriteBytes(data, file, bufferSize);
         }
 
         /// <summary>
