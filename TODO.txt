@@ -1,9 +1,14 @@
 7.2 todo list:
 --------------
-
+ - *
+    - Replace String.Format with $""
+    - Remove regions when not necessary
+    - Code beautify/cleanup
+    - Replace throw new Exception() with correct exceptions (like InvalidOperation, ...)
  - DotNetToolBox.IO
     - [DONE] remove useless methods in StreamHelper (Read/WriteString, Read/WriteBytes)
     - add File methods (copy, move)
  - DotNetToolBox.Database
     - Add Disposed public property?
+    - Read config files with XPATH
     - Place requests in public property in DbManager and remove from RequestFileManager
