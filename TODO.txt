@@ -4,7 +4,7 @@
     - [DONE] Replace String.Format with $""
     - Remove regions when not necessary
     - Code beautify/cleanup
-    - Replace throw new Exception() with correct exceptions (like InvalidOperation, ...)
+    - [DONE] Replace throw new Exception() with correct exceptions (like InvalidOperation, ...)
  - DotNetToolBox.IO
     - [DONE] remove useless methods in StreamHelper (Read/WriteString, Read/WriteBytes)
     - add File methods (copy, move)

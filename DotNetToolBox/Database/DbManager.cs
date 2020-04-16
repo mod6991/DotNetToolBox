@@ -283,7 +283,7 @@ namespace DotNetToolBox.Database
                 throw new ObjectDisposedException(typeof(DbManager).FullName);
 
             if (!_typeMappings.ContainsKey(typeof(T)) || !_typeAccessors.ContainsKey(typeof(T)))
-                throw new Exception($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
+                throw new InvalidOperationException($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
 
             List<T> list = new List<T>();
             List<DbObjectMapping> mappingList = _typeMappings[typeof(T)];
@@ -338,7 +338,7 @@ namespace DotNetToolBox.Database
                 throw new ObjectDisposedException(typeof(DbManager).FullName);
 
             if (!_typeMappings.ContainsKey(typeof(T)) || !_typeAccessors.ContainsKey(typeof(T)))
-                throw new Exception($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
+                throw new InvalidOperationException($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
 
             List<T> list = new List<T>();
             List<DbObjectMapping> mappingList = _typeMappings[typeof(T)];
@@ -541,7 +541,7 @@ namespace DotNetToolBox.Database
                     throw new ObjectDisposedException(typeof(DbManager).FullName);
 
                 if (!_requestFileManagers.ContainsKey(name))
-                    throw new Exception($"Request file '{name}' not found");
+                    throw new InvalidOperationException($"Request file '{name}' not found");
                 return _requestFileManagers[name];
             }
         }
