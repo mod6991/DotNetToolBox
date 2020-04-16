@@ -40,6 +40,7 @@ namespace DotNetToolBox.Database
         private Dictionary<Type, TypeAccessor> _typeAccessors;
         private Dictionary<Type, List<DbObjectMapping>> _typeMappings;
         private Dictionary<string, RequestFileManager> _requestFileManagers;
+        private Dictionary<string, Dictionary<string, string>> _requests;
 
         #region Constructors
 
@@ -59,6 +60,7 @@ namespace DotNetToolBox.Database
             _typeAccessors = new Dictionary<Type, TypeAccessor>();
             _typeMappings = new Dictionary<Type, List<DbObjectMapping>>();
             _requestFileManagers = new Dictionary<string, RequestFileManager>();
+            _requests = new Dictionary<string, Dictionary<string, string>>();
         }
 
         ~DbManager()
@@ -69,6 +71,11 @@ namespace DotNetToolBox.Database
         #endregion
 
         #region Properties
+
+        public bool Disposed
+        {
+            get { return _disposed; }
+        }
 
         public string ConnectionString
         {
@@ -103,6 +110,11 @@ namespace DotNetToolBox.Database
         public Dictionary<Type, List<DbObjectMapping>> TypeMappings
         {
             get { return _typeMappings; }
+        }
+
+        public Dictionary<string, Dictionary<string,string>> Requests
+        {
+            get { return _requests; }
         }
 
         #endregion
@@ -508,9 +520,12 @@ namespace DotNetToolBox.Database
                 throw new ObjectDisposedException(typeof(DbManager).FullName);
 
             if (!File.Exists(filePath))
-                throw new FileNotFoundException($"Request file '{filePath}' not found !", filePath);
+                throw new FileNotFoundException("Request file not found !", filePath);
 
-            Dictionary<string, string> requests = new Dictionary<string, string>();
+            if (_requests.ContainsKey(name))
+                throw new InvalidOperationException($"Name '{name}' already added");
+
+            _requests.Add(name, new Dictionary<string, string>());
             XmlDocument doc = new XmlDocument();
             doc.Load(filePath);
             foreach (XmlNode rootNode in doc.ChildNodes)
@@ -520,12 +535,12 @@ namespace DotNetToolBox.Database
                     foreach (XmlNode requestNode in rootNode.ChildNodes)
                     {
                         if (requestNode.Name == "Request")
-                            requests.Add(requestNode.Attributes["Name"].Value, requestNode.InnerText.Trim());
+                            _requests[name].Add(requestNode.Attributes["Name"].Value, requestNode.InnerText.Trim());
                     }
                 }
             }
 
-            RequestFileManager manager = new RequestFileManager(this, requests);
+            RequestFileManager manager = new RequestFileManager(this, name);
             _requestFileManagers.Add(name, manager);
         }
 

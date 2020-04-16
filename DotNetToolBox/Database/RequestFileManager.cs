@@ -34,10 +34,14 @@ namespace DotNetToolBox.Database
 
         #region Constructor
 
-        public RequestFileManager(DbManager dbManager, Dictionary<string, string> requests)
+        public RequestFileManager(DbManager dbManager, string name)
         {
             _dbManager = dbManager;
-            _requests = requests;
+
+            if (!_dbManager.Requests.ContainsKey(name))
+                throw new InvalidOperationException($"Requests not found for name '{name}'");
+
+            _requests = _dbManager.Requests[name];
         }
 
         #endregion

@@ -9,6 +9,6 @@
     - [DONE] remove useless methods in StreamHelper (Read/WriteString, Read/WriteBytes)
     - add File methods (copy, move)
  - DotNetToolBox.Database
-    - Add Disposed public property?
+    - [DONE] Add Disposed public property?
     - Read config files with XPATH
-    - Place requests in public property in DbManager and remove from RequestFileManager
+    - [DONE] Place requests in public property in DbManager and remove from RequestFileManager
