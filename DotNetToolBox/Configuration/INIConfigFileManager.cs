@@ -59,7 +59,7 @@ namespace DotNetToolBox.Configuration
             get
             {
                 if (!_settings.ContainsKey(section))
-                    throw new SectionNotFoundException(String.Format("Section '{0}' not found !", section));
+                    throw new SectionNotFoundException($"Section '{section}' not found !");
                 return _settings[section];
             }
         }
@@ -76,10 +76,10 @@ namespace DotNetToolBox.Configuration
         public string GetSettingValue(string section, string name)
         {
             if (!_settings.ContainsKey(section))
-                throw new SectionNotFoundException(String.Format("Section '{0}' not found !", section));
+                throw new SectionNotFoundException($"Section '{section}' not found !");
 
             if (!_settings[section].ContainsKey(name))
-                throw new SettingNotFoundException(String.Format("The setting '{0}' is not found in section '{1}' !", name, section));
+                throw new SettingNotFoundException($"Setting '{name}' not found in section '{section}' !");
 
             return _settings[section][name];
         }
@@ -102,7 +102,7 @@ namespace DotNetToolBox.Configuration
                 _settings.Add(section, new Dictionary<string, string>());
 
             if (_settings[section].ContainsKey(name))
-                throw new SettingAlreadyExistsException(String.Format("The setting '{0}' already exists in section '{1}'", name, section));
+                throw new SettingAlreadyExistsException($"The setting '{name}' already exists in section '{section}'");
 
             _settings[section].Add(name, value);
         }
@@ -115,10 +115,10 @@ namespace DotNetToolBox.Configuration
         public void RemoveSetting(string section, string name)
         {
             if (!_settings.ContainsKey(section))
-                throw new SectionNotFoundException(String.Format("Section '{0}' not found !", section));
+                throw new SectionNotFoundException($"Section '{section}' not found !");
 
             if (!_settings[section].ContainsKey(name))
-                throw new SettingNotFoundException(String.Format("The setting '{0}' is not found in section '{1}' !", name, section));
+                throw new SettingNotFoundException($"Setting '{name}' not found in section '{section}' !");
 
             _settings[section].Remove(name);
         }
@@ -134,9 +134,9 @@ namespace DotNetToolBox.Configuration
                 {
                     foreach(KeyValuePair<string, Dictionary<string, string>> kvp in _settings)
                     {
-                        sw.WriteLine(String.Format("[{0}]", kvp.Key));
+                        sw.WriteLine($"[{kvp.Key}]");
                         foreach(KeyValuePair<string, string> kvp2 in kvp.Value)
-                            sw.WriteLine(String.Format("{0}={1}", kvp2.Key, kvp2.Value));
+                            sw.WriteLine($"{kvp2.Key}={kvp2.Value}");
                         sw.WriteLine();
                     }
                 }

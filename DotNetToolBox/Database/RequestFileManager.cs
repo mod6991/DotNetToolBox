@@ -53,7 +53,7 @@ namespace DotNetToolBox.Database
         public void FillDataTable(string requestName, List<DbParameter> parameters, DataTable table)
         {
             if (!_requests.ContainsKey(requestName))
-                throw new Exception(String.Format("The request '{0}' is not found", requestName));
+                throw new Exception($"Request '{requestName}' not found");
 
             using (DbCommand command = _dbManager.Connection.CreateCommand())
             {
@@ -86,9 +86,9 @@ namespace DotNetToolBox.Database
         public List<T> FillObjects<T>(string requestName, List<DbParameter> parameters)
         {
             if (!_requests.ContainsKey(requestName))
-                throw new Exception(String.Format("The request '{0}' is not found", requestName));
+                throw new Exception($"Request '{requestName}' not found");
             if (!_dbManager.TypeMappings.ContainsKey(typeof(T)) || !_dbManager.TypeAccessors.ContainsKey(typeof(T)))
-                throw new Exception(String.Format("The type '{0}' is not registered! Use DbManager RegisterDbObject method", typeof(T).FullName));
+                throw new Exception($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
 
             List<T> list = new List<T>();
             List<DbObjectMapping> mappingList = _dbManager.TypeMappings[typeof(T)];
@@ -139,7 +139,7 @@ namespace DotNetToolBox.Database
         public int ExecuteNonQuery(string requestName, List<DbParameter> parameters)
         {
             if (!_requests.ContainsKey(requestName))
-                throw new Exception(String.Format("The request '{0}' is not found", requestName));
+                throw new Exception($"Request '{requestName}' not found");
 
             using (DbCommand command = _dbManager.Connection.CreateCommand())
             {
@@ -167,7 +167,7 @@ namespace DotNetToolBox.Database
         public object ExecuteScalar(string requestName, List<DbParameter> parameters)
         {
             if (!_requests.ContainsKey(requestName))
-                throw new Exception(String.Format("The request '{0}' is not found", requestName));
+                throw new Exception($"Request '{requestName}' not found");
 
             using (DbCommand command = _dbManager.Connection.CreateCommand())
             {

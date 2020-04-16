@@ -44,7 +44,7 @@ namespace DotNetToolBox.Utils
             Type t = obj.GetType();
 
             if (!_typeAccessors.ContainsKey(t))
-                throw new Exception(String.Format("The type '{0}' is not registered! Use ReflectionHelper.RegisterType()", t.FullName));
+                throw new Exception($"Type '{t.FullName}' not registered! Use ReflectionHelper.RegisterType()");
 
             return _typeAccessors[t][obj, propertyName];
         }
@@ -60,7 +60,7 @@ namespace DotNetToolBox.Utils
             Type t = obj.GetType();
 
             if (!_typeAccessors.ContainsKey(t))
-                throw new Exception(String.Format("The type '{0}' is not registered! Use ReflectionHelper.RegisterType()", t.FullName));
+                throw new Exception($"Type '{t.FullName}' not registered! Use ReflectionHelper.RegisterType()");
 
             _typeAccessors[t][obj, propertyName] = value;
         }

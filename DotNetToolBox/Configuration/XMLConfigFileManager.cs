@@ -60,7 +60,7 @@ namespace DotNetToolBox.Configuration
             get
             {
                 if (!_settings.ContainsKey(section))
-                    throw new SectionNotFoundException(String.Format("Section '{0}' not found !", section));
+                    throw new SectionNotFoundException($"Section '{section}' not found !");
                 return _settings[section];
             }
         }
@@ -77,10 +77,10 @@ namespace DotNetToolBox.Configuration
         public string GetSettingValue(string section, string name)
         {
             if (!_settings.ContainsKey(section))
-                throw new SectionNotFoundException(String.Format("Section '{0}' not found !", section));
+                throw new SectionNotFoundException($"Section '{section}' not found !");
 
             if (!_settings[section].ContainsKey(name))
-                throw new SettingNotFoundException(String.Format("The setting '{0}' is not found in section '{1}' !", name, section));
+                throw new SettingNotFoundException($"Setting '{name}' not found in section '{section}' !");
 
             return _settings[section][name];
         }
@@ -97,7 +97,7 @@ namespace DotNetToolBox.Configuration
                 _settings.Add(section, new Dictionary<string, string>());
 
             if (_settings[section].ContainsKey(name))
-                throw new SettingAlreadyExistsException(String.Format("The setting '{0}' already exists in section '{1}'", name, section));
+                throw new SettingAlreadyExistsException($"Setting '{name}' already exists in section '{section}'");
 
             _settings[section].Add(name, value);
         }
@@ -110,10 +110,10 @@ namespace DotNetToolBox.Configuration
         public void RemoveSetting(string section, string name)
         {
             if (!_settings.ContainsKey(section))
-                throw new SectionNotFoundException(String.Format("Section '{0}' not found !", section));
+                throw new SectionNotFoundException($"Section '{section}' not found !");
 
             if (!_settings[section].ContainsKey(name))
-                throw new SettingNotFoundException(String.Format("The setting '{0}' is not found in section '{1}' !", name, section));
+                throw new SettingNotFoundException($"Setting '{name}' not found in section '{section}' !");
 
             _settings[section].Remove(name);
         }

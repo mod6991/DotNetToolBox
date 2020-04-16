@@ -41,7 +41,7 @@ namespace DotNetToolBox.Net
         public HttpServer(string[] prefixes)
         {
             if (!HttpListener.IsSupported)
-                throw new Exception("HttpListener is not supported !");
+                throw new Exception("HttpListener not supported !");
 
             if (prefixes == null || prefixes.Length == 0)
                 throw new ArgumentException("prefixes");

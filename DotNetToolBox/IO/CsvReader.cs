@@ -50,8 +50,8 @@ namespace DotNetToolBox.IO
         public string Value { get; set; }
     }
 
-    public class UnknownColumnException : Exception { public UnknownColumnException(string columnName) : base(string.Format("Unknown column '{0}'", columnName)) { } }
-    public class AlreadyAddedColumn : Exception { public AlreadyAddedColumn(string columnName) : base(string.Format("Already added column '{0}'", columnName)) { } }
+    public class UnknownColumnException : Exception { public UnknownColumnException(string columnName) : base($"Unknown column '{columnName}'") { } }
+    public class AlreadyAddedColumn : Exception { public AlreadyAddedColumn(string columnName) : base($"Already added column '{columnName}'") { } }
     public class CannotReadColumnsException : Exception { public CannotReadColumnsException() : base("The class has been initialized with no header !") { } }
     public class EndingQuoteNotFoundException : Exception { public EndingQuoteNotFoundException() : base("Ending quote not found !") { } }
     public class SeparatorNotFollowingQuoteException : Exception { public SeparatorNotFollowingQuoteException() : base("Separator not following quote !") { } }
