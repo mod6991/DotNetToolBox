@@ -304,7 +304,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="file">XML file path</param>
         public static RSACryptoServiceProvider LoadKeyFromXml(string file)
         {
-            string xmlString = StreamHelper.ReadString(file);
+            string xmlString = File.ReadAllText(file, Encoding.Default);
             RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
             rsa.FromXmlString(xmlString);
             return rsa;
@@ -318,7 +318,7 @@ namespace DotNetToolBox.Cryptography
         public static void SaveKeyPairToXml(RSACryptoServiceProvider rsa, string file)
         {
             string xmlString = rsa.ToXmlString(true);
-            StreamHelper.WriteString(xmlString, file);
+            File.WriteAllText(file, xmlString, Encoding.Default);
         }
 
         /// <summary>
@@ -329,7 +329,7 @@ namespace DotNetToolBox.Cryptography
         public static void SavePublicKeyToXml(RSACryptoServiceProvider rsa, string file)
         {
             string xmlString = rsa.ToXmlString(false);
-            StreamHelper.WriteString(xmlString, file);
+            File.WriteAllText(file, xmlString, Encoding.Default);
         }
 
         #endregion
