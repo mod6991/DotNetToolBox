@@ -526,18 +526,20 @@ namespace DotNetToolBox.Database
                 throw new InvalidOperationException($"Name '{name}' already added");
 
             _requests.Add(name, new Dictionary<string, string>());
+            
             XmlDocument doc = new XmlDocument();
             doc.Load(filePath);
-            foreach (XmlNode rootNode in doc.ChildNodes)
+
+            XmlNodeList requestList = doc.SelectNodes("/Requests/Request");
+
+            foreach(XmlNode requestNode in requestList)
             {
-                if (rootNode.Name == "Requests")
-                {
-                    foreach (XmlNode requestNode in rootNode.ChildNodes)
-                    {
-                        if (requestNode.Name == "Request")
-                            _requests[name].Add(requestNode.Attributes["Name"].Value, requestNode.InnerText.Trim());
-                    }
-                }
+                XmlAttribute nameAttr = requestNode.Attributes["Name"];
+
+                if (nameAttr == null)
+                    throw new InvalidOperationException("Name attribute missing on a Request node");
+
+                _requests[name].Add(nameAttr.Value, requestNode.InnerText);
             }
 
             RequestFileManager manager = new RequestFileManager(this, name);
