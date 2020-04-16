@@ -59,7 +59,7 @@ namespace DotNetToolBox.Configuration
             get
             {
                 if (!_settings.ContainsKey(section))
-                    throw new SectionNotFoundException($"Section '{section}' not found !");
+                    throw new SectionNotFoundException($"Section '{section}' not found");
                 return _settings[section];
             }
         }
@@ -76,10 +76,10 @@ namespace DotNetToolBox.Configuration
         public string GetSettingValue(string section, string name)
         {
             if (!_settings.ContainsKey(section))
-                throw new SectionNotFoundException($"Section '{section}' not found !");
+                throw new SectionNotFoundException($"Section '{section}' not found");
 
             if (!_settings[section].ContainsKey(name))
-                throw new SettingNotFoundException($"Setting '{name}' not found in section '{section}' !");
+                throw new SettingNotFoundException($"Setting '{name}' not found in section '{section}'");
 
             return _settings[section][name];
         }
@@ -93,10 +93,10 @@ namespace DotNetToolBox.Configuration
         public void AddSetting(string section, string name, string value)
         {
             if (section.Contains("[") || section.Contains("]"))
-                throw new ArgumentException("An INI section name cannot contain '[' or ']' !");
+                throw new ArgumentException("An INI section name cannot contain '[' or ']'");
 
             if (name.Contains("="))
-                throw new ArgumentException("An INI setting name cannot contain '=' !");
+                throw new ArgumentException("An INI setting name cannot contain '='");
 
             if (!_settings.ContainsKey(section))
                 _settings.Add(section, new Dictionary<string, string>());
@@ -115,10 +115,10 @@ namespace DotNetToolBox.Configuration
         public void RemoveSetting(string section, string name)
         {
             if (!_settings.ContainsKey(section))
-                throw new SectionNotFoundException($"Section '{section}' not found !");
+                throw new SectionNotFoundException($"Section '{section}' not found");
 
             if (!_settings[section].ContainsKey(name))
-                throw new SettingNotFoundException($"Setting '{name}' not found in section '{section}' !");
+                throw new SettingNotFoundException($"Setting '{name}' not found in section '{section}'");
 
             _settings[section].Remove(name);
         }
@@ -149,7 +149,7 @@ namespace DotNetToolBox.Configuration
         public void LoadConfigurationFile()
         {
             if (!System.IO.File.Exists(_file))
-                throw new FileNotFoundException("Config file not found !", _file);
+                throw new FileNotFoundException("Config file not found", _file);
 
             _settings = new Dictionary<string, Dictionary<string, string>>();
 

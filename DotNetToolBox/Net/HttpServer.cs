@@ -41,7 +41,7 @@ namespace DotNetToolBox.Net
         public HttpServer(string[] prefixes)
         {
             if (!HttpListener.IsSupported)
-                throw new InvalidOperationException("HttpListener not supported !");
+                throw new InvalidOperationException("HttpListener not supported");
 
             if (prefixes == null || prefixes.Length == 0)
                 throw new ArgumentException("prefixes");
@@ -72,7 +72,7 @@ namespace DotNetToolBox.Net
         public void Start()
         {
             if (_requestHandler == null)
-                throw new InvalidOperationException("RequestHandler not defined (null) !");
+                throw new InvalidOperationException("RequestHandler not defined (null)");
 
             _listenerThread = new Thread(new ThreadStart(WaitForClients));
             _listenerThread.Start();
@@ -119,7 +119,7 @@ namespace DotNetToolBox.Net
             HttpListenerContext context = (HttpListenerContext)param;
 
             if (context == null)
-                throw new InvalidOperationException("HttpListenerContext is null !");
+                throw new InvalidOperationException("HttpListenerContext is null");
 
             RequestHandler(context);
         }

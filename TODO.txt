@@ -2,13 +2,13 @@
 --------------
  - *
     - [DONE] Replace String.Format with $""
-    - Remove regions when not necessary
-    - Code beautify/cleanup
+    - [CANCELED] Remove regions when not necessary
+    - [DONE] Code beautify/cleanup
     - [DONE] Replace throw new Exception() with correct exceptions (like InvalidOperation, ...)
  - DotNetToolBox.IO
     - [DONE] remove useless methods in StreamHelper (Read/WriteString, Read/WriteBytes)
     - add File methods (copy, move)
  - DotNetToolBox.Database
     - [DONE] Add Disposed public property?
-    - Read config files with XPATH
+    - [DONE] Read config files with XPATH
     - [DONE] Place requests in public property in DbManager and remove from RequestFileManager

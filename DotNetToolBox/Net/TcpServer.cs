@@ -100,7 +100,7 @@ namespace DotNetToolBox.Net
         public void Start()
         {
             if (_requestHandler == null)
-                throw new InvalidOperationException("RequestHandler not defined (null) !");
+                throw new InvalidOperationException("RequestHandler not defined (null)");
 
             _tcpListener = new TcpListener(_ipAddress, _port);
             _listenerThread = new Thread(new ThreadStart(WaitForClients));

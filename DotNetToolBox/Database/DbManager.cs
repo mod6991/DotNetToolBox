@@ -520,7 +520,7 @@ namespace DotNetToolBox.Database
                 throw new ObjectDisposedException(typeof(DbManager).FullName);
 
             if (!File.Exists(filePath))
-                throw new FileNotFoundException("Request file not found !", filePath);
+                throw new FileNotFoundException("Request file not found", filePath);
 
             if (_requests.ContainsKey(name))
                 throw new InvalidOperationException($"Name '{name}' already added");

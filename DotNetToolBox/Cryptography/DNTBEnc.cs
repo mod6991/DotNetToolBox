@@ -61,7 +61,7 @@ namespace DotNetToolBox.Cryptography
                     TripleDES.GenerateIV(out iv);
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid algorithm !");
+                    throw new InvalidOperationException("Invalid algorithm");
             }
 
             InternalEncryptWithPassword(input, output, salt, key, iv, algorithm, bufferSize, notifyProgression);
@@ -126,7 +126,7 @@ namespace DotNetToolBox.Cryptography
                     TripleDES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid algorithm !");
+                    throw new InvalidOperationException("Invalid algorithm");
             }
         }
 
@@ -146,44 +146,44 @@ namespace DotNetToolBox.Cryptography
             //Read header
             read = input.Read(buffer, 0, 8);
             if (read != 8 || Encoding.ASCII.GetString(buffer) != _header)
-                throw new InvalidOperationException("The file is not encrypted with DotNetToolBox.FileEncryptor !");
+                throw new InvalidOperationException("The file is not encrypted with DotNetToolBox.FileEncryptor");
 
             //Read version
             buffer = new byte[1];
             read = input.Read(buffer, 0, 1);
             if (read != 1 || buffer[0] != _version)
-                throw new InvalidOperationException("Invalid version !");
+                throw new InvalidOperationException("Invalid version");
 
             //Read encryption type
             read = input.Read(buffer, 0, 1);
             EncryptionType encryptionType = (EncryptionType)Enum.Parse(typeof(EncryptionType), buffer[0].ToString());
             if (read != 1 || encryptionType != EncryptionType.Password)
-                throw new InvalidOperationException("The file has not been encrypted with a password !");
+                throw new InvalidOperationException("The file has not been encrypted with a password");
 
             //Read algorithm
             read = input.Read(buffer, 0, 1);
             Algorithm algorithm = (Algorithm)Enum.Parse(typeof(Algorithm), buffer[0].ToString());
             if (read != 1 || (algorithm != Algorithm.AES && algorithm != Algorithm.TripleDES))
-                throw new InvalidOperationException("Invalid algorithm !");
+                throw new InvalidOperationException("Invalid algorithm");
 
             //Read salt length
             buffer = new byte[_sizeofInt];
             read = input.Read(buffer, 0, _sizeofInt);
             if (read != _sizeofInt)
-                throw new InvalidOperationException("Cannot read salt length !");
+                throw new InvalidOperationException("Cannot read salt length");
             int saltLength = BitConverter.ToInt32(buffer, 0);
 
             //Read salt
             byte[] salt = new byte[saltLength];
             read = input.Read(salt, 0, saltLength);
             if (read != saltLength)
-                throw new InvalidOperationException("Cannot read salt !");
+                throw new InvalidOperationException("Cannot read salt");
 
             //Read IV length
             buffer = new byte[_sizeofInt];
             read = input.Read(buffer, 0, _sizeofInt);
             if (read != _sizeofInt)
-                throw new InvalidOperationException("Cannot read iv length !");
+                throw new InvalidOperationException("Cannot read iv length");
             int ivLength = BitConverter.ToInt32(buffer, 0);
 
             //Read IV
@@ -208,7 +208,7 @@ namespace DotNetToolBox.Cryptography
                     TripleDES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid algorithm !");
+                    throw new InvalidOperationException("Invalid algorithm");
             }
         }
 
@@ -300,7 +300,7 @@ namespace DotNetToolBox.Cryptography
                     TripleDES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid algorithm !");
+                    throw new InvalidOperationException("Invalid algorithm");
             }
         }
 
@@ -342,25 +342,25 @@ namespace DotNetToolBox.Cryptography
             //Read header
             read = input.Read(buffer, 0, 8);
             if (read != 8 || Encoding.ASCII.GetString(buffer) != _header)
-                throw new InvalidOperationException("The file is not encrypted with DNTBEnc !");
+                throw new InvalidOperationException("The file is not encrypted with DNTBEnc");
 
             //Read version
             buffer = new byte[1];
             read = input.Read(buffer, 0, 1);
             if (read != 1 || buffer[0] != _version)
-                throw new InvalidOperationException("Invalid version !");
+                throw new InvalidOperationException("Invalid version");
 
             //Read encryption type
             read = input.Read(buffer, 0, 1);
             EncryptionType encryptionType = (EncryptionType)Enum.Parse(typeof(EncryptionType), buffer[0].ToString());
             if (read != 1 || encryptionType != EncryptionType.RSA)
-                throw new InvalidOperationException("The file has not been encrypted with a password !");
+                throw new InvalidOperationException("The file has not been encrypted with a password");
 
             //Read algorithm
             read = input.Read(buffer, 0, 1);
             Algorithm algorithm = (Algorithm)Enum.Parse(typeof(Algorithm), buffer[0].ToString());
             if (read != 1 || (algorithm != Algorithm.AES))
-                throw new InvalidOperationException("Invalid algorithm !");
+                throw new InvalidOperationException("Invalid algorithm");
 
             //Read key type
             read = input.Read(buffer, 0, 1);
@@ -406,7 +406,7 @@ namespace DotNetToolBox.Cryptography
                     TripleDES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, bufferSize, notifyProgression);
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid algorithm !");
+                    throw new InvalidOperationException("Invalid algorithm");
             }
         }
 

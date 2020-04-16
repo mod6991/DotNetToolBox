@@ -87,7 +87,7 @@ namespace DotNetToolBox.Cryptography
                 case EncodingType.Hexadecimal:
                     return Hex.Encode(encryptedPassword);
                 default:
-                    throw new InvalidOperationException("Invalid encoding type !");
+                    throw new InvalidOperationException("Invalid encoding type");
             }
         }
 
@@ -111,7 +111,7 @@ namespace DotNetToolBox.Cryptography
                     encryptedPassword = Hex.Decode(encodedEncryptedPassword);
                     break;
                 default:
-                    throw new InvalidOperationException("Invalid encoding type !");
+                    throw new InvalidOperationException("Invalid encoding type");
             }
 
             byte[] decryptedPassword = Decrypt(rsa, encryptedPassword);
