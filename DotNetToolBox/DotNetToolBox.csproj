@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <DebugType>full</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>default</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
@@ -30,6 +31,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x86</PlatformTarget>
+    <LangVersion>default</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
     <Prefer32Bit>false</Prefer32Bit>
@@ -50,7 +52,7 @@
     <Optimize>true</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>x64</PlatformTarget>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>default</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
@@ -61,8 +63,17 @@
     <Reference Include="FastMember">
       <HintPath>..\lib\FastMember.dll</HintPath>
     </Reference>
+    <Reference Include="IronPython">
+      <HintPath>..\lib\IronPython.dll</HintPath>
+    </Reference>
+    <Reference Include="IronPython.Modules">
+      <HintPath>..\lib\IronPython.Modules.dll</HintPath>
+    </Reference>
     <Reference Include="log4net">
       <HintPath>..\lib\log4net.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Dynamic">
+      <HintPath>..\lib\Microsoft.Dynamic.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.ReportViewer.Common">
       <SpecificVersion>False</SpecificVersion>
@@ -87,6 +98,9 @@
     <Reference Include="Microsoft.ReportViewer.WinForms">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\lib\Microsoft.ReportViewer.WinForms.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Scripting">
+      <HintPath>..\lib\Microsoft.Scripting.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.SqlServer.Types">
       <SpecificVersion>False</SpecificVersion>
@@ -176,6 +190,7 @@
     <Compile Include="RibbonDock\Ribbon\RibbonGroupViewModel.cs" />
     <Compile Include="RibbonDock\Ribbon\RibbonItemViewModelBase.cs" />
     <Compile Include="RibbonDock\Ribbon\RibbonTabViewModel.cs" />
+    <Compile Include="Scripting\PythonEngineWrapper.cs" />
     <Compile Include="Utils\AssemblyHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\LogHelper.cs" />
