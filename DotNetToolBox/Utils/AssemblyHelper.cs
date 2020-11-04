@@ -1,7 +1,7 @@
 ﻿#region license
 
 //DotNetToolbox .NET helper library 
-//Copyright (C) 2012  Josué Clément
+//Copyright (C) 2012-2020 Josué Clément
 //mod6991@gmail.com
 
 //This program is free software: you can redistribute it and/or modify
@@ -24,9 +24,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
-using System.Windows;
 using System.Windows.Media.Imaging;
-using System.Windows.Resources;
 
 namespace DotNetToolBox.Utils
 {

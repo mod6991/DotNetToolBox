@@ -1,5 +1,4 @@
 ﻿using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 
 // General Information about an assembly is controlled through the following
@@ -10,7 +9,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyProduct("DotNetToolBox")]
-[assembly: AssemblyCopyright("Copyright © 2012-2019 Josué Clément")]
+[assembly: AssemblyCopyright("Copyright © 2012-2020 Josué Clément")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

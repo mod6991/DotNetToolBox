@@ -1,7 +1,7 @@
 ﻿#region license
 
 //DotNetToolbox .NET helper library 
-//Copyright (C) 2012  Josué Clément
+//Copyright (C) 2012-2020 Josué Clément
 //mod6991@gmail.com
 
 //This program is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
 //along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 #endregion
-
 
 using DotNetToolBox.Utils;
 using System;

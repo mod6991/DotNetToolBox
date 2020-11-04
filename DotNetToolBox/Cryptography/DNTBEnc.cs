@@ -1,7 +1,7 @@
 ﻿#region license
 
 //DotNetToolBox.FileEncryptor .NET file encryptor
-//Copyright (C) 2015  Josué Clément
+//Copyright (C) 2012-2020 Josué Clément
 //mod6991@gmail.com
 
 //This program is free software: you can redistribute it and/or modify
@@ -21,7 +21,6 @@
 
 using DotNetToolBox.Utils;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
