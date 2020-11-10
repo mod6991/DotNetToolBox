@@ -21,17 +21,19 @@
 
 using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
+using System;
 using System.Collections.Generic;
 
 namespace DotNetToolBox.Scripting
 {
-    public class PythonEngineWrapper
+    public class PythonScripting
     {
         private ScriptEngine _engine;
-        private ScriptSource _source;
+        private Dictionary<string, ScriptSource> _sources;
 
-        public PythonEngineWrapper(string scriptPath, List<string> searchPaths = null)
+        public PythonScripting(List<string> searchPaths = null)
         {
+            _sources = new Dictionary<string, ScriptSource>();
             _engine = Python.CreateEngine();
 
             if (searchPaths != null && searchPaths.Count > 0)
@@ -43,12 +45,22 @@ namespace DotNetToolBox.Scripting
 
                 _engine.SetSearchPaths(paths);
             }
-
-            _source = _engine.CreateScriptSourceFromFile(scriptPath);
         }
 
-        public Dictionary<string, dynamic> GetValues(Dictionary<string, object> inputVariables, List<string> outputVariables)
+        public void AddScript(string sourceName, string scriptPath)
         {
+            if (_sources.ContainsKey(sourceName))
+                throw new InvalidOperationException($"Source '{sourceName}' already added");
+
+            ScriptSource source = _engine.CreateScriptSourceFromFile(scriptPath);
+            _sources.Add(sourceName, source);
+        }
+
+        public Dictionary<string, dynamic> GetValues(string sourceName, Dictionary<string, object> inputVariables, List<string> outputVariables)
+        {
+            if (!_sources.ContainsKey(sourceName))
+                throw new InvalidOperationException($"Source '{sourceName}' not registered. Use AddScript before");
+
             Dictionary<string, dynamic> ret = new Dictionary<string, dynamic>();
 
             // Set a new scope
@@ -59,7 +71,7 @@ namespace DotNetToolBox.Scripting
                 scope.SetVariable(inputKVP.Key, inputKVP.Value);
 
             // Execute script
-            object result = _source.Execute(scope);
+            dynamic result = _sources[sourceName].Execute(scope);
 
             // Get output variables
             foreach (string outputVariable in outputVariables)

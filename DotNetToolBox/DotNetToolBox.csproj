@@ -190,7 +190,7 @@
     <Compile Include="RibbonDock\Ribbon\RibbonGroupViewModel.cs" />
     <Compile Include="RibbonDock\Ribbon\RibbonItemViewModelBase.cs" />
     <Compile Include="RibbonDock\Ribbon\RibbonTabViewModel.cs" />
-    <Compile Include="Scripting\PythonEngineWrapper.cs" />
+    <Compile Include="Scripting\PythonScripting.cs" />
     <Compile Include="Utils\AssemblyHelper.cs" />
     <Compile Include="Utils\Extensions.cs" />
     <Compile Include="Utils\LogHelper.cs" />
