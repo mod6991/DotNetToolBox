@@ -23,6 +23,7 @@ using IronPython.Hosting;
 using Microsoft.Scripting.Hosting;
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace DotNetToolBox.Scripting
 {
@@ -31,6 +32,10 @@ namespace DotNetToolBox.Scripting
         private ScriptEngine _engine;
         private Dictionary<string, ScriptSource> _sources;
 
+        /// <summary>
+        /// Constructor
+        /// </summary>
+        /// <param name="searchPaths">Search paths to python lib</param>
         public PythonScripting(List<string> searchPaths = null)
         {
             _sources = new Dictionary<string, ScriptSource>();
@@ -47,31 +52,54 @@ namespace DotNetToolBox.Scripting
             }
         }
 
-        public void AddScript(string sourceName, string scriptPath)
+        /// <summary>
+        /// Add a script from file
+        /// </summary>
+        /// <param name="name">Script name</param>
+        /// <param name="scriptPath">Script path</param>
+        /// <param name="encoding">Script file encoding</param>
+        public void AddScriptFromFile(string name, string scriptPath, Encoding encoding)
         {
-            if (_sources.ContainsKey(sourceName))
-                throw new InvalidOperationException($"Source '{sourceName}' already added");
+            if (_sources.ContainsKey(name))
+                throw new InvalidOperationException($"Script '{name}' already added");
 
-            ScriptSource source = _engine.CreateScriptSourceFromFile(scriptPath);
-            _sources.Add(sourceName, source);
+            ScriptSource source = _engine.CreateScriptSourceFromFile(scriptPath, encoding);
+            _sources.Add(name, source);
         }
 
-        public Dictionary<string, dynamic> GetValues(string sourceName, Dictionary<string, object> inputVariables, List<string> outputVariables)
+        /// <summary>
+        /// Add a script from string
+        /// </summary>
+        /// <param name="name">Script name</param>
+        /// <param name="scriptContent">Script content</param>
+        public void AddScriptFromString(string name, string scriptContent)
         {
-            if (!_sources.ContainsKey(sourceName))
-                throw new InvalidOperationException($"Source '{sourceName}' not registered. Use AddScript before");
+            if (_sources.ContainsKey(name))
+                throw new InvalidOperationException($"Script '{name}' already added");
+
+            ScriptSource source = _engine.CreateScriptSourceFromString(scriptContent);
+            _sources.Add(name, source);
+        }
+
+        /// <summary>
+        /// Execute
+        /// </summary>
+        /// <param name="name"></param>
+        /// <param name="inputVariables"></param>
+        /// <param name="outputVariables"></param>
+        /// <returns></returns>
+        public Dictionary<string, dynamic> ExecuteScript(string name, Dictionary<string, object> inputVariables, List<string> outputVariables)
+        {
+            if (!_sources.ContainsKey(name))
+                throw new InvalidOperationException($"Script '{name}' not registered. Use AddScript before");
 
             Dictionary<string, dynamic> ret = new Dictionary<string, dynamic>();
 
             // Set a new scope
-            ScriptScope scope = _engine.CreateScope();
-
-            // Set input variables
-            foreach (KeyValuePair<string, object> inputKVP in inputVariables)
-                scope.SetVariable(inputKVP.Key, inputKVP.Value);
+            ScriptScope scope = _engine.CreateScope(inputVariables);
 
             // Execute script
-            dynamic result = _sources[sourceName].Execute(scope);
+            dynamic result = _sources[name].Execute(scope);
 
             // Get output variables
             foreach (string outputVariable in outputVariables)
