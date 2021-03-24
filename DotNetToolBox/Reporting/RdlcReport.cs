@@ -30,7 +30,7 @@ using System.Text;
 
 namespace DotNetToolBox.Reporting
 {
-    public class Rdlc
+    public class RdlcReport
     {
         private ReportViewer _report;
         private List<ReportParameter> _parameters;
@@ -44,7 +44,7 @@ namespace DotNetToolBox.Reporting
 
         #region Constructor
 
-        public Rdlc(string reportPath, string documentName)
+        public RdlcReport(string reportPath, string documentName)
         {
             _report = new ReportViewer();
             _report.LocalReport.ReportPath = reportPath;
@@ -55,7 +55,7 @@ namespace DotNetToolBox.Reporting
             _documentName = documentName;
         }
 
-        public Rdlc(Stream reportStream, string documentName)
+        public RdlcReport(Stream reportStream, string documentName)
         {
             _report = new ReportViewer();
             _report.LocalReport.LoadReportDefinition(reportStream);
