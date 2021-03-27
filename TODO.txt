@@ -1,4 +1,11 @@
-next version todo list:
+v7.5.2021.3 TODO list :
 -----------------------
 
- - Update DNTBEnc -> FileEnc
+ - Add TLV utils
+ - Update bouncycastle
+
+v7.6.X TODO list :
+------------------
+
+ - PEM reader/writer ?
+ - 

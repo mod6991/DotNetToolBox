@@ -146,7 +146,7 @@
     <Compile Include="Configuration\XMLConfigFileManager.cs" />
     <Compile Include="Cryptography\AES.cs" />
     <Compile Include="Cryptography\DES.cs" />
-    <Compile Include="Cryptography\DNTBEnc.cs" />
+    <Compile Include="Cryptography\FileEnc.cs" />
     <Compile Include="Cryptography\MD5.cs" />
     <Compile Include="Cryptography\Rijndael.cs" />
     <Compile Include="Cryptography\RSA.cs" />
