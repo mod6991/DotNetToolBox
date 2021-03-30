@@ -43,7 +43,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="rsa">RSA key</param>
         /// <param name="keyName">Key name</param>
-        public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName)
+        public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName, Action<int> notifyProgression = null)
         {
             byte[] key = RandomHelper.GenerateBytes(AES.KEY_SIZE);
             byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
@@ -61,25 +61,7 @@ namespace DotNetToolBox.Cryptography
             output.Write(encKey, 0, encKey.Length);
             output.Write(iv, 0, iv.Length);
 
-            AES.Encrypt(input, output, key, iv);
-        }
-
-        /// <summary>
-        /// Encrypt file with RSA key
-        /// </summary>
-        /// <param name="inputFile">Input file path</param>
-        /// <param name="outputFile">Output file path</param>
-        /// <param name="rsa">RSA key</param>
-        /// <param name="keyName">Key name</param>
-        public static void EncryptWithKey(string inputFile, string outputFile, RSACryptoServiceProvider rsa, string keyName)
-        {
-            using (FileStream fsIn = StreamHelper.GetFileStreamOpen(inputFile))
-            {
-                using (FileStream fsOut = StreamHelper.GetFileStreamCreate(outputFile))
-                {
-                    EncryptWithKey(fsIn, fsOut, rsa, keyName);
-                }
-            }
+            AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
 
         /// <summary>
@@ -88,7 +70,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="password">Password</param>
-        public static void EncryptWithPassword(Stream input, Stream output, string password)
+        public static void EncryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
         {
             byte[] salt = RandomHelper.GenerateBytes(16);
             byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
@@ -101,24 +83,7 @@ namespace DotNetToolBox.Cryptography
             output.Write(iv, 0, iv.Length);
             output.Write(salt, 0, salt.Length);
 
-            AES.Encrypt(input, output, key, iv);
-        }
-
-        /// <summary>
-        /// Encrypt file with password
-        /// </summary>
-        /// <param name="inputFile">Input file path</param>
-        /// <param name="outputFile">Output file path</param>
-        /// <param name="password">Password</param>
-        public static void EncryptWithPassword(string inputFile, string outputFile, string password)
-        {
-            using (FileStream fsIn = StreamHelper.GetFileStreamOpen(inputFile))
-            {
-                using (FileStream fsOut = StreamHelper.GetFileStreamCreate(outputFile))
-                {
-                    EncryptWithPassword(fsIn, fsOut, password);
-                }
-            }
+            AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
 
         /// <summary>
@@ -127,7 +92,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="rsa">RSA key</param>
-        public static void DecryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa)
+        public static void DecryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, Action<int> notifyProgression = null)
         {
             byte[] buffer;
 
@@ -156,24 +121,7 @@ namespace DotNetToolBox.Cryptography
 
             byte[] key = RSA.Decrypt(rsa, encKey);
 
-            AES.Decrypt(input, output, key, iv);
-        }
-
-        /// <summary>
-        /// Decrypt file with RSA key
-        /// </summary>
-        /// <param name="inputFile">Input file path</param>
-        /// <param name="outputFile">Output file path</param>
-        /// <param name="rsa">RSA key</param>
-        public static void DecryptWithKey(string inputFile, string outputFile, RSACryptoServiceProvider rsa)
-        {
-            using (FileStream fsIn = StreamHelper.GetFileStreamOpen(inputFile))
-            {
-                using (FileStream fsOut = StreamHelper.GetFileStreamCreate(outputFile))
-                {
-                    DecryptWithKey(fsIn, fsOut, rsa);
-                }
-            }
+            AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
 
         /// <summary>
@@ -182,7 +130,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="password">Password</param>
-        public static void DecryptWithPassword(Stream input, Stream output, string password)
+        public static void DecryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
         {
             byte[] buffer;
 
@@ -205,24 +153,7 @@ namespace DotNetToolBox.Cryptography
 
             byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
 
-            AES.Decrypt(input, output, key, iv);
-        }
-
-        /// <summary>
-        /// Decrypt file with password
-        /// </summary>
-        /// <param name="inputFile">Input file path</param>
-        /// <param name="outputFile">Output file path</param>
-        /// <param name="password">Password</param>
-        public static void DecryptWithPassword(string inputFile, string outputFile, string password)
-        {
-            using (FileStream fsIn = StreamHelper.GetFileStreamOpen(inputFile))
-            {
-                using (FileStream fsOut = StreamHelper.GetFileStreamCreate(outputFile))
-                {
-                    DecryptWithPassword(fsIn, fsOut, password);
-                }
-            }
+            AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
     }
 }
