@@ -66,96 +66,45 @@ namespace DotNetToolBox.Cryptography
 
         #endregion
 
-        #region Encrypt / Decrypt password
-
-        /// <summary>
-        /// Encrypt a password
-        /// </summary>
-        /// <param name="password">Password to encrypt</param>
-        /// <param name="rsa">RSA key</param>
-        /// <param name="passwordEncoding">Password text encoding</param>
-        /// <param name="resultEncodingType">Result encoding</param>
-        public static string EncryptPassword(string password, RSACryptoServiceProvider rsa, Encoding passwordEncoding, EncodingType resultEncodingType)
-        {
-            byte[] passwordData = passwordEncoding.GetBytes(password);
-            byte[] encryptedPassword = Encrypt(rsa, passwordData);
-
-            switch (resultEncodingType)
-            {
-                case EncodingType.Base64:
-                    return Base64.Encode(encryptedPassword);
-                case EncodingType.Hexadecimal:
-                    return Hex.Encode(encryptedPassword);
-                default:
-                    throw new InvalidOperationException("Invalid encoding type");
-            }
-        }
-
-        /// <summary>
-        /// Decrypt a password
-        /// </summary>
-        /// <param name="encodedEncryptedPassword">Encoded password to decrypt</param>
-        /// <param name="rsa">RSA key</param>
-        /// <param name="passwordEncoding">Password text encoding</param>
-        /// <param name="passwordEncodingType">Password encoding type</param>
-        public static string DecryptPassword(string encodedEncryptedPassword, RSACryptoServiceProvider rsa, Encoding passwordEncoding, EncodingType passwordEncodingType)
-        {
-            byte[] encryptedPassword;
-
-            switch (passwordEncodingType)
-            {
-                case EncodingType.Base64:
-                    encryptedPassword = Base64.Decode(encodedEncryptedPassword);
-                    break;
-                case EncodingType.Hexadecimal:
-                    encryptedPassword = Hex.Decode(encodedEncryptedPassword);
-                    break;
-                default:
-                    throw new InvalidOperationException("Invalid encoding type");
-            }
-
-            byte[] decryptedPassword = Decrypt(rsa, encryptedPassword);
-            return passwordEncoding.GetString(decryptedPassword);
-        }
-
-        #endregion
-
         #region Save / Load PEM files
 
         /// <summary>
-        /// Load a public key from a PEM file
-        /// </summary>
-        /// <param name="file">PEM file</param>
-        public static RSACryptoServiceProvider LoadPublicKeyFromPEM(string file)
-        {
-            using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (StreamReader sr = new StreamReader(fs, Encoding.Default))
-                {
-                    PemReader pemReader = new PemReader(sr);
-                    RsaKeyParameters rkp = (RsaKeyParameters)pemReader.ReadObject();
-                    RSAParameters parameters = DotNetUtilities.ToRSAParameters(rkp);
-                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-                    rsa.ImportParameters(parameters);
-                    return rsa;
-                }
-            }
-        }
-
-        /// <summary>
-        ///Load a private key from a PEM file 
+        ///Load a RSA key from a PEM file 
         /// </summary>
         /// <param name="file">PEM file</param>
         /// <param name="password">Password</param>
-        public static RSACryptoServiceProvider LoadPrivateKeyFromPEM(string file, string password)
+        public static RSACryptoServiceProvider FromPemFile(string file, string password)
         {
             using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 using (StreamReader sr = new StreamReader(fs, Encoding.Default))
                 {
-                    PemReader pemReader = new PemReader(sr, new PasswordFinder(password));
-                    AsymmetricCipherKeyPair ackp = (AsymmetricCipherKeyPair)pemReader.ReadObject();
-                    RSAParameters parameters = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)ackp.Private);
+                    PemReader pemReader;
+                    if (!string.IsNullOrEmpty(password))
+                        pemReader = new PemReader(sr, new PasswordFinder(password));
+                    else
+                        pemReader = new PemReader(sr);
+
+                    RSAParameters parameters;
+                    object obj = pemReader.ReadObject();
+
+                    if (obj == null)
+                        throw new PemException("PemReader.ReadObject() returned null");
+
+                    Type objType = obj.GetType();
+
+                    if (objType == typeof(AsymmetricCipherKeyPair))
+                    {
+                        AsymmetricCipherKeyPair ackp = (AsymmetricCipherKeyPair)obj;
+                        parameters = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)ackp.Private);
+                    }
+                    else if (objType == typeof(RsaPrivateCrtKeyParameters))
+                        parameters = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)obj);
+                    else if (objType == typeof(RsaKeyParameters))
+                        parameters = DotNetUtilities.ToRSAParameters((RsaKeyParameters)obj);
+                    else
+                        throw new PemException($"Cannot handle type '{objType}' returned by PemReader.ReadObject()");
+
                     RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
                     rsa.ImportParameters(parameters);
                     return rsa;
@@ -164,27 +113,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Load a private key from a PEM file
-        /// </summary>
-        /// <param name="file">PEM file</param>
-        public static RSACryptoServiceProvider LoadPrivateKeyFromPEM(string file)
-        {
-            using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (StreamReader sr = new StreamReader(fs, Encoding.Default))
-                {
-                    PemReader pemReader = new PemReader(sr);
-                    AsymmetricCipherKeyPair ackp = (AsymmetricCipherKeyPair)pemReader.ReadObject();
-                    RSAParameters parameters = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)ackp.Private);
-                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-                    rsa.ImportParameters(parameters);
-                    return rsa;
-                }
-            }
-        }
-
-        /// <summary>
-        /// Save a public key to a PEM file
+        /// Save a public RSA key to a PEM file
         /// </summary>
         /// <param name="rsa">Public key</param>
         /// <param name="file">PEM file</param>
@@ -202,7 +131,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Save a private key to a PEM file
+        /// Save an encrypted private RSA key to a PEM file
         /// </summary>
         /// <param name="rsa">Private key</param>
         /// <param name="file">PEM file</param>
@@ -223,7 +152,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Save a private key to a PEM file
+        /// Save a private RSA key to a PEM file
         /// </summary>
         /// <param name="rsa">Private key</param>
         /// <param name="file">PEM file</param>
@@ -246,7 +175,7 @@ namespace DotNetToolBox.Cryptography
         #region Save / Load Win KeyStore
 
         /// <summary>
-        /// Save a key in the Windows KeyStore
+        /// Save a RSA key in the Windows KeyStore
         /// </summary>
         /// <param name="rsa">RSA key</param>
         /// <param name="ContainerName">Container name</param>
@@ -264,7 +193,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Load a key from the Windows KeyStore 
+        /// Load a RSA key from the Windows KeyStore 
         /// </summary>
         /// <param name="ContainerName">Container name</param>
         /// <param name="csppf">CspProviderFlags</param>
@@ -278,7 +207,7 @@ namespace DotNetToolBox.Cryptography
         }
 
         /// <summary>
-        /// Delete a key from the Windows KeyStore
+        /// Delete a RSA key from the Windows KeyStore
         /// </summary>
         /// <param name="ContainerName">Container name</param>
         /// <param name="csppf">CspProviderFlags</param>
@@ -292,44 +221,6 @@ namespace DotNetToolBox.Cryptography
                 rsa.PersistKeyInCsp = false;
                 rsa.Clear();
             }
-        }
-
-        #endregion
-
-        #region Save / Load XML
-
-        /// <summary>
-        /// Load Key from XML file
-        /// </summary>
-        /// <param name="file">XML file path</param>
-        public static RSACryptoServiceProvider LoadKeyFromXml(string file)
-        {
-            string xmlString = File.ReadAllText(file, Encoding.Default);
-            RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-            rsa.FromXmlString(xmlString);
-            return rsa;
-        }
-
-        /// <summary>
-        /// Save Key pair to XML file
-        /// </summary>
-        /// <param name="rsa">Key pair</param>
-        /// <param name="file">XML file path</param>
-        public static void SaveKeyPairToXml(RSACryptoServiceProvider rsa, string file)
-        {
-            string xmlString = rsa.ToXmlString(true);
-            File.WriteAllText(file, xmlString, Encoding.Default);
-        }
-
-        /// <summary>
-        /// Save public key to XML file
-        /// </summary>
-        /// <param name="rsa">Key</param>
-        /// <param name="file">XML file path</param>
-        public static void SavePublicKeyToXml(RSACryptoServiceProvider rsa, string file)
-        {
-            string xmlString = rsa.ToXmlString(false);
-            File.WriteAllText(file, xmlString, Encoding.Default);
         }
 
         #endregion
