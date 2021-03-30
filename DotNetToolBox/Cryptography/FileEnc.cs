@@ -45,8 +45,8 @@ namespace DotNetToolBox.Cryptography
         /// <param name="keyName">Key name</param>
         public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName)
         {
-            byte[] key, iv;
-            AES.GenerateKeyIV(out key, out iv);
+            byte[] key = RandomHelper.GenerateBytes(AES.KEY_SIZE);
+            byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
 
             byte[] encKey = RSA.Encrypt(rsa, key);
 
@@ -90,10 +90,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="password">Password</param>
         public static void EncryptWithPassword(Stream input, Stream output, string password)
         {
-            byte[] key, iv, salt;
-            salt = RandomHelper.GenerateBytes(16);
-            AES.GenerateKeyFromPassword(password, salt, out key);
-            AES.GenerateIV(out iv);
+            byte[] salt = RandomHelper.GenerateBytes(16);
+            byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
+            byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
 
             output.Write(_headerPass, 0, _headerPassLen);
             output.Write(_version, 0, 1);
@@ -185,7 +184,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="password">Password</param>
         public static void DecryptWithPassword(Stream input, Stream output, string password)
         {
-            byte[] buffer, key;
+            byte[] buffer;
 
             input.Seek(_headerPassLen, SeekOrigin.Current);
             input.Seek(1, SeekOrigin.Current);
@@ -204,7 +203,7 @@ namespace DotNetToolBox.Cryptography
             byte[] salt = new byte[saltLength];
             input.Read(salt, 0, saltLength);
 
-            AES.GenerateKeyFromPassword(password, salt, out key);
+            byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
 
             AES.Decrypt(input, output, key, iv);
         }

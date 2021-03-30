@@ -20,75 +20,12 @@
 #endregion
 
 using System;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace DotNetToolBox.Utils
 {
     public static class RandomHelper
     {
-        /// <summary>
-        /// Password type enumeration
-        /// </summary>
-        public enum PasswordType : byte
-        {
-            LowerChars = 0x01,
-            UpperChars = 0x02,
-            Numbers = 0x04,
-            SpecialChars = 0x08,
-            LowerUpper = LowerChars | UpperChars,
-            LowerUpperNumber = LowerUpper | Numbers,
-            All = LowerUpperNumber | SpecialChars
-        }
-
-        private static char[] m_lowerChars = new char[] { 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z' };
-        private static char[] m_upperChars = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
-        private static char[] m_numbers = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
-        private static char[] m_specialChars = new char[] {' ', '!', '"', '#', '$', '%', '&', '\'', '(', ')', '*', '+', ',', '-', '.', '/', ':', ';', '<', '=', '>', '?', '@', '[', '\\', ']', '^', '_', '`', '{', '|', '}', '~' };
-
-        /// <summary>
-        /// Generate a random password
-        /// </summary>
-        /// <param name="type">Password type</param>
-        /// <param name="size">Password size</param>
-        public static string GeneratePassword(PasswordType type, int size)
-        {
-            char[] chars = new char[0];
-            byte total = (byte)type;
-
-            if ((total & (byte)PasswordType.LowerChars) == (byte)PasswordType.LowerChars)
-                chars = chars.Concat(m_lowerChars).ToArray();
-            if ((total & (byte)PasswordType.UpperChars) == (byte)PasswordType.UpperChars)
-                chars = chars.Concat(m_upperChars).ToArray();
-            if ((total & (byte)PasswordType.Numbers) == (byte)PasswordType.Numbers)
-                chars = chars.Concat(m_numbers).ToArray();
-            if ((total & (byte)PasswordType.SpecialChars) == (byte)PasswordType.SpecialChars)
-                chars = chars.Concat(m_specialChars).ToArray();
-
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < size; i++)
-                sb.Append(chars[GenerateInt32() % chars.Length]);
-
-            return sb.ToString();
-        }
-
-        /// <summary>
-        /// Generate a random password with given chars
-        /// </summary>
-        /// <param name="chars">Password chars</param>
-        /// <param name="size">Password size</param>
-        public static string GeneratePassword(char[] chars, int size)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            for (int i = 0; i < size; i++)
-                sb.Append(chars[GenerateInt32() % chars.Length]);
-
-            return sb.ToString();
-        }
-
         /// <summary>
         /// Generate a byte array filled with random bytes
         /// </summary>

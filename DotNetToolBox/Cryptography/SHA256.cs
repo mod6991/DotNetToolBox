@@ -37,29 +37,5 @@ namespace DotNetToolBox.Cryptography
                 return sha256.ComputeHash(input);
             }
         }
-
-        /// <summary>
-        /// Compute the SHA256 hash value
-        /// </summary>
-        /// <param name="data">Data to hash</param>
-        public static byte[] Hash(byte[] data)
-        {
-            using (MemoryStream ms = new MemoryStream(data))
-            {
-                return Hash(ms);
-            }
-        }
-
-        /// <summary>
-        /// Compute the SHA256 hash value
-        /// </summary>
-        /// <param name="file">Input file</param>
-        public static byte[] Hash(string file)
-        {
-            using (FileStream input = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                return Hash(input);
-            }
-        }
     }
 }

@@ -148,6 +148,7 @@
     <Compile Include="Cryptography\DES.cs" />
     <Compile Include="Cryptography\FileEnc.cs" />
     <Compile Include="Cryptography\MD5.cs" />
+    <Compile Include="Cryptography\PBKDF2.cs" />
     <Compile Include="Cryptography\Rijndael.cs" />
     <Compile Include="Cryptography\RSA.cs" />
     <Compile Include="Cryptography\SHA1.cs" />
