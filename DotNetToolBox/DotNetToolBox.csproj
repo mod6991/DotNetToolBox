@@ -153,6 +153,7 @@
     <Compile Include="Cryptography\RSA.cs" />
     <Compile Include="Cryptography\SHA1.cs" />
     <Compile Include="Cryptography\SHA256.cs" />
+    <Compile Include="Cryptography\SHA3.cs" />
     <Compile Include="Cryptography\SHA512.cs" />
     <Compile Include="Cryptography\TripleDES.cs" />
     <Compile Include="Database\DbManager.cs" />
