@@ -120,6 +120,9 @@ namespace DotNetToolBox.Cryptography
 
             byte[] key = RSA.Decrypt(rsa, encKey);
 
+            if (notifyProgression != null)
+                notifyProgression(_headerKeyLen + 1 + 1 + 4 + 1 + keyNameLength + encKeyLength + ivLength);
+
             AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
 
@@ -151,6 +154,9 @@ namespace DotNetToolBox.Cryptography
             input.Read(salt, 0, saltLength);
 
             byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
+
+            if (notifyProgression != null)
+                notifyProgression(_headerPassLen + 1 + 1 + 1 + ivLength + saltLength);
 
             AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
