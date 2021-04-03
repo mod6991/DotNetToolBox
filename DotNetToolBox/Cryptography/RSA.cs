@@ -73,42 +73,39 @@ namespace DotNetToolBox.Cryptography
         /// </summary>
         /// <param name="file">PEM file</param>
         /// <param name="password">Password</param>
-        public static RSACryptoServiceProvider FromPemFile(string file, string password)
+        public static RSACryptoServiceProvider FromPemFile(Stream input, string password)
         {
-            using (FileStream fs = new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (StreamReader sr = new StreamReader(input, Encoding.Default))
             {
-                using (StreamReader sr = new StreamReader(fs, Encoding.Default))
+                PemReader pemReader;
+                if (!string.IsNullOrEmpty(password))
+                    pemReader = new PemReader(sr, new PasswordFinder(password));
+                else
+                    pemReader = new PemReader(sr);
+
+                RSAParameters parameters;
+                object obj = pemReader.ReadObject();
+
+                if (obj == null)
+                    throw new PemException("PemReader.ReadObject() returned null");
+
+                Type objType = obj.GetType();
+
+                if (objType == typeof(AsymmetricCipherKeyPair))
                 {
-                    PemReader pemReader;
-                    if (!string.IsNullOrEmpty(password))
-                        pemReader = new PemReader(sr, new PasswordFinder(password));
-                    else
-                        pemReader = new PemReader(sr);
-
-                    RSAParameters parameters;
-                    object obj = pemReader.ReadObject();
-
-                    if (obj == null)
-                        throw new PemException("PemReader.ReadObject() returned null");
-
-                    Type objType = obj.GetType();
-
-                    if (objType == typeof(AsymmetricCipherKeyPair))
-                    {
-                        AsymmetricCipherKeyPair ackp = (AsymmetricCipherKeyPair)obj;
-                        parameters = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)ackp.Private);
-                    }
-                    else if (objType == typeof(RsaPrivateCrtKeyParameters))
-                        parameters = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)obj);
-                    else if (objType == typeof(RsaKeyParameters))
-                        parameters = DotNetUtilities.ToRSAParameters((RsaKeyParameters)obj);
-                    else
-                        throw new PemException($"Cannot handle type '{objType}' returned by PemReader.ReadObject()");
-
-                    RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
-                    rsa.ImportParameters(parameters);
-                    return rsa;
+                    AsymmetricCipherKeyPair ackp = (AsymmetricCipherKeyPair)obj;
+                    parameters = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)ackp.Private);
                 }
+                else if (objType == typeof(RsaPrivateCrtKeyParameters))
+                    parameters = DotNetUtilities.ToRSAParameters((RsaPrivateCrtKeyParameters)obj);
+                else if (objType == typeof(RsaKeyParameters))
+                    parameters = DotNetUtilities.ToRSAParameters((RsaKeyParameters)obj);
+                else
+                    throw new PemException($"Cannot handle type '{objType}' returned by PemReader.ReadObject()");
+
+                RSACryptoServiceProvider rsa = new RSACryptoServiceProvider();
+                rsa.ImportParameters(parameters);
+                return rsa;
             }
         }
 
@@ -117,16 +114,13 @@ namespace DotNetToolBox.Cryptography
         /// </summary>
         /// <param name="rsa">Public key</param>
         /// <param name="file">PEM file</param>
-        public static void SavePublicKeyToPEM(RSACryptoServiceProvider rsa, string file)
+        public static void SavePublicKeyToPEM(RSACryptoServiceProvider rsa, Stream output)
         {
-            using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (StreamWriter sw = new StreamWriter(output, Encoding.Default))
             {
-                using (StreamWriter sw = new StreamWriter(fs, Encoding.Default))
-                {
-                    PemWriter pemWriter = new PemWriter(sw);
-                    RsaKeyParameters rkp = DotNetUtilities.GetRsaPublicKey(rsa);
-                    pemWriter.WriteObject(rkp);
-                }
+                PemWriter pemWriter = new PemWriter(sw);
+                RsaKeyParameters rkp = DotNetUtilities.GetRsaPublicKey(rsa);
+                pemWriter.WriteObject(rkp);
             }
         }
 
@@ -137,17 +131,14 @@ namespace DotNetToolBox.Cryptography
         /// <param name="file">PEM file</param>
         /// <param name="password">Password</param>
         /// <param name="algorithm">Algorithm for PEM encryption</param>
-        public static void SavePrivateKeyToPEM(RSACryptoServiceProvider rsa, string file, string password, string algorithm = "AES-256-CBC")
+        public static void SavePrivateKeyToPEM(RSACryptoServiceProvider rsa, Stream output, string password, string algorithm = "AES-256-CBC")
         {
-            using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (StreamWriter sw = new StreamWriter(output, Encoding.Default))
             {
-                using (StreamWriter sw = new StreamWriter(fs, Encoding.Default))
-                {
-                    PemWriter pemWriter = new PemWriter(sw);
-                    AsymmetricCipherKeyPair ackp = DotNetUtilities.GetRsaKeyPair(rsa);
-                    RsaPrivateCrtKeyParameters privKey = (RsaPrivateCrtKeyParameters)ackp.Private;
-                    pemWriter.WriteObject(privKey, algorithm, password.ToCharArray(), new SecureRandom());
-                }
+                PemWriter pemWriter = new PemWriter(sw);
+                AsymmetricCipherKeyPair ackp = DotNetUtilities.GetRsaKeyPair(rsa);
+                RsaPrivateCrtKeyParameters privKey = (RsaPrivateCrtKeyParameters)ackp.Private;
+                pemWriter.WriteObject(privKey, algorithm, password.ToCharArray(), new SecureRandom());
             }
         }
 
@@ -156,17 +147,14 @@ namespace DotNetToolBox.Cryptography
         /// </summary>
         /// <param name="rsa">Private key</param>
         /// <param name="file">PEM file</param>
-        public static void SavePrivateKeyToPEM(RSACryptoServiceProvider rsa, string file)
+        public static void SavePrivateKeyToPEM(RSACryptoServiceProvider rsa, Stream output)
         {
-            using (FileStream fs = new FileStream(file, FileMode.Create, FileAccess.Write, FileShare.Write))
+            using (StreamWriter sw = new StreamWriter(output, Encoding.Default))
             {
-                using (StreamWriter sw = new StreamWriter(fs, Encoding.Default))
-                {
-                    PemWriter pemWriter = new PemWriter(sw);
-                    AsymmetricCipherKeyPair ackp = DotNetUtilities.GetRsaKeyPair(rsa);
-                    RsaPrivateCrtKeyParameters privKey = (RsaPrivateCrtKeyParameters)ackp.Private;
-                    pemWriter.WriteObject(privKey);
-                }
+                PemWriter pemWriter = new PemWriter(sw);
+                AsymmetricCipherKeyPair ackp = DotNetUtilities.GetRsaKeyPair(rsa);
+                RsaPrivateCrtKeyParameters privKey = (RsaPrivateCrtKeyParameters)ackp.Private;
+                pemWriter.WriteObject(privKey);
             }
         }
 
