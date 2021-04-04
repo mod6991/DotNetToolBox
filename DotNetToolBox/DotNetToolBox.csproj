@@ -163,6 +163,7 @@
     <Compile Include="Icons\OpenIconLibrary\IconSize.cs" />
     <Compile Include="Icons\OpenIconLibrary\PngIcons.cs" />
     <Compile Include="IO\Base64.cs" />
+    <Compile Include="IO\BinaryTlv.cs" />
     <Compile Include="IO\CsvReader.cs" />
     <Compile Include="IO\GZip.cs" />
     <Compile Include="IO\Hex.cs" />

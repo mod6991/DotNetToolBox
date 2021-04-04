@@ -54,7 +54,7 @@ namespace DotNetToolBox.Cryptography
             output.Write(_headerKey, 0, _headerKeyLen);
             output.Write(_version, 0, 1);
             output.Write(new byte[] { (byte)keyNameData.Length }, 0, 1);
-            output.Write(BitConverter.GetBytes(encKey.Length), 0, 4);
+            output.Write(BitConverter.GetBytes((Int16)encKey.Length), 0, 2);
             output.Write(new byte[] { (byte)iv.Length }, 0, 1);
             output.Write(keyNameData, 0, keyNameData.Length);
             output.Write(encKey, 0, encKey.Length);
@@ -102,9 +102,9 @@ namespace DotNetToolBox.Cryptography
             input.Read(buffer, 0, 1);
             byte keyNameLength = buffer[0];
 
-            buffer = new byte[4];
-            input.Read(buffer, 0, 4);
-            int encKeyLength = BitConverter.ToInt32(buffer, 0);
+            buffer = new byte[2];
+            input.Read(buffer, 0, 2);
+            Int16 encKeyLength = BitConverter.ToInt16(buffer, 0);
 
             buffer = new byte[1];
             input.Read(buffer, 0, 1);
