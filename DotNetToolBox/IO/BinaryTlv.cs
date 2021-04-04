@@ -20,6 +20,7 @@
 #endregion
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Text;
 
@@ -35,9 +36,9 @@ namespace DotNetToolBox.IO
         public TlvHeaderException(string message) : base(message) { }
     }
 
-    public class BinaryTagValue
+    public class TagValue
     {
-        public BinaryTagValue(string tag, byte[] value)
+        public TagValue(string tag, byte[] value)
         {
             Tag = tag;
             Value = value;
@@ -119,7 +120,7 @@ namespace DotNetToolBox.IO
             _tagLength = buffer[0];
         }
 
-        public BinaryTagValue Read()
+        public TagValue Read()
         {
             byte[] buffer = new byte[_tagLength];
             int bytesRead;
@@ -148,7 +149,22 @@ namespace DotNetToolBox.IO
             if (bytesRead != valueLength)
                 throw new TlvException("Cannot read value");
 
-            return new BinaryTagValue(tag, value);
+            return new TagValue(tag, value);
+        }
+
+        public Dictionary<string, byte[]> ReadAll()
+        {
+            Dictionary<string, byte[]> values = new Dictionary<string, byte[]>();
+            TagValue tv;
+
+            do
+            {
+                tv = Read();
+                if (tv != null)
+                    values.Add(tv.Tag, tv.Value);
+            } while (tv != null);
+
+            return values;
         }
     }
 }
