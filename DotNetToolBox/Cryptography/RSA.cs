@@ -73,7 +73,7 @@ namespace DotNetToolBox.Cryptography
         /// </summary>
         /// <param name="file">PEM file</param>
         /// <param name="password">Password</param>
-        public static RSACryptoServiceProvider FromPemFile(Stream input, string password)
+        public static RSACryptoServiceProvider LoadFromPEM(Stream input, string password = null)
         {
             using (StreamReader sr = new StreamReader(input, Encoding.Default))
             {
