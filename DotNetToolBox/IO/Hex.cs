@@ -80,8 +80,7 @@ namespace DotNetToolBox.IO
                 if (bytesRead > 0)
                 {
                     hexStr = InternalEncode(buffer, bytesRead);
-                    hexData = Encoding.ASCII.GetBytes(hexStr);
-                    output.Write(hexData, 0, hexData.Length);
+                    BinaryHelper.WriteString(output, hexStr, Encoding.ASCII);
                 }
             } while (bytesRead == bufferSize);
         }
@@ -149,7 +148,7 @@ namespace DotNetToolBox.IO
                 {
                     hexStr = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                     hexData = InternalDecode(hexStr);
-                    output.Write(hexData, 0, hexData.Length);
+                    BinaryHelper.WriteBytes(output, hexData);
                 }
             } while (bytesRead == bufferSize);
         }
