@@ -58,31 +58,19 @@ namespace DotNetToolBox.IO
             _output = output;
             _tagLength = tagLength;
 
-            WriteHeader();
-        }
-
-        private void WriteHeader()
-        {
-            byte[] header= Encoding.ASCII.GetBytes("BinaryTLV!");
-            int headerLen = header.Length;
-
-            _output.Write(header, 0, headerLen);
-            _output.Write(new byte[] { _tagLength }, 0, 1);
+            BinaryHelper.WriteByte(_output, _tagLength);
         }
 
         public void Write(string tag, byte[] value)
         {
-            byte[] tagData = Encoding.ASCII.GetBytes(tag.PadRight(_tagLength));
+            string padTag = tag.PadRight(_tagLength);
 
-            if (tagData.Length != _tagLength)
+            if(padTag.Length != _tagLength)
                 throw new TlvException("Invalid tag length");
 
-            _output.Write(tagData, 0, _tagLength);
-
-            byte[] valueLengthData = BitConverter.GetBytes(value.Length);
-            _output.Write(valueLengthData, 0, 4);
-
-            _output.Write(value, 0, value.Length);
+            BinaryHelper.WriteString(_output, padTag, Encoding.ASCII);
+            BinaryHelper.WriteInt32(_output, value.Length);
+            BinaryHelper.WriteBytes(_output, value);
         }
     }
 
@@ -94,61 +82,15 @@ namespace DotNetToolBox.IO
         public BinaryTlvReader(Stream input)
         {
             _input = input;
-
-            ReadHeader();
-        }
-
-        private void ReadHeader()
-        {
-            byte[] buffer = new byte[10];
-            int bytesRead;
-
-            bytesRead = _input.Read(buffer, 0, 10);
-
-            if (bytesRead != 10)
-                throw new TlvHeaderException("Cannot read the header");
-
-            if (Encoding.ASCII.GetString(buffer) != "BinaryTLV!")
-                throw new TlvHeaderException("The stream doesn't contain a BinaryTlv");
-
-            buffer = new byte[1];
-            bytesRead = _input.Read(buffer, 0, 1);
-
-            if (bytesRead != 1)
-                throw new TlvHeaderException("Cannot read tag length");
-
-            _tagLength = buffer[0];
+            _tagLength = BinaryHelper.ReadByte(_input);
         }
 
         public TagValue Read()
         {
-            byte[] buffer = new byte[_tagLength];
-            int bytesRead;
-
-            bytesRead = _input.Read(buffer, 0, _tagLength);
-
-            if (bytesRead == 0)
-                return null;
-
-            if (bytesRead != _tagLength)
-                throw new TlvException("Cannot read tag");
-
-            string tag = Encoding.ASCII.GetString(buffer).Trim();
-
-            buffer = new byte[4];
-            bytesRead = _input.Read(buffer, 0, 4);
-
-            if (bytesRead != 4)
-                throw new TlvException("Cannot read length");
-
-            int valueLength = BitConverter.ToInt32(buffer, 0);
-
-            byte[] value = new byte[valueLength];
-            bytesRead = _input.Read(value, 0, valueLength);
-
-            if (bytesRead != valueLength)
-                throw new TlvException("Cannot read value");
-
+            byte[] tagData = BinaryHelper.ReadBytes(_input, _tagLength);
+            string tag = Encoding.ASCII.GetString(tagData).Trim();
+            int valueLength = BinaryHelper.ReadInt32(_input);
+            byte[] value = BinaryHelper.ReadBytes(_input, valueLength);
             return new TagValue(tag, value);
         }
 
