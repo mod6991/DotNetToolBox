@@ -40,12 +40,31 @@ namespace DotNetToolBox.IO
     {
         public TagValue(string tag, byte[] value)
         {
+            if (string.IsNullOrWhiteSpace(tag))
+                throw new ArgumentException("tag");
+            if (value == null)
+                throw new ArgumentException("value");
+
             Tag = tag;
             Value = value;
         }
 
         public string Tag { get; set; }
         public byte[] Value { get; set; }
+
+        public List<TagValue> InnerTlv()
+        {
+            using (MemoryStream ms = new MemoryStream(Value))
+            {
+                BinaryTlvReader tlv = new BinaryTlvReader(ms);
+                return tlv.ReadAll();
+            }
+        }
+
+        public override string ToString()
+        {
+            return $"{Tag} ({Value.Length} bytes)";
+        }
     }
 
     public class BinaryTlvWriter
@@ -72,6 +91,18 @@ namespace DotNetToolBox.IO
             BinaryHelper.WriteInt32(_output, value.Length);
             BinaryHelper.WriteBytes(_output, value);
         }
+
+        public static byte[] BuildTlv(List<TagValue> values, byte tagLength)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                BinaryTlvWriter tlv = new BinaryTlvWriter(ms, tagLength);
+                foreach (TagValue tv in values)
+                    tlv.Write(tv.Tag, tv.Value);
+
+                return ms.ToArray();
+            }
+        }
     }
 
     public class BinaryTlvReader
@@ -94,16 +125,16 @@ namespace DotNetToolBox.IO
             return new TagValue(tag, value);
         }
 
-        public Dictionary<string, byte[]> ReadAll()
+        public List<TagValue> ReadAll()
         {
-            Dictionary<string, byte[]> values = new Dictionary<string, byte[]>();
+            List<TagValue> values = new List<TagValue>();
             TagValue tv;
 
             do
             {
                 tv = Read();
                 if (tv != null)
-                    values.Add(tv.Tag, tv.Value);
+                    values.Add(tv);
             } while (tv != null);
 
             return values;
