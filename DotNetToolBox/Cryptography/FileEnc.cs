@@ -19,6 +19,7 @@
 
 #endregion
 
+using DotNetToolBox.IO;
 using DotNetToolBox.Utils;
 using System;
 using System.IO;
@@ -29,11 +30,7 @@ namespace DotNetToolBox.Cryptography
 {
     public static class FileEnc
     {
-        private static byte[] _headerKey = Encoding.ASCII.GetBytes("ENC!R!");
-        private static int _headerKeyLen = _headerKey.Length;
-        private static byte[] _headerPass = Encoding.ASCII.GetBytes("ENC!P!");
-        private static int _headerPassLen = _headerPass.Length;
-        private static byte[] _version = new byte[] { 0x03 };
+        private const byte _version = 0x03;
 
         /// <summary>
         /// Encrypt with RSA key
@@ -51,14 +48,14 @@ namespace DotNetToolBox.Cryptography
 
             byte[] keyNameData = Encoding.ASCII.GetBytes(keyName);
 
-            output.Write(_headerKey, 0, _headerKeyLen);
-            output.Write(_version, 0, 1);
-            output.Write(new byte[] { (byte)keyNameData.Length }, 0, 1);
-            output.Write(BitConverter.GetBytes((Int16)encKey.Length), 0, 2);
-            output.Write(new byte[] { (byte)iv.Length }, 0, 1);
-            output.Write(keyNameData, 0, keyNameData.Length);
-            output.Write(encKey, 0, encKey.Length);
-            output.Write(iv, 0, iv.Length);
+            BinaryHelper.WriteString(output, "ENCR!", Encoding.ASCII);
+            BinaryHelper.WriteByte(output, _version);
+            BinaryHelper.WriteByte(output, (byte)keyNameData.Length);
+            BinaryHelper.WriteInt16(output, (Int16)encKey.Length);
+            BinaryHelper.WriteByte(output, (byte)iv.Length);
+            BinaryHelper.WriteBytes(output, keyNameData);
+            BinaryHelper.WriteBytes(output, encKey);
+            BinaryHelper.WriteBytes(output, iv);
 
             AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
@@ -75,12 +72,12 @@ namespace DotNetToolBox.Cryptography
             byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
             byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
 
-            output.Write(_headerPass, 0, _headerPassLen);
-            output.Write(_version, 0, 1);
-            output.Write(new byte[] { (byte)iv.Length }, 0, 1);
-            output.Write(new byte[] { (byte)salt.Length }, 0, 1);
-            output.Write(iv, 0, iv.Length);
-            output.Write(salt, 0, salt.Length);
+            BinaryHelper.WriteString(output, "ENCP!", Encoding.ASCII);
+            BinaryHelper.WriteByte(output, _version);
+            BinaryHelper.WriteByte(output, (byte)iv.Length);
+            BinaryHelper.WriteByte(output, (byte)salt.Length);
+            BinaryHelper.WriteBytes(output, iv);
+            BinaryHelper.WriteBytes(output, salt);
 
             AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
@@ -93,35 +90,22 @@ namespace DotNetToolBox.Cryptography
         /// <param name="rsa">RSA key</param>
         public static void DecryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, Action<int> notifyProgression = null)
         {
-            byte[] buffer;
+            input.Seek(5, SeekOrigin.Current); // Header
+            input.Seek(1, SeekOrigin.Current); // Version
 
-            input.Seek(_headerKeyLen, SeekOrigin.Current);
-            input.Seek(1, SeekOrigin.Current);
+            byte keyNameLength = BinaryHelper.ReadByte(input);
+            Int16 encKeyLength = BinaryHelper.ReadInt16(input);
+            byte ivLength = BinaryHelper.ReadByte(input);
 
-            buffer = new byte[1];
-            input.Read(buffer, 0, 1);
-            byte keyNameLength = buffer[0];
+            input.Seek(keyNameLength, SeekOrigin.Current); // Key name
 
-            buffer = new byte[2];
-            input.Read(buffer, 0, 2);
-            Int16 encKeyLength = BitConverter.ToInt16(buffer, 0);
-
-            buffer = new byte[1];
-            input.Read(buffer, 0, 1);
-            byte ivLength = buffer[0];
-
-            input.Seek(keyNameLength, SeekOrigin.Current);
-
-            byte[] encKey = new byte[encKeyLength];
-            input.Read(encKey, 0, encKeyLength);
-
-            byte[] iv = new byte[ivLength];
-            input.Read(iv, 0, ivLength);
+            byte[] encKey = BinaryHelper.ReadBytes(input, encKeyLength);
+            byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
 
             byte[] key = RSA.Decrypt(rsa, encKey);
 
             if (notifyProgression != null)
-                notifyProgression(_headerKeyLen + 1 + 1 + 4 + 1 + keyNameLength + encKeyLength + ivLength);
+                notifyProgression(5 + 1 + 1 + 2 + 1 + keyNameLength + encKeyLength + ivLength);
 
             AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
@@ -134,29 +118,18 @@ namespace DotNetToolBox.Cryptography
         /// <param name="password">Password</param>
         public static void DecryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
         {
-            byte[] buffer;
+            input.Seek(5, SeekOrigin.Current); // Header
+            input.Seek(1, SeekOrigin.Current); // Version
 
-            input.Seek(_headerPassLen, SeekOrigin.Current);
-            input.Seek(1, SeekOrigin.Current);
-
-            buffer = new byte[1];
-            input.Read(buffer, 0, 1);
-            byte ivLength = buffer[0];
-
-            buffer = new byte[1];
-            input.Read(buffer, 0, 1);
-            byte saltLength = buffer[0];
-
-            byte[] iv = new byte[ivLength];
-            input.Read(iv, 0, ivLength);
-
-            byte[] salt = new byte[saltLength];
-            input.Read(salt, 0, saltLength);
+            byte ivLength = BinaryHelper.ReadByte(input);
+            byte saltLength = BinaryHelper.ReadByte(input);
+            byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
+            byte[] salt = BinaryHelper.ReadBytes(input, saltLength);
 
             byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
 
             if (notifyProgression != null)
-                notifyProgression(_headerPassLen + 1 + 1 + 1 + ivLength + saltLength);
+                notifyProgression(5 + 1 + 1 + 1 + ivLength + saltLength);
 
             AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
