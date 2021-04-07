@@ -71,6 +71,7 @@ namespace DotNetToolBox.IO
         public static void Encode(Stream input, Stream output, int bufferSize = 4096)
         {
             byte[] buffer = new byte[bufferSize];
+            byte[] hexData;
             string hexStr;
             int bytesRead;
             do
@@ -79,7 +80,8 @@ namespace DotNetToolBox.IO
                 if (bytesRead > 0)
                 {
                     hexStr = InternalEncode(buffer, bytesRead);
-                    BinaryHelper.WriteString(output, hexStr, Encoding.ASCII);
+                    hexData = Encoding.ASCII.GetBytes(hexStr);
+                    output.Write(hexData, 0, hexData.Length);
                 }
             } while (bytesRead == bufferSize);
         }
@@ -147,7 +149,7 @@ namespace DotNetToolBox.IO
                 {
                     hexStr = Encoding.ASCII.GetString(buffer, 0, bytesRead);
                     hexData = InternalDecode(hexStr);
-                    BinaryHelper.WriteBytes(output, hexData);
+                    output.Write(hexData, 0, hexData.Length);
                 }
             } while (bytesRead == bufferSize);
         }
