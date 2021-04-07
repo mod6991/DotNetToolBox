@@ -31,11 +31,6 @@ namespace DotNetToolBox.IO
         public TlvException(string message) : base(message) { }
     }
 
-    public class TlvHeaderException : Exception
-    {
-        public TlvHeaderException(string message) : base(message) { }
-    }
-
     public class TagValue
     {
         public TagValue(string tag, byte[] value)
@@ -52,7 +47,7 @@ namespace DotNetToolBox.IO
         public string Tag { get; set; }
         public byte[] Value { get; set; }
 
-        public List<TagValue> InnerTlv()
+        public Dictionary<string, byte[]> InnerTlv()
         {
             using (MemoryStream ms = new MemoryStream(Value))
             {
@@ -60,28 +55,30 @@ namespace DotNetToolBox.IO
                 return tlv.ReadAll();
             }
         }
-
-        public override string ToString()
-        {
-            return $"{Tag} ({Value.Length} bytes)";
-        }
     }
 
     public class BinaryTlvWriter
     {
         private Stream _output;
         private byte _tagLength;
+        private List<string> _tags;
 
         public BinaryTlvWriter(Stream output, byte tagLength)
         {
             _output = output;
             _tagLength = tagLength;
+            _tags = new List<string>();
 
             BinaryHelper.WriteByte(_output, _tagLength);
         }
 
         public void Write(string tag, byte[] value)
         {
+            if (_tags.Contains(tag))
+                throw new TlvException($"Tag '{tag}' already written");
+            else
+                _tags.Add(tag);
+
             string padTag = tag.PadRight(_tagLength);
 
             if(padTag.Length != _tagLength)
@@ -118,23 +115,26 @@ namespace DotNetToolBox.IO
 
         public TagValue Read()
         {
-            byte[] tagData = BinaryHelper.ReadBytes(_input, _tagLength);
+            byte[] tagData = new byte[_tagLength];
+            if (_input.Read(tagData, 0, _tagLength) == 0)
+                return null;
+
             string tag = Encoding.ASCII.GetString(tagData).Trim();
             int valueLength = BinaryHelper.ReadInt32(_input);
             byte[] value = BinaryHelper.ReadBytes(_input, valueLength);
             return new TagValue(tag, value);
         }
 
-        public List<TagValue> ReadAll()
+        public Dictionary<string, byte[]> ReadAll()
         {
-            List<TagValue> values = new List<TagValue>();
+            Dictionary<string, byte[]> values = new Dictionary<string, byte[]>();
             TagValue tv;
 
             do
             {
                 tv = Read();
                 if (tv != null)
-                    values.Add(tv);
+                    values.Add(tv.Tag, tv.Value);
             } while (tv != null);
 
             return values;

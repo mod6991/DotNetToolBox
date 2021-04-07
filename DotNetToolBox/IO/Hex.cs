@@ -71,7 +71,6 @@ namespace DotNetToolBox.IO
         public static void Encode(Stream input, Stream output, int bufferSize = 4096)
         {
             byte[] buffer = new byte[bufferSize];
-            byte[] hexData;
             string hexStr;
             int bytesRead;
             do
