@@ -65,6 +65,12 @@ namespace DotNetToolBox.IO
         /// <param name="value">Value</param>
         public void Write(string tag, byte[] value)
         {
+            if (string.IsNullOrWhiteSpace(tag))
+                throw new ArgumentException("tag");
+
+            if (value == null)
+                throw new ArgumentNullException("value");
+
             if (_tags.Contains(tag))
                 throw new TlvException($"Tag '{tag}' already written");
             else
@@ -142,11 +148,22 @@ namespace DotNetToolBox.IO
         /// <param name="data">Data containing the TLV list</param>
         public static Dictionary<string, byte[]> TlvListFromBytes(byte[] data)
         {
+            Dictionary<string, byte[]> tlvList = new Dictionary<string, byte[]>();
+
             using (MemoryStream ms = new MemoryStream(data))
             {
                 BinaryTlvReader tlv = new BinaryTlvReader(ms);
-                return tlv.ReadAll();
+                TagValue tv;
+
+                do
+                {
+                    tv = tlv.Read();
+                    if (tv != null)
+                        tlvList.Add(tv.Tag, tv.Value);
+                } while (tv != null);
             }
+
+            return tlvList;
         }
     }
 }
