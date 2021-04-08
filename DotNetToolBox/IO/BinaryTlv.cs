@@ -35,26 +35,12 @@ namespace DotNetToolBox.IO
     {
         public TagValue(string tag, byte[] value)
         {
-            if (string.IsNullOrWhiteSpace(tag))
-                throw new ArgumentException("tag");
-            if (value == null)
-                throw new ArgumentException("value");
-
             Tag = tag;
             Value = value;
         }
 
-        public string Tag { get; set; }
-        public byte[] Value { get; set; }
-
-        public Dictionary<string, byte[]> InnerTlv()
-        {
-            using (MemoryStream ms = new MemoryStream(Value))
-            {
-                BinaryTlvReader tlv = new BinaryTlvReader(ms);
-                return tlv.ReadAll();
-            }
-        }
+        public string Tag { get; }
+        public byte[] Value { get; }
     }
 
     public class BinaryTlvWriter
@@ -72,6 +58,11 @@ namespace DotNetToolBox.IO
             BinaryHelper.WriteByte(_output, _tagLength);
         }
 
+        /// <summary>
+        /// Write TLV into output stream
+        /// </summary>
+        /// <param name="tag">Tag</param>
+        /// <param name="value">Value</param>
         public void Write(string tag, byte[] value)
         {
             if (_tags.Contains(tag))
@@ -89,13 +80,18 @@ namespace DotNetToolBox.IO
             BinaryHelper.WriteBytes(_output, value);
         }
 
-        public static byte[] BuildTlv(List<TagValue> values, byte tagLength)
+        /// <summary>
+        /// Build a TLV list
+        /// </summary>
+        /// <param name="values">Values to write</param>
+        /// <param name="tagLength">Tag length for the values</param>
+        public static byte[] BuildTlvList(Dictionary<string, byte[]> values, byte tagLength)
         {
             using (MemoryStream ms = new MemoryStream())
             {
                 BinaryTlvWriter tlv = new BinaryTlvWriter(ms, tagLength);
-                foreach (TagValue tv in values)
-                    tlv.Write(tv.Tag, tv.Value);
+                foreach (KeyValuePair<string, byte[]> kvp in values)
+                    tlv.Write(kvp.Key, kvp.Value);
 
                 return ms.ToArray();
             }
@@ -113,6 +109,9 @@ namespace DotNetToolBox.IO
             _tagLength = BinaryHelper.ReadByte(_input);
         }
 
+        /// <summary>
+        /// Read a single TLV from the input stream
+        /// </summary>
         public TagValue Read()
         {
             byte[] tagData = new byte[_tagLength];
@@ -125,19 +124,29 @@ namespace DotNetToolBox.IO
             return new TagValue(tag, value);
         }
 
+        /// <summary>
+        /// Read all TLV from the input stream
+        /// </summary>
         public Dictionary<string, byte[]> ReadAll()
         {
-            Dictionary<string, byte[]> values = new Dictionary<string, byte[]>();
-            TagValue tv;
-
-            do
+            using (MemoryStream ms = new MemoryStream())
             {
-                tv = Read();
-                if (tv != null)
-                    values.Add(tv.Tag, tv.Value);
-            } while (tv != null);
+                StreamHelper.WriteStream(_input, ms);
+                return TlvListFromBytes(ms.ToArray());
+            }
+        }
 
-            return values;
+        /// <summary>
+        /// Read a TLV list from bytes
+        /// </summary>
+        /// <param name="data">Data containing the TLV list</param>
+        public static Dictionary<string, byte[]> TlvListFromBytes(byte[] data)
+        {
+            using (MemoryStream ms = new MemoryStream(data))
+            {
+                BinaryTlvReader tlv = new BinaryTlvReader(ms);
+                return tlv.ReadAll();
+            }
         }
     }
 }
