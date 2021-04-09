@@ -227,11 +227,5 @@ namespace DotNetToolBox.Cryptography
                 return _password.ToCharArray();
             }
         }
-
-        public enum EncodingType
-        {
-            Base64 = 0x01,
-            Hexadecimal = 0x02
-        }
     }
 }
