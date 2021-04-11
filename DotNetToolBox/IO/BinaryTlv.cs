@@ -137,6 +137,7 @@ namespace DotNetToolBox.IO
         {
             using (MemoryStream ms = new MemoryStream())
             {
+                _input.Seek(0, SeekOrigin.Begin);
                 StreamHelper.WriteStream(_input, ms);
                 return TlvListFromBytes(ms.ToArray());
             }
