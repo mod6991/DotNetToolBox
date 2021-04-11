@@ -1,0 +1,8 @@
+Version 7.6 TODO list:
+----------------------
+
+ - Add GPG
+ - Add Chacha20 and XChacha20
+ - Add Blowfish and Twofish
+ - Add Poly1305
+ - Update FileEnc with multi-encryption
