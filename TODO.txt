@@ -1,8 +1,8 @@
 Version 7.6 TODO list:
 ----------------------
 
+ - Add methods to hash classes
  - Add GPG
- - Add Chacha20 and XChacha20
- - Add Blowfish and Twofish
- - Add Poly1305
+ - Add ChaCha20, Salsa20 and Blowfish ciphers
+ - Change Aes to BC's one
  - Update FileEnc with multi-encryption
