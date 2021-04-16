@@ -19,131 +19,112 @@
 
 #endregion
 
-using System.IO;
-using System.Security.Cryptography;
+using System;
 using System.Text;
 
 namespace DotNetToolBox.IO
 {
+    public class Base64DecodeException : Exception
+    {
+        public Base64DecodeException(string message) : base(message) { }
+    }
+
     public static class Base64
     {
+        internal static string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+        internal static char padding = '=';
+
         /// <summary>
-        /// Encode data with base64
+        /// Encode bytes to Base64 string
         /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="output">Output Stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static void Encode(Stream input, Stream output, int bufferSize = 4096)
+        /// <param name="data">Byte array</param>
+        /// <returns>Base64 string</returns>
+        public static string Encode(byte[] data)
         {
-            ICryptoTransform cryptor = new ToBase64Transform();
-            using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
+            if (data == null)
+                throw new ArgumentNullException("data");
+
+            StringBuilder sb = new StringBuilder();
+            int loops = data.Length / 3;
+            int mod = data.Length % 3;
+            int i;
+            byte b1, b2, b3;
+
+            for (i = 0; i < loops; i++)
             {
-                StreamHelper.WriteStream(input, cs, bufferSize);
+                b1 = data[i * 3];
+                b2 = data[i * 3 + 1];
+                b3 = data[i * 3 + 2];
+                sb.Append(chars[b1 >> 2]);
+                sb.Append(chars[(b1 & 0x03) << 4 | b2 >> 4]);
+                sb.Append(chars[(b2 & 0x0F) << 2 | b3 >> 6]);
+                sb.Append(chars[b3 & 0x3F]);
             }
+
+            if (mod == 2)
+            {
+                b1 = data[i * 3];
+                b2 = data[i * 3 + 1];
+                sb.Append(chars[b1 >> 2]);
+                sb.Append(chars[(b1 & 0x03) << 4 | b2 >> 4]);
+                sb.Append(chars[(b2 & 0x0F) << 2]);
+                sb.Append(padding);
+            }
+            else if (mod == 1)
+            {
+                b1 = data[i * 3];
+                sb.Append(chars[b1 >> 2]);
+                sb.Append(chars[(b1 & 0x03) << 4]);
+                sb.Append(padding);
+                sb.Append(padding);
+            }
+
+            return sb.ToString();
         }
 
         /// <summary>
-        /// Encode data with base64
+        /// Decode Base64 string to bytes
         /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static string Encode(Stream input, int bufferSize = 4096)
+        /// <param name="str">Base64 string</param>
+        /// <returns>Byte array</returns>
+        public static byte[] Decode(string str)
         {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Encode(input, ms, bufferSize);
-                return Encoding.ASCII.GetString(ms.ToArray());
-            }
-        }
+            if (str == null)
+                throw new ArgumentNullException("str");
 
-        /// <summary>
-        /// Encode data with base64
-        /// </summary>
-        /// <param name="inputData">Data to encode</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static string Encode(byte[] inputData, int bufferSize = 4096)
-        {
-            using (MemoryStream ms = new MemoryStream(inputData))
-            {
-                return Encode(ms, bufferSize);
-            }
-        }
+            if (str.Length % 4 != 0)
+                throw new Base64DecodeException("Invalid input string length (not a multiple of 4)");
 
-        /// <summary>
-        /// Encode data with base64
-        /// </summary>
-        /// <param name="inputFile">Input file</param>
-        /// <param name="outputFile">Output file</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static void Encode(string inputFile, string outputFile, int bufferSize = 4096)
-        {
-            using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (FileStream output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
-                {
-                    Encode(input, output, bufferSize);
-                }
-            }
-        }
+            byte[] data = new byte[(str.Length / 4) * 3];
+            int loops = str.Length / 4;
+            int i;
+            int i1, i2, i3, i4;
 
-        /// <summary>
-        /// Decode data with base64
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="output">Output Stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static void Decode(Stream input, Stream output, int bufferSize = 4096)
-        {
-            ICryptoTransform cryptor = new FromBase64Transform();
-            using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
+            for (i = 0; i < loops; i++)
             {
-                StreamHelper.WriteStream(input, cs, bufferSize);
-            }
-        }
+                i1 = chars.IndexOf(str[i * 4]);
+                if (i1 == -1)
+                    throw new Base64DecodeException($"Invalid base64 byte1 char '{str[i * 4]}'");
 
-        /// <summary>
-        /// Decode data with base64
-        /// </summary>
-        /// <param name="input">Input stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Decode(Stream input, int bufferSize = 4096)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Decode(input, ms, bufferSize);
-                return ms.ToArray();
-            }
-        }
+                i2 = chars.IndexOf(str[i * 4 + 1]);
+                if (i2 == -1)
+                    throw new Base64DecodeException($"Invalid base64 byte2 char '{str[i * 4 + 1]}'");
 
-        /// <summary>
-        /// Decode data with base64
-        /// </summary>
-        /// <param name="base64String">Data to decode</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Decode(string base64String, int bufferSize = 4096)
-        {
-            byte[] base64Data = Encoding.ASCII.GetBytes(base64String);
-            using (MemoryStream ms = new MemoryStream(base64Data))
-            {
-                return Decode(ms, bufferSize);
-            }
-        }
+                i3 = chars.IndexOf(str[i * 4 + 2]);
+                if (i3 == -1 && str[i * 4 + 2] != '=')
+                    throw new Base64DecodeException($"Invalid base64 byte3 char '{str[i * 4 + 2]}'");
 
-        /// <summary>
-        /// Decode data with base64
-        /// </summary>
-        /// <param name="inputFile">Input file</param>
-        /// <param name="outputFile">Output file</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static void Decode(string inputFile, string outputFile, int bufferSize = 4096)
-        {
-            using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (FileStream output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
-                {
-                    Decode(input, output, bufferSize);
-                }
+                i4 = chars.IndexOf(str[i * 4 + 3]);
+                if (i4 == -1 && str[i * 4 + 3] != '=')
+                    throw new Base64DecodeException($"Invalid base64 byte3 char '{str[i * 4 + 3]}'");
+
+
+                data[i * 3] =     (byte)(i1 << 2 | i2 >> 4);
+                data[i * 3 + 1] = (byte)((i2 & 0x0F) << 4 | i3 >> 2);
+                data[i * 3 + 2] = (byte)((i3 & 0x03) << 6 | i4 & 0x3F);
             }
+
+            return data;
         }
     }
 }
