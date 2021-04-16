@@ -119,7 +119,7 @@ namespace DotNetToolBox.IO
                     throw new Base64DecodeException($"Invalid base64 char4 '{str[i * 4 + 3]}'");
 
 
-                data[i * 3] =     (byte)(i1 << 2 | i2 >> 4);
+                data[i * 3] = (byte)(i1 << 2 | i2 >> 4);
                 data[i * 3 + 1] = (byte)((i2 & 0x0F) << 4 | i3 >> 2);
                 data[i * 3 + 2] = (byte)((i3 & 0x03) << 6 | i4 & 0x3F);
             }
