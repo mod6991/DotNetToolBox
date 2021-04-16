@@ -44,7 +44,7 @@ namespace DotNetToolBox.IO
             if (data == null)
                 throw new ArgumentNullException("data");
 
-            StringBuilder sb = new StringBuilder();
+            char[] ca = new char[(data.Length / 3 + 1) * 4];
             int loops = data.Length / 3;
             int mod = data.Length % 3;
             int i;
@@ -55,31 +55,31 @@ namespace DotNetToolBox.IO
                 b1 = data[i * 3];
                 b2 = data[i * 3 + 1];
                 b3 = data[i * 3 + 2];
-                sb.Append(chars[b1 >> 2]);
-                sb.Append(chars[(b1 & 0x03) << 4 | b2 >> 4]);
-                sb.Append(chars[(b2 & 0x0F) << 2 | b3 >> 6]);
-                sb.Append(chars[b3 & 0x3F]);
+                ca[i * 4] = chars[b1 >> 2];
+                ca[i * 4 + 1] = chars[(b1 & 0x03) << 4 | b2 >> 4];
+                ca[i * 4 + 2] = chars[(b2 & 0x0F) << 2 | b3 >> 6];
+                ca[i * 4 + 3] = chars[b3 & 0x3F];
             }
 
             if (mod == 2)
             {
                 b1 = data[i * 3];
                 b2 = data[i * 3 + 1];
-                sb.Append(chars[b1 >> 2]);
-                sb.Append(chars[(b1 & 0x03) << 4 | b2 >> 4]);
-                sb.Append(chars[(b2 & 0x0F) << 2]);
-                sb.Append(padding);
+                ca[i * 4] = chars[b1 >> 2];
+                ca[i * 4 + 1] = chars[(b1 & 0x03) << 4 | b2 >> 4];
+                ca[i * 4 + 2] = chars[(b2 & 0x0F) << 2];
+                ca[i * 4 + 3] = padding;
             }
             else if (mod == 1)
             {
                 b1 = data[i * 3];
-                sb.Append(chars[b1 >> 2]);
-                sb.Append(chars[(b1 & 0x03) << 4]);
-                sb.Append(padding);
-                sb.Append(padding);
+                ca[i * 4] = chars[b1 >> 2];
+                ca[i * 4 + 1] = chars[(b1 & 0x03) << 4];
+                ca[i * 4 + 2] = padding;
+                ca[i * 4 + 3] = padding;
             }
 
-            return sb.ToString();
+            return new string(ca);
         }
 
         /// <summary>
@@ -104,19 +104,19 @@ namespace DotNetToolBox.IO
             {
                 i1 = chars.IndexOf(str[i * 4]);
                 if (i1 == -1)
-                    throw new Base64DecodeException($"Invalid base64 byte1 char '{str[i * 4]}'");
+                    throw new Base64DecodeException($"Invalid base64 char1 '{str[i * 4]}'");
 
                 i2 = chars.IndexOf(str[i * 4 + 1]);
                 if (i2 == -1)
-                    throw new Base64DecodeException($"Invalid base64 byte2 char '{str[i * 4 + 1]}'");
+                    throw new Base64DecodeException($"Invalid base64 char2 '{str[i * 4 + 1]}'");
 
                 i3 = chars.IndexOf(str[i * 4 + 2]);
                 if (i3 == -1 && str[i * 4 + 2] != '=')
-                    throw new Base64DecodeException($"Invalid base64 byte3 char '{str[i * 4 + 2]}'");
+                    throw new Base64DecodeException($"Invalid base64 char3 '{str[i * 4 + 2]}'");
 
                 i4 = chars.IndexOf(str[i * 4 + 3]);
                 if (i4 == -1 && str[i * 4 + 3] != '=')
-                    throw new Base64DecodeException($"Invalid base64 byte3 char '{str[i * 4 + 3]}'");
+                    throw new Base64DecodeException($"Invalid base64 char4 '{str[i * 4 + 3]}'");
 
 
                 data[i * 3] =     (byte)(i1 << 2 | i2 >> 4);

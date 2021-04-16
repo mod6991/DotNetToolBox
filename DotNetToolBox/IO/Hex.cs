@@ -19,184 +19,77 @@
 
 #endregion
 
+
 using System;
-using System.IO;
 using System.Text;
 
 namespace DotNetToolBox.IO
 {
+    public class HexDecodeException : Exception
+    {
+        public HexDecodeException(string message) : base(message) { }
+    }
+
     public static class Hex
     {
         /// <summary>
-        /// Encode data with Hexadecimal
+        /// Encode bytes to hex string
         /// </summary>
-        /// <param name="bytes">Data to encode</param>
-        /// <param name="bytesRead">Number of bytes read</param>
-        private static string InternalEncode(byte[] bytes, int bytesRead)
+        /// <param name="data">Byte array</param>
+        /// <returns>Hex string</returns>
+        public static string Encode(byte[] data)
         {
-            char[] c = new char[bytesRead * 2];
-            int b;
-            for (int i = 0; i < bytesRead; i++)
+            if (data == null)
+                throw new ArgumentNullException("data");
+
+            char[] ca = new char[data.Length * 2];
+            byte b;
+
+            for (int i = 0; i < data.Length; i++)
             {
-                b = bytes[i] >> 4;
-                c[i * 2] = (char)(55 + b + (((b - 10) >> 31) & -7));
-                b = bytes[i] & 0xF;
-                c[i * 2 + 1] = (char)(55 + b + (((b - 10) >> 31) & -7));
+                b = (byte)(data[i] >> 4);
+                ca[i * 2] = (char)(b < 0x0a ? b | 0x30 : ((b - 1) & 0x07) | 0x60);
+                b = (byte)(data[i] & 0x0F);
+                ca[i * 2 + 1] = (char)(b < 0x0a ? b | 0x30 : ((b - 1) & 0x07) | 0x60);
             }
-            return new string(c);
+
+            return new string(ca);
         }
 
         /// <summary>
-        /// Decode data with Hexadecimal
+        /// Decode hex string to bytes
         /// </summary>
-        /// <param name="hex">Data to decode</param>
-        private static byte[] InternalDecode(string hex)
+        /// <param name="str">Hex string</param>
+        /// <returns>Byte array</returns>
+        public static byte[] Decode(string str)
         {
-            int nbChars = hex.Length / 2;
-            byte[] bytes = new byte[nbChars];
-            using (StringReader sr = new StringReader(hex))
+            if (str == null)
+                throw new ArgumentNullException("str");
+
+            if (str.Length % 2 != 0)
+                throw new HexDecodeException("Invalid input string length (not a multiple of 2)");
+
+            byte[] data = new byte[str.Length / 2];
+            char c1, c2;
+            int b1, b2;
+
+            for (int i = 0; i < data.Length; i++)
             {
-                for (int i = 0; i < nbChars; i++)
-                    bytes[i] = Convert.ToByte(new string(new char[2] { (char)sr.Read(), (char)sr.Read() }), 16);
+                c1 = str[i * 2];
+                c2 = str[i * 2 + 1];
+
+                if (!((c1 >= 0x30 && c1 <= 0x39) || (c1 >= 0x61 && c1 <= 0x66) || (c1 >= 0x41 && c1 <= 0x46)))
+                    throw new HexDecodeException($"Invalid hex char '{c1}'");
+
+                if (!((c2 >= 0x30 && c2 <= 0x39) || (c2 >= 0x61 && c2 <= 0x66) || (c2 >= 0x41 && c2 <= 0x46)))
+                    throw new HexDecodeException($"Invalid hex char '{c2}'");
+
+                b1 = (c1 & 0xF0) == 0x30 ? c1 & 0x0F : ((c1 & 0x0F) | 0x08) + 1;
+                b2 = (c2 & 0xF0) == 0x30 ? c2 & 0x0F : ((c2 & 0x0F) | 0x08) + 1;
+                data[i] = (byte)(b1 << 4 | b2);
             }
-            return bytes;
-        }
 
-        /// <summary>
-        /// Encode data with Hexadecimal
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="output">Output Stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static void Encode(Stream input, Stream output, int bufferSize = 4096)
-        {
-            byte[] buffer = new byte[bufferSize];
-            byte[] hexData;
-            string hexStr;
-            int bytesRead;
-            do
-            {
-                bytesRead = input.Read(buffer, 0, bufferSize);
-                if (bytesRead > 0)
-                {
-                    hexStr = InternalEncode(buffer, bytesRead);
-                    hexData = Encoding.ASCII.GetBytes(hexStr);
-                    output.Write(hexData, 0, hexData.Length);
-                }
-            } while (bytesRead == bufferSize);
-        }
-
-        /// <summary>
-        /// Encode data with Hexadecimal
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static string Encode(Stream input, int bufferSize = 4096)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Encode(input, ms, bufferSize);
-                return Encoding.ASCII.GetString(ms.ToArray());
-            }
-        }
-
-        /// <summary>
-        /// Encode data with Hexadecimal
-        /// </summary>
-        /// <param name="inputData">Data to encode</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static string Encode(byte[] inputData, int bufferSize = 4096)
-        {
-            using (MemoryStream ms = new MemoryStream(inputData))
-            {
-                return Encode(ms, bufferSize);
-            }
-        }
-
-        /// <summary>
-        /// Encode data with Hexadecimal
-        /// </summary>
-        /// <param name="inputFile">Input file</param>
-        /// <param name="outputFile">Output file</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static void Encode(string inputFile, string outputFile, int bufferSize = 4096)
-        {
-            using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (FileStream output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
-                {
-                    Encode(input, output, bufferSize);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Decode data with Hexadecimal
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="output">Output Stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static void Decode(Stream input, Stream output, int bufferSize = 4096)
-        {
-            byte[] buffer = new byte[bufferSize];
-            byte[] hexData;
-            string hexStr;
-            int bytesRead;
-            do
-            {
-                bytesRead = input.Read(buffer, 0, bufferSize);
-                if (bytesRead > 0)
-                {
-                    hexStr = Encoding.ASCII.GetString(buffer, 0, bytesRead);
-                    hexData = InternalDecode(hexStr);
-                    output.Write(hexData, 0, hexData.Length);
-                }
-            } while (bytesRead == bufferSize);
-        }
-
-        /// <summary>
-        /// Decode data with Hexadecimal
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Decode(Stream input, int bufferSize = 4096)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Decode(input, ms, bufferSize);
-                return ms.ToArray();
-            }
-        }
-
-        /// <summary>
-        /// Decode data with Hexadecimal
-        /// </summary>
-        /// <param name="hexString">Data to decode</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static byte[] Decode(string hexString, int bufferSize = 4096)
-        {
-            byte[] hexData = Encoding.ASCII.GetBytes(hexString);
-            using (MemoryStream ms = new MemoryStream(hexData))
-            {
-                return Decode(ms, bufferSize);
-            }
-        }
-
-        /// <summary>
-        /// Decode data with Hexadecimal
-        /// </summary>
-        /// <param name="inputFile">Input file</param>
-        /// <param name="outputFile">Output file</param>
-        /// <param name="bufferSize">Buffer size</param>
-        public static void Decode(string inputFile, string outputFile, int bufferSize = 4096)
-        {
-            using (FileStream input = new FileStream(inputFile, FileMode.Open, FileAccess.Read, FileShare.Read))
-            {
-                using (FileStream output = new FileStream(outputFile, FileMode.Create, FileAccess.Write, FileShare.Write))
-                {
-                    Decode(input, output, bufferSize);
-                }
-            }
+            return data;
         }
     }
 }
