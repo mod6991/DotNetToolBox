@@ -37,5 +37,13 @@ namespace DotNetToolBox.Cryptography
                 return md5.ComputeHash(input);
             }
         }
+
+        public static byte[] Hash(byte[] data)
+        {
+            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
+            {
+                return md5.ComputeHash(data);
+            }
+        }
     }
 }

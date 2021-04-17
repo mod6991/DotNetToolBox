@@ -145,11 +145,16 @@
     <Compile Include="Configuration\INIConfigFileManager.cs" />
     <Compile Include="Configuration\XMLConfigFileManager.cs" />
     <Compile Include="Cryptography\AES.cs" />
+    <Compile Include="Cryptography\AESOld.cs" />
+    <Compile Include="Cryptography\Blowfish.cs" />
+    <Compile Include="Cryptography\ChaCha20.cs" />
+    <Compile Include="Cryptography\ChaCha20Rfc7539.cs" />
     <Compile Include="Cryptography\DES.cs" />
     <Compile Include="Cryptography\FileEnc.cs" />
     <Compile Include="Cryptography\MD5.cs" />
     <Compile Include="Cryptography\PBKDF2.cs" />
     <Compile Include="Cryptography\RSA.cs" />
+    <Compile Include="Cryptography\Salsa20.cs" />
     <Compile Include="Cryptography\SHA1.cs" />
     <Compile Include="Cryptography\SHA256.cs" />
     <Compile Include="Cryptography\SHA3.cs" />

@@ -41,23 +41,23 @@ namespace DotNetToolBox.Cryptography
         /// <param name="keyName">Key name</param>
         public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName, Action<int> notifyProgression = null)
         {
-            byte[] key = RandomHelper.GenerateBytes(AES.KEY_SIZE);
-            byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
+            //byte[] key = RandomHelper.GenerateBytes(AES.KEY_SIZE);
+            //byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
 
-            byte[] encKey = RSA.Encrypt(rsa, key);
+            //byte[] encKey = RSA.Encrypt(rsa, key);
 
-            byte[] keyNameData = Encoding.ASCII.GetBytes(keyName);
+            //byte[] keyNameData = Encoding.ASCII.GetBytes(keyName);
 
-            BinaryHelper.WriteString(output, "ENCR!", Encoding.ASCII);
-            BinaryHelper.WriteByte(output, _version);
-            BinaryHelper.WriteByte(output, (byte)keyNameData.Length);
-            BinaryHelper.WriteInt16(output, (Int16)encKey.Length);
-            BinaryHelper.WriteByte(output, (byte)iv.Length);
-            BinaryHelper.WriteBytes(output, keyNameData);
-            BinaryHelper.WriteBytes(output, encKey);
-            BinaryHelper.WriteBytes(output, iv);
+            //BinaryHelper.WriteString(output, "ENCR!", Encoding.ASCII);
+            //BinaryHelper.WriteByte(output, _version);
+            //BinaryHelper.WriteByte(output, (byte)keyNameData.Length);
+            //BinaryHelper.WriteInt16(output, (Int16)encKey.Length);
+            //BinaryHelper.WriteByte(output, (byte)iv.Length);
+            //BinaryHelper.WriteBytes(output, keyNameData);
+            //BinaryHelper.WriteBytes(output, encKey);
+            //BinaryHelper.WriteBytes(output, iv);
 
-            AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
+            //AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
 
         /// <summary>
@@ -68,18 +68,18 @@ namespace DotNetToolBox.Cryptography
         /// <param name="password">Password</param>
         public static void EncryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
         {
-            byte[] salt = RandomHelper.GenerateBytes(16);
-            byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
-            byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
+            //byte[] salt = RandomHelper.GenerateBytes(16);
+            //byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
+            //byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
 
-            BinaryHelper.WriteString(output, "ENCP!", Encoding.ASCII);
-            BinaryHelper.WriteByte(output, _version);
-            BinaryHelper.WriteByte(output, (byte)iv.Length);
-            BinaryHelper.WriteByte(output, (byte)salt.Length);
-            BinaryHelper.WriteBytes(output, iv);
-            BinaryHelper.WriteBytes(output, salt);
+            //BinaryHelper.WriteString(output, "ENCP!", Encoding.ASCII);
+            //BinaryHelper.WriteByte(output, _version);
+            //BinaryHelper.WriteByte(output, (byte)iv.Length);
+            //BinaryHelper.WriteByte(output, (byte)salt.Length);
+            //BinaryHelper.WriteBytes(output, iv);
+            //BinaryHelper.WriteBytes(output, salt);
 
-            AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
+            //AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
 
         /// <summary>
@@ -90,24 +90,24 @@ namespace DotNetToolBox.Cryptography
         /// <param name="rsa">RSA key</param>
         public static void DecryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, Action<int> notifyProgression = null)
         {
-            input.Seek(5, SeekOrigin.Current); // Header
-            input.Seek(1, SeekOrigin.Current); // Version
+            //input.Seek(5, SeekOrigin.Current); // Header
+            //input.Seek(1, SeekOrigin.Current); // Version
 
-            byte keyNameLength = BinaryHelper.ReadByte(input);
-            Int16 encKeyLength = BinaryHelper.ReadInt16(input);
-            byte ivLength = BinaryHelper.ReadByte(input);
+            //byte keyNameLength = BinaryHelper.ReadByte(input);
+            //Int16 encKeyLength = BinaryHelper.ReadInt16(input);
+            //byte ivLength = BinaryHelper.ReadByte(input);
 
-            input.Seek(keyNameLength, SeekOrigin.Current); // Key name
+            //input.Seek(keyNameLength, SeekOrigin.Current); // Key name
 
-            byte[] encKey = BinaryHelper.ReadBytes(input, encKeyLength);
-            byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
+            //byte[] encKey = BinaryHelper.ReadBytes(input, encKeyLength);
+            //byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
 
-            byte[] key = RSA.Decrypt(rsa, encKey);
+            //byte[] key = RSA.Decrypt(rsa, encKey);
 
-            if (notifyProgression != null)
-                notifyProgression(5 + 1 + 1 + 2 + 1 + keyNameLength + encKeyLength + ivLength);
+            //if (notifyProgression != null)
+            //    notifyProgression(5 + 1 + 1 + 2 + 1 + keyNameLength + encKeyLength + ivLength);
 
-            AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
+            //AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
 
         /// <summary>
@@ -118,20 +118,20 @@ namespace DotNetToolBox.Cryptography
         /// <param name="password">Password</param>
         public static void DecryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
         {
-            input.Seek(5, SeekOrigin.Current); // Header
-            input.Seek(1, SeekOrigin.Current); // Version
+            //input.Seek(5, SeekOrigin.Current); // Header
+            //input.Seek(1, SeekOrigin.Current); // Version
 
-            byte ivLength = BinaryHelper.ReadByte(input);
-            byte saltLength = BinaryHelper.ReadByte(input);
-            byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
-            byte[] salt = BinaryHelper.ReadBytes(input, saltLength);
+            //byte ivLength = BinaryHelper.ReadByte(input);
+            //byte saltLength = BinaryHelper.ReadByte(input);
+            //byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
+            //byte[] salt = BinaryHelper.ReadBytes(input, saltLength);
 
-            byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
+            //byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
 
-            if (notifyProgression != null)
-                notifyProgression(5 + 1 + 1 + 1 + ivLength + saltLength);
+            //if (notifyProgression != null)
+            //    notifyProgression(5 + 1 + 1 + 1 + ivLength + saltLength);
 
-            AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
+            //AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
         }
     }
 }

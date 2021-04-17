@@ -28,14 +28,21 @@ using System.IO;
 
 namespace DotNetToolBox.Cryptography
 {
-    public static class AES
+    public static class Blowfish
     {
-        public const int KEY_SIZE = 32;
-        public const int IV_SIZE = 16;
+        public const int KEY_SIZE = 56;
+        public const int IV_SIZE = 8;
 
+        /// <summary>
+        /// Encrypt data with Blowfish
+        /// </summary>
+        /// <param name="data">Data to encrypt</param>
+        /// <param name="key">Key</param>
+        /// <param name="iv">IV</param>
+        /// <returns>Encrypted data</returns>
         public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
         {
-            IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new AesEngine()));
+            IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new BlowfishEngine()));
 
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), iv, 0, iv.Length);
             cipher.Init(true, parameters);
@@ -45,11 +52,25 @@ namespace DotNetToolBox.Cryptography
             return data;
         }
 
+        /// <summary>
+        /// Encrypt data with Blowfish
+        /// </summary>
+        /// <param name="input">Input stream to encrypt</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="key">Key</param>
+        /// <param name="iv">IV</param>
         public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv)
         {
             throw new NotImplementedException();
         }
 
+        /// <summary>
+        /// Decrypt data with Blowfish
+        /// </summary>
+        /// <param name="data">Data to decrypt</param>
+        /// <param name="key">Key</param>
+        /// <param name="iv">IV</param>
+        /// <returns>Decrypted data</returns>
         public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
         {
             IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new BlowfishEngine()));
@@ -62,9 +83,16 @@ namespace DotNetToolBox.Cryptography
             return dec;
         }
 
+        /// <summary>
+        /// Decrypt data with Blowfish
+        /// </summary>
+        /// <param name="input">Input stream to decrypt</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="key">Key</param>
+        /// <param name="iv">IV</param>
         public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv)
         {
-            throw new NotImplementedException();
+
         }
     }
 }
