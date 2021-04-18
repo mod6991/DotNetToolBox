@@ -1,6 +1,7 @@
 ﻿using DotNetToolBox.Cryptography;
 using DotNetToolBox.IO;
 using DotNetToolBox.Utils;
+using Org.BouncyCastle.Crypto.Paddings;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,7 +16,9 @@ namespace DotNetToolBox.TesterConsole
         {
             try
             {
-
+                byte[] data = new byte[24];
+                byte[] padded = PaddingPkcs7.Pad(data, 16);
+                byte[] unpadded = PaddingPkcs7.UnPad(padded, 16);
             }
             catch (Exception ex)
             {

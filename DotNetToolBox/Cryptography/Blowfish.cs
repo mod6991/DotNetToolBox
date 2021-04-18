@@ -32,6 +32,7 @@ namespace DotNetToolBox.Cryptography
     {
         public const int KEY_SIZE = 56;
         public const int IV_SIZE = 8;
+        public const int BLOCK_SIZE = 8;
 
         /// <summary>
         /// Encrypt data with Blowfish

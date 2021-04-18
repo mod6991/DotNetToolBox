@@ -98,30 +98,30 @@ namespace DotNetToolBox.IO
             byte[] data = new byte[(str.Length / 4) * 3];
             int loops = str.Length / 4;
             int i;
-            int i1, i2, i3, i4;
+            int b1, b2, b3, b4;
 
             for (i = 0; i < loops; i++)
             {
-                i1 = chars.IndexOf(str[i * 4]);
-                if (i1 == -1)
+                b1 = chars.IndexOf(str[i * 4]);
+                if (b1 == -1)
                     throw new Base64DecodeException($"Invalid base64 char1 '{str[i * 4]}'");
 
-                i2 = chars.IndexOf(str[i * 4 + 1]);
-                if (i2 == -1)
+                b2 = chars.IndexOf(str[i * 4 + 1]);
+                if (b2 == -1)
                     throw new Base64DecodeException($"Invalid base64 char2 '{str[i * 4 + 1]}'");
 
-                i3 = chars.IndexOf(str[i * 4 + 2]);
-                if (i3 == -1 && str[i * 4 + 2] != '=')
+                b3 = chars.IndexOf(str[i * 4 + 2]);
+                if (b3 == -1 && str[i * 4 + 2] != '=')
                     throw new Base64DecodeException($"Invalid base64 char3 '{str[i * 4 + 2]}'");
 
-                i4 = chars.IndexOf(str[i * 4 + 3]);
-                if (i4 == -1 && str[i * 4 + 3] != '=')
+                b4 = chars.IndexOf(str[i * 4 + 3]);
+                if (b4 == -1 && str[i * 4 + 3] != '=')
                     throw new Base64DecodeException($"Invalid base64 char4 '{str[i * 4 + 3]}'");
 
 
-                data[i * 3] = (byte)(i1 << 2 | i2 >> 4);
-                data[i * 3 + 1] = (byte)((i2 & 0x0F) << 4 | i3 >> 2);
-                data[i * 3 + 2] = (byte)((i3 & 0x03) << 6 | i4 & 0x3F);
+                data[i * 3] = (byte)(b1 << 2 | b2 >> 4);
+                data[i * 3 + 1] = (byte)((b2 & 0x0F) << 4 | b3 >> 2);
+                data[i * 3 + 2] = (byte)((b3 & 0x03) << 6 | b4 & 0x3F);
             }
 
             return data;

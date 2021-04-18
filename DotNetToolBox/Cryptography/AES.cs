@@ -32,6 +32,7 @@ namespace DotNetToolBox.Cryptography
     {
         public const int KEY_SIZE = 32;
         public const int IV_SIZE = 16;
+        public const int BLOCK_SIZE = 16;
 
         public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
         {
