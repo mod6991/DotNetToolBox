@@ -17,8 +17,8 @@ namespace DotNetToolBox.TesterConsole
             try
             {
                 byte[] data = new byte[24];
-                byte[] padded = PaddingPkcs7.Pad(data, 16);
-                byte[] unpadded = PaddingPkcs7.UnPad(padded, 16);
+                byte[] padded = Padding.Pad(data, 16, PaddingStyle.Pkcs7);
+                byte[] unpadded = Padding.Unpad(padded, 16, PaddingStyle.Pkcs7);
             }
             catch (Exception ex)
             {
