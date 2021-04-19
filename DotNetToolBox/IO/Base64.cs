@@ -43,7 +43,8 @@ namespace DotNetToolBox.IO
             if (data == null)
                 throw new ArgumentNullException("data");
 
-            char[] ca = new char[(data.Length / 3 + 1) * 4];
+            int stringSize = data.Length % 3 == 0 ? (data.Length / 3) * 4 : (data.Length / 3 + 1) * 4;
+            char[] ca = new char[stringSize];
             int loops = data.Length / 3;
             int mod = data.Length % 3;
             int i;
