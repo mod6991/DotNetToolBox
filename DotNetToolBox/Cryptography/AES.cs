@@ -43,7 +43,7 @@ namespace DotNetToolBox.Cryptography
             byte[] enc = new byte[data.Length];
             cipher.ProcessBytes(data, enc, 0);
 
-            return data;
+            return enc;
         }
 
         public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv)
@@ -53,7 +53,7 @@ namespace DotNetToolBox.Cryptography
 
         public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
         {
-            IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new BlowfishEngine()));
+            IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new AesEngine()));
 
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), iv, 0, iv.Length);
             cipher.Init(false, parameters);

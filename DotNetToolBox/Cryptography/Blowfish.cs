@@ -50,7 +50,7 @@ namespace DotNetToolBox.Cryptography
             byte[] enc = new byte[data.Length];
             cipher.ProcessBytes(data, enc, 0);
 
-            return data;
+            return enc;
         }
 
         /// <summary>
