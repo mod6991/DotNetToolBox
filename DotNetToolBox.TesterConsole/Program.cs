@@ -16,9 +16,12 @@ namespace DotNetToolBox.TesterConsole
         {
             try
             {
-                byte[] data = new byte[24];
-                byte[] padded = Padding.Pad(data, 16, PaddingStyle.Pkcs7);
-                byte[] unpadded = Padding.Unpad(padded, 16, PaddingStyle.Pkcs7);
+                byte[] data = new byte[31];
+                for (int i = 0; i < data.Length; i++)
+                    data[i] = 0xdd;
+
+                byte[] padded = Padding.Pad(data, 16, PaddingStyle.Iso10126);
+                byte[] unpadded = Padding.Unpad(padded, 16, PaddingStyle.Iso10126);
             }
             catch (Exception ex)
             {
