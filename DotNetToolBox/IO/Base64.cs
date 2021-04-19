@@ -56,8 +56,8 @@ namespace DotNetToolBox.IO
                 b3 = data[i * 3 + 2];
                 ca[i * 4] = chars[b1 >> 2];
                 ca[i * 4 + 1] = chars[(b1 & 0x03) << 4 | b2 >> 4];
-                ca[i * 4 + 2] = chars[(b2 & 0x0F) << 2 | b3 >> 6];
-                ca[i * 4 + 3] = chars[b3 & 0x3F];
+                ca[i * 4 + 2] = chars[(b2 & 0x0f) << 2 | b3 >> 6];
+                ca[i * 4 + 3] = chars[b3 & 0x3f];
             }
 
             if (mod == 2)
@@ -66,7 +66,7 @@ namespace DotNetToolBox.IO
                 b2 = data[i * 3 + 1];
                 ca[i * 4] = chars[b1 >> 2];
                 ca[i * 4 + 1] = chars[(b1 & 0x03) << 4 | b2 >> 4];
-                ca[i * 4 + 2] = chars[(b2 & 0x0F) << 2];
+                ca[i * 4 + 2] = chars[(b2 & 0x0f) << 2];
                 ca[i * 4 + 3] = padding;
             }
             else if (mod == 1)
@@ -119,8 +119,8 @@ namespace DotNetToolBox.IO
 
 
                 data[i * 3] = (byte)(b1 << 2 | b2 >> 4);
-                data[i * 3 + 1] = (byte)((b2 & 0x0F) << 4 | b3 >> 2);
-                data[i * 3 + 2] = (byte)((b3 & 0x03) << 6 | b4 & 0x3F);
+                data[i * 3 + 1] = (byte)((b2 & 0x0f) << 4 | b3 >> 2);
+                data[i * 3 + 2] = (byte)((b3 & 0x03) << 6 | b4 & 0x3f);
             }
 
             return data;

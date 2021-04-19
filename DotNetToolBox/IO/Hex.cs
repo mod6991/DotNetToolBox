@@ -47,7 +47,7 @@ namespace DotNetToolBox.IO
             {
                 b = (byte)(data[i] >> 4);
                 ca[i * 2] = (char)(b < 0x0a ? b | 0x30 : ((b - 1) & 0x07) | 0x60);
-                b = (byte)(data[i] & 0x0F);
+                b = (byte)(data[i] & 0x0f);
                 ca[i * 2 + 1] = (char)(b < 0x0a ? b | 0x30 : ((b - 1) & 0x07) | 0x60);
             }
 
@@ -82,8 +82,8 @@ namespace DotNetToolBox.IO
                 if (!((c2 >= 0x30 && c2 <= 0x39) || (c2 >= 0x61 && c2 <= 0x66) || (c2 >= 0x41 && c2 <= 0x46)))
                     throw new HexDecodeException($"Invalid hex char '{c2}'");
 
-                b1 = (c1 & 0xF0) == 0x30 ? c1 & 0x0F : ((c1 & 0x0F) | 0x08) + 1;
-                b2 = (c2 & 0xF0) == 0x30 ? c2 & 0x0F : ((c2 & 0x0F) | 0x08) + 1;
+                b1 = (c1 & 0xf0) == 0x30 ? c1 & 0x0f : ((c1 & 0x0f) | 0x08) + 1;
+                b2 = (c2 & 0xf0) == 0x30 ? c2 & 0x0f : ((c2 & 0x0f) | 0x08) + 1;
                 data[i] = (byte)(b1 << 4 | b2);
             }
 
