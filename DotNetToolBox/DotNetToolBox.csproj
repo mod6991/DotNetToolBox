@@ -170,7 +170,6 @@
     <Compile Include="IO\BinaryHelper.cs" />
     <Compile Include="IO\BinaryTlv.cs" />
     <Compile Include="IO\CsvReader.cs" />
-    <Compile Include="IO\GZip.cs" />
     <Compile Include="IO\Hex.cs" />
     <Compile Include="IO\StreamHelper.cs" />
     <Compile Include="MVVM\DefaultCommands.cs" />
