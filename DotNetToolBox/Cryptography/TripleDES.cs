@@ -19,65 +19,53 @@
 
 #endregion
 
+using Org.BouncyCastle.Crypto;
+using Org.BouncyCastle.Crypto.Engines;
+using Org.BouncyCastle.Crypto.Modes;
+using Org.BouncyCastle.Crypto.Parameters;
 using System;
 using System.IO;
-using System.Security.Cryptography;
 
 namespace DotNetToolBox.Cryptography
 {
     public static class TripleDES
     {
         public const int KEY_SIZE = 24;
-        public const int IV_SIZE = 16;
+        public const int IV_SIZE = 8;
+        public const int BLOCK_SIZE = 8;
 
-        /// <summary>
-        /// Encrypt data with the TripleDES algorithm
-        /// </summary>
-        /// <param name="input">Input stream</param>
-        /// <param name="output">Output stream</param>
-        /// <param name="key">Key</param>
-        /// <param name="iv">IV</param>
-        /// <param name="cipherMode">Cipher mode</param>
-        /// <param name="paddingMode">Padding mode</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="notifyProgression">Notify progression method</param>
-        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
+        public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
         {
-            using (TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider())
-            {
-                tdes.Mode = cipherMode;
-                tdes.Padding = paddingMode;
-                ICryptoTransform cryptor = tdes.CreateEncryptor(key, iv);
-                using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
-                {
-                    IO.StreamHelper.WriteStream(input, cs, bufferSize, notifyProgression);
-                }
-            }
+            IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new DesEdeEngine()));
+
+            ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), iv, 0, iv.Length);
+            cipher.Init(true, parameters);
+            byte[] enc = new byte[data.Length];
+            cipher.ProcessBytes(data, enc, 0);
+            
+            return enc;
         }
 
-        /// <summary>
-        /// Decrypt data with the TripleDES algorithm
-        /// </summary>
-        /// <param name="input">Input stream</param>
-        /// <param name="output">Output stream</param>
-        /// <param name="key">Key</param>
-        /// <param name="iv">IV</param>
-        /// <param name="cipherMode">Cipher mode</param>
-        /// <param name="paddingMode">Padding mode</param>
-        /// <param name="bufferSize">Buffer size</param>
-        /// <param name="notifyProgression">Notify progression method</param>
-        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv, CipherMode cipherMode = CipherMode.CBC, PaddingMode paddingMode = PaddingMode.PKCS7, int bufferSize = 4096, Action<int> notifyProgression = null)
+        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv)
         {
-            using (TripleDESCryptoServiceProvider tdes = new TripleDESCryptoServiceProvider())
-            {
-                tdes.Mode = cipherMode;
-                tdes.Padding = paddingMode;
-                ICryptoTransform cryptor = tdes.CreateDecryptor(key, iv);
-                using (CryptoStream cs = new CryptoStream(output, cryptor, CryptoStreamMode.Write))
-                {
-                    IO.StreamHelper.WriteStream(input, cs, bufferSize, notifyProgression);
-                }
-            }
+            throw new NotImplementedException();
+        }
+
+        public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
+        {
+            IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new DesEdeEngine()));
+
+            ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), iv, 0, iv.Length);
+            cipher.Init(false, parameters);
+            byte[] dec = new byte[data.Length];
+            cipher.ProcessBytes(data, dec, 0);
+
+            return dec;
+        }
+
+        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv)
+        {
+            throw new NotImplementedException();
         }
     }
 }
