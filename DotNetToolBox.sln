@@ -14,6 +14,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolBox.Tester", "Dot
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolBox.TesterConsole", "DotNetToolBox.TesterConsole\DotNetToolBox.TesterConsole.csproj", "{F881953A-73B0-420F-B093-3777D1B9F1A2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotNetToolBox.UnitTests", "DotNetToolBox.UnitTests\DotNetToolBox.UnitTests.csproj", "{D7D53A4C-87C4-4252-B418-44C19812232A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -46,6 +48,12 @@ Global
 		{F881953A-73B0-420F-B093-3777D1B9F1A2}.Release|x64.Build.0 = Release|x64
 		{F881953A-73B0-420F-B093-3777D1B9F1A2}.Release|x86.ActiveCfg = Release|x86
 		{F881953A-73B0-420F-B093-3777D1B9F1A2}.Release|x86.Build.0 = Release|x86
+		{D7D53A4C-87C4-4252-B418-44C19812232A}.Debug|x64.ActiveCfg = Debug|x64
+		{D7D53A4C-87C4-4252-B418-44C19812232A}.Debug|x64.Build.0 = Debug|x64
+		{D7D53A4C-87C4-4252-B418-44C19812232A}.Debug|x86.ActiveCfg = Debug|x86
+		{D7D53A4C-87C4-4252-B418-44C19812232A}.Debug|x86.Build.0 = Debug|x86
+		{D7D53A4C-87C4-4252-B418-44C19812232A}.Release|x64.ActiveCfg = Release|x64
+		{D7D53A4C-87C4-4252-B418-44C19812232A}.Release|x86.ActiveCfg = Release|x86
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
