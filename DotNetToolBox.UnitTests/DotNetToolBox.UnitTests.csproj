@@ -93,6 +93,9 @@
     <Compile Include="ChaCha20Rfc7539Tests.cs" />
     <Compile Include="HexTests.cs" />
     <Compile Include="MD5Tests.cs" />
+    <Compile Include="DesTests.cs" />
+    <Compile Include="TripleDESTests.cs" />
+    <Compile Include="Salsa20Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\aes.csv">
