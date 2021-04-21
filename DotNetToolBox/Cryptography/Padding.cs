@@ -31,6 +31,7 @@ namespace DotNetToolBox.Cryptography
 
     public enum PaddingStyle
     {
+        None,
         Pkcs7,
         AnsiX923,
         Iso7816,
@@ -43,6 +44,8 @@ namespace DotNetToolBox.Cryptography
         {
             switch (paddingStyle)
             {
+                case PaddingStyle.None:
+                    return data;
                 case PaddingStyle.Pkcs7:
                     return PadPkcs7(data, blockSize);
                 case PaddingStyle.AnsiX923:
@@ -60,6 +63,8 @@ namespace DotNetToolBox.Cryptography
         {
             switch (paddingStyle)
             {
+                case PaddingStyle.None:
+                    return data;
                 case PaddingStyle.Pkcs7:
                     return UnpadPkcs7(data, blockSize);
                 case PaddingStyle.AnsiX923:

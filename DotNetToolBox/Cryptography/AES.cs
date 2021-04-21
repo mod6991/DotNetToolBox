@@ -46,7 +46,7 @@ namespace DotNetToolBox.Cryptography
             return enc;
         }
 
-        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv)
+        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle)
         {
             throw new NotImplementedException();
         }
@@ -63,7 +63,7 @@ namespace DotNetToolBox.Cryptography
             return dec;
         }
 
-        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv)
+        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle)
         {
             throw new NotImplementedException();
         }

@@ -60,7 +60,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
-        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv)
+        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle)
         {
             throw new NotImplementedException();
         }
@@ -91,7 +91,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
-        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv)
+        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle)
         {
 
         }
