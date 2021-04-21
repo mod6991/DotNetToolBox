@@ -97,6 +97,9 @@
     <Compile Include="TripleDESTests.cs" />
     <Compile Include="Salsa20Tests.cs" />
     <Compile Include="SHA3Tests.cs" />
+    <Compile Include="SHA1Tests.cs" />
+    <Compile Include="SHA256Tests.cs" />
+    <Compile Include="SHA512Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="data\aes.csv">
