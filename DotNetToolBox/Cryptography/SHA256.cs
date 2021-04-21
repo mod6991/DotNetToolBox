@@ -19,6 +19,7 @@
 
 #endregion
 
+using Org.BouncyCastle.Crypto.Digests;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -26,16 +27,13 @@ namespace DotNetToolBox.Cryptography
 {
     public static class SHA256
     {
-        /// <summary>
-        /// Compute the SHA256 hash value
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        public static byte[] Hash(Stream input)
+        public static byte[] Hash(byte[] data)
         {
-            using (SHA256CryptoServiceProvider sha256 = new SHA256CryptoServiceProvider())
-            {
-                return sha256.ComputeHash(input);
-            }
+            Sha256Digest sha256 = new Sha256Digest();
+            sha256.BlockUpdate(data, 0, data.Length);
+            byte[] result = new byte[32];
+            sha256.DoFinal(result, 0);
+            return result;
         }
     }
 }

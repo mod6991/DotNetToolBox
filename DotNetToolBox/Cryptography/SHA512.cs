@@ -19,6 +19,7 @@
 
 #endregion
 
+using Org.BouncyCastle.Crypto.Digests;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -26,16 +27,13 @@ namespace DotNetToolBox.Cryptography
 {
     public static class SHA512
     {
-        /// <summary>
-        /// Compute the SHA512 hash value
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        public static byte[] Hash(Stream input)
+        public static byte[] Hash(byte[] data)
         {
-            using (SHA512CryptoServiceProvider sha512 = new SHA512CryptoServiceProvider())
-            {
-                return sha512.ComputeHash(input);
-            }
+            Sha512Digest sha512 = new Sha512Digest();
+            sha512.BlockUpdate(data, 0, data.Length);
+            byte[] result = new byte[64];
+            sha512.DoFinal(result, 0);
+            return result;
         }
     }
 }

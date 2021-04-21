@@ -19,6 +19,7 @@
 
 #endregion
 
+using Org.BouncyCastle.Crypto.Digests;
 using System.IO;
 using System.Security.Cryptography;
 
@@ -26,24 +27,13 @@ namespace DotNetToolBox.Cryptography
 {
     public static class MD5
     {
-        /// <summary>
-        /// Compute the MD5 hash value
-        /// </summary>
-        /// <param name="input">Input Stream</param>
-        public static byte[] Hash(Stream input)
-        {
-            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-            {
-                return md5.ComputeHash(input);
-            }
-        }
-
         public static byte[] Hash(byte[] data)
         {
-            using (MD5CryptoServiceProvider md5 = new MD5CryptoServiceProvider())
-            {
-                return md5.ComputeHash(data);
-            }
+            MD5Digest md5 = new MD5Digest();
+            md5.BlockUpdate(data, 0, data.Length);
+            byte[] result = new byte[16];
+            md5.DoFinal(result, 0);
+            return result;
         }
     }
 }
