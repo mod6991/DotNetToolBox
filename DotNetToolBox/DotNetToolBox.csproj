@@ -145,7 +145,6 @@
     <Compile Include="Configuration\INIConfigFileManager.cs" />
     <Compile Include="Configuration\XMLConfigFileManager.cs" />
     <Compile Include="Cryptography\AES.cs" />
-    <Compile Include="Cryptography\AESOld.cs" />
     <Compile Include="Cryptography\Blowfish.cs" />
     <Compile Include="Cryptography\ChaCha20.cs" />
     <Compile Include="Cryptography\ChaCha20Rfc7539.cs" />
