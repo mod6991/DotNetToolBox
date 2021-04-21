@@ -20,7 +20,6 @@
 #endregion
 
 using Org.BouncyCastle.Crypto.Digests;
-using System.IO;
 
 namespace DotNetToolBox.Cryptography
 {

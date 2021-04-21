@@ -21,7 +21,6 @@
 
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
-using System;
 using System.IO;
 
 namespace DotNetToolBox.Cryptography
