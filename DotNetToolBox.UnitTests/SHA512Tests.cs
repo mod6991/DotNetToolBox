@@ -2,6 +2,7 @@
 using DotNetToolBox.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
+using System.IO;
 
 namespace DotNetToolBox.UnitTests
 {
@@ -24,7 +25,12 @@ namespace DotNetToolBox.UnitTests
             string sHash = TestContext.DataRow["hash"].ToString();
 
             byte[] data = Hex.Decode(sData);
-            byte[] hash = SHA512.Hash(data);
+            byte[] hash;
+
+            using(MemoryStream ms = new MemoryStream(data))
+            {
+                hash = SHA512.Hash(ms);
+            }
 
             string result = Hex.Encode(hash);
 
