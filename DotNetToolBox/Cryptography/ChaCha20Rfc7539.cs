@@ -39,11 +39,13 @@ namespace DotNetToolBox.Cryptography
         /// <returns>Encrypted data</returns>
         public static byte[] Encrypt(byte[] data, byte[] key, byte[] nonce)
         {
+            byte[] enc = new byte[data.Length];
+
             ChaCha7539Engine engine = new ChaCha7539Engine();
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), nonce, 0, nonce.Length);
             engine.Init(true, parameters);
-            byte[] enc = new byte[data.Length];
             engine.ProcessBytes(data, 0, data.Length, enc, 0);
+
             return enc;
         }
 
@@ -85,11 +87,13 @@ namespace DotNetToolBox.Cryptography
         /// <returns>Decrypted data</returns>
         public static byte[] Decrypt(byte[] data, byte[] key, byte[] nonce)
         {
+            byte[] dec = new byte[data.Length];
+            
             ChaCha7539Engine engine = new ChaCha7539Engine();
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), nonce, 0, nonce.Length);
             engine.Init(false, parameters);
-            byte[] dec = new byte[data.Length];
             engine.ProcessBytes(data, 0, data.Length, dec, 0);
+
             return dec;
         }
 
