@@ -22,6 +22,7 @@
 using DotNetToolBox.IO;
 using DotNetToolBox.Utils;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
@@ -30,7 +31,8 @@ namespace DotNetToolBox.Cryptography
 {
     public static class FileEnc
     {
-        private const byte _version = 0x03;
+        private const byte _version = 0x04;
+        private const int _bufferSize = 4096;
 
         /// <summary>
         /// Encrypt with RSA key
@@ -41,23 +43,86 @@ namespace DotNetToolBox.Cryptography
         /// <param name="keyName">Key name</param>
         public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName, Action<int> notifyProgression = null)
         {
-            //byte[] key = RandomHelper.GenerateBytes(AES.KEY_SIZE);
-            //byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
+            byte[] key1 = RandomHelper.GenerateBytes(AES.KEY_SIZE);
+            byte[] iv1 = RandomHelper.GenerateBytes(AES.IV_SIZE);
+            byte[] key2 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.KEY_SIZE);
+            byte[] iv2 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.NONCE_SIZE);
 
-            //byte[] encKey = RSA.Encrypt(rsa, key);
+            byte[] keysTlvData = BinaryTlvWriter.BuildTlvList(new Dictionary<string, byte[]>()
+            {
+                { "K1", key1 },
+                { "V1", iv1 },
+                { "K2", key2 },
+                { "V2", iv2 }
+            }, 2);
 
-            //byte[] keyNameData = Encoding.ASCII.GetBytes(keyName);
+            byte[] encKeysData = RSA.Encrypt(rsa, keysTlvData);
 
-            //BinaryHelper.WriteString(output, "ENCR!", Encoding.ASCII);
-            //BinaryHelper.WriteByte(output, _version);
-            //BinaryHelper.WriteByte(output, (byte)keyNameData.Length);
-            //BinaryHelper.WriteInt16(output, (Int16)encKey.Length);
-            //BinaryHelper.WriteByte(output, (byte)iv.Length);
-            //BinaryHelper.WriteBytes(output, keyNameData);
-            //BinaryHelper.WriteBytes(output, encKey);
-            //BinaryHelper.WriteBytes(output, iv);
+            BinaryHelper.WriteString(output, "ENCR!", Encoding.ASCII);
+            BinaryTlvWriter writer = new BinaryTlvWriter(output, 2);
+            writer.Write("VE", new byte[] { _version });
+            writer.Write("KN", Encoding.ASCII.GetBytes(keyName));
+            writer.Write("KS", encKeysData);
 
-            //AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
+            bool padDone = false;
+            int bytesRead;
+            byte[] buffer = new byte[_bufferSize];
+            byte[] rpad, xor, d1, d2;
+
+            do
+            {
+                bytesRead = input.Read(buffer, 0, _bufferSize);
+                if (bytesRead == _bufferSize)
+                {
+                    rpad = RandomHelper.GenerateBytes(bytesRead);
+                    xor = new byte[bytesRead];
+                    
+                    for (int i = 0; i < bytesRead; i++)
+                        xor[i] = (byte)(buffer[i] ^ rpad[i]);
+
+                    d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
+                    d2 = AES.Encrypt(xor, key1, iv1);
+
+                    writer.Write("D1", d1);
+                    writer.Write("D2", d2);
+                }
+                else if (bytesRead > 0)
+                {
+                    byte[] smallBuffer = new byte[bytesRead];
+                    Array.Copy(buffer, 0, smallBuffer, 0, bytesRead);
+                    byte[] padData = Padding.Pad(smallBuffer, AES.BLOCK_SIZE, PaddingStyle.Pkcs7);
+                    //
+                    rpad = RandomHelper.GenerateBytes(bytesRead);
+                    xor = new byte[bytesRead];
+
+                    for (int i = 0; i < bytesRead; i++)
+                        xor[i] = (byte)(padData[i] ^ rpad[i]);
+                    //
+                    d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
+                    d2 = AES.Encrypt(xor, key1, iv1);
+
+                    writer.Write("D1", d1);
+                    writer.Write("D2", d2);
+                }
+            } while (bytesRead == _bufferSize);
+
+            if (!padDone)
+            {
+                buffer = new byte[0];
+                byte[] padData = Padding.Pad(buffer, AES.BLOCK_SIZE, PaddingStyle.Pkcs7);
+
+                rpad = RandomHelper.GenerateBytes(AES.BLOCK_SIZE);
+                xor = new byte[AES.BLOCK_SIZE];
+
+                for (int i = 0; i < AES.BLOCK_SIZE; i++)
+                    xor[i] = (byte)(padData[i] ^ rpad[i]);
+
+                d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
+                d2 = AES.Encrypt(xor, key1, iv1);
+
+                writer.Write("D1", d1);
+                writer.Write("D2", d2);
+            }
         }
 
         /// <summary>
