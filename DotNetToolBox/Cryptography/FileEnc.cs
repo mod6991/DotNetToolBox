@@ -67,37 +67,29 @@ namespace DotNetToolBox.Cryptography
             bool padDone = false;
             int bytesRead;
             byte[] buffer = new byte[_bufferSize];
-            byte[] rpad, xor, d1, d2;
+            byte[] rpad = new byte[0];
+            byte[] xor = new byte[0];
+            byte[] d1, d2;
 
             do
             {
                 bytesRead = input.Read(buffer, 0, _bufferSize);
-                if (bytesRead == _bufferSize)
+
+                if (bytesRead > 0)
                 {
-                    rpad = RandomHelper.GenerateBytes(bytesRead);
-                    xor = new byte[bytesRead];
-                    
-                    for (int i = 0; i < bytesRead; i++)
-                        xor[i] = (byte)(buffer[i] ^ rpad[i]);
+                    if (bytesRead == _bufferSize)
+                    {
+                        GeneratePadAndXor(bytesRead, buffer, ref rpad, ref xor);
+                    }
+                    else
+                    {
+                        byte[] smallBuffer = new byte[bytesRead];
+                        Array.Copy(buffer, 0, smallBuffer, 0, bytesRead);
+                        byte[] padData = Padding.Pad(smallBuffer, AES.BLOCK_SIZE, PaddingStyle.Pkcs7);
 
-                    d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
-                    d2 = AES.Encrypt(xor, key1, iv1);
+                        GeneratePadAndXor(bytesRead, padData, ref rpad, ref xor);
+                    }
 
-                    writer.Write("D1", d1);
-                    writer.Write("D2", d2);
-                }
-                else if (bytesRead > 0)
-                {
-                    byte[] smallBuffer = new byte[bytesRead];
-                    Array.Copy(buffer, 0, smallBuffer, 0, bytesRead);
-                    byte[] padData = Padding.Pad(smallBuffer, AES.BLOCK_SIZE, PaddingStyle.Pkcs7);
-                    //
-                    rpad = RandomHelper.GenerateBytes(bytesRead);
-                    xor = new byte[bytesRead];
-
-                    for (int i = 0; i < bytesRead; i++)
-                        xor[i] = (byte)(padData[i] ^ rpad[i]);
-                    //
                     d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
                     d2 = AES.Encrypt(xor, key1, iv1);
 
@@ -111,11 +103,7 @@ namespace DotNetToolBox.Cryptography
                 buffer = new byte[0];
                 byte[] padData = Padding.Pad(buffer, AES.BLOCK_SIZE, PaddingStyle.Pkcs7);
 
-                rpad = RandomHelper.GenerateBytes(AES.BLOCK_SIZE);
-                xor = new byte[AES.BLOCK_SIZE];
-
-                for (int i = 0; i < AES.BLOCK_SIZE; i++)
-                    xor[i] = (byte)(padData[i] ^ rpad[i]);
+                GeneratePadAndXor(AES.BLOCK_SIZE, padData, ref rpad, ref xor);
 
                 d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
                 d2 = AES.Encrypt(xor, key1, iv1);
@@ -123,6 +111,15 @@ namespace DotNetToolBox.Cryptography
                 writer.Write("D1", d1);
                 writer.Write("D2", d2);
             }
+        }
+
+        internal static void GeneratePadAndXor(int size, byte[] data, ref byte[] rpad, ref byte[] xor)
+        {
+            rpad = RandomHelper.GenerateBytes(size);
+            xor = new byte[size];
+
+            for (int i = 0; i < size; i++)
+                xor[i] = (byte)(data[i] ^ rpad[i]);
         }
 
         /// <summary>
