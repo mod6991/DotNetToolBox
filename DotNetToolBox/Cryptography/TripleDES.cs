@@ -77,7 +77,7 @@ namespace DotNetToolBox.Cryptography
             {
                 bytesRead = input.Read(buffer, 0, bufferSize);
 
-                if (bytesRead > 0 && bytesRead == bufferSize)
+                if (bytesRead == bufferSize)
                 {
                     cipher.ProcessBytes(buffer, enc, 0);
                     output.Write(enc, 0, bytesRead);
