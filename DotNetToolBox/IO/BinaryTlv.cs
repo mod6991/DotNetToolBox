@@ -82,8 +82,7 @@ namespace DotNetToolBox.IO
                 throw new TlvException("Invalid tag length");
 
             BinaryHelper.WriteString(_output, padTag, Encoding.ASCII);
-            BinaryHelper.WriteInt32(_output, value.Length);
-            BinaryHelper.WriteBytes(_output, value);
+            BinaryHelper.WriteLV(_output, value);
         }
 
         /// <summary>
@@ -125,8 +124,7 @@ namespace DotNetToolBox.IO
                 return null;
 
             string tag = Encoding.ASCII.GetString(tagData).Trim();
-            int valueLength = BinaryHelper.ReadInt32(_input);
-            byte[] value = BinaryHelper.ReadBytes(_input, valueLength);
+            byte[] value = BinaryHelper.ReadLV(_input);
             return new TagValue(tag, value);
         }
 
