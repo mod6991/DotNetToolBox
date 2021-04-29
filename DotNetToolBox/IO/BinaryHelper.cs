@@ -158,6 +158,11 @@ namespace DotNetToolBox.IO
             stream.Write(data, 0, data.Length);
         }
 
+        /// <summary>
+        /// Write a Length-Value
+        /// </summary>
+        /// <param name="stream">Output stream</param>
+        /// <param name="value">Value</param>
         public static void WriteLV(Stream stream, byte[] value)
         {
             WriteInt32(stream, value.Length);
