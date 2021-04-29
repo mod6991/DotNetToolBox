@@ -86,8 +86,9 @@ namespace DotNetToolBox.Cryptography
                         byte[] smallBuffer = new byte[bytesRead];
                         Array.Copy(buffer, 0, smallBuffer, 0, bytesRead);
                         byte[] padData = Padding.Pad(smallBuffer, AES.BLOCK_SIZE, PaddingStyle.Pkcs7);
+                        padDone = true;
 
-                        GeneratePadAndXor(bytesRead, padData, ref rpad, ref xor);
+                        GeneratePadAndXor(padData.Length, padData, ref rpad, ref xor);
                     }
 
                     d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
