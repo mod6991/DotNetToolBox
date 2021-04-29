@@ -158,6 +158,12 @@ namespace DotNetToolBox.IO
             stream.Write(data, 0, data.Length);
         }
 
+        public static void WriteLV(Stream stream, byte[] value)
+        {
+            WriteInt32(stream, value.Length);
+            WriteBytes(stream, value);
+        }
+
         /// <summary>
         /// Read byte from stream
         /// </summary>
@@ -311,6 +317,16 @@ namespace DotNetToolBox.IO
                 throw new IOException("Incorrect number of bytes returned");
 
             return BitConverter.ToDouble(buffer, 0);
+        }
+
+        /// <summary>
+        /// Read a Length-Value
+        /// </summary>
+        /// <param name="stream">Input stream</param>
+        public static byte[] ReadLV(Stream stream)
+        {
+            int valueLength = ReadInt32(stream);
+            return ReadBytes(stream, valueLength);
         }
     }
 }
