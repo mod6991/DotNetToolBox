@@ -78,14 +78,5 @@ namespace DotNetToolBox.IO
         {
             return new FileStream(file, FileMode.Open, FileAccess.Read, FileShare.Read);
         }
-
-        /// <summary>
-        /// Get a new filestream in append mode
-        /// </summary>
-        /// <param name="file">File path</param>
-        public static FileStream GetFileStreamAppend(string file)
-        {
-            return new FileStream(file, FileMode.Append, FileAccess.Write, FileShare.Write);
-        }
     }
 }
