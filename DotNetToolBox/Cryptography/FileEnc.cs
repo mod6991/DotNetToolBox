@@ -33,6 +33,7 @@ namespace DotNetToolBox.Cryptography
     {
         private const byte _version = 0x04;
         private const int _bufferSize = 4096;
+        private const PaddingStyle _paddingStyle = PaddingStyle.Pkcs7;
 
         /// <summary>
         /// Encrypt with RSA key
@@ -48,21 +49,22 @@ namespace DotNetToolBox.Cryptography
             byte[] key2 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.KEY_SIZE);
             byte[] iv2 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.NONCE_SIZE);
 
-            byte[] keysTlvData = BinaryTlvWriter.BuildTlvList(new Dictionary<string, byte[]>()
+            byte[] keysData;
+            using (MemoryStream ms = new MemoryStream())
             {
-                { "K1", key1 },
-                { "V1", iv1 },
-                { "K2", key2 },
-                { "V2", iv2 }
-            }, 2);
+                BinaryHelper.WriteLV(ms, key1);
+                BinaryHelper.WriteLV(ms, iv1);
+                BinaryHelper.WriteLV(ms, key2);
+                BinaryHelper.WriteLV(ms, iv2);
+                keysData = ms.ToArray();
+            }
 
-            byte[] encKeysData = RSA.Encrypt(rsa, keysTlvData);
+            byte[] encKeysData = RSA.Encrypt(rsa, keysData);
 
             BinaryHelper.WriteString(output, "ENCR!", Encoding.ASCII);
-            BinaryTlvWriter writer = new BinaryTlvWriter(output, 2);
-            writer.Write("VE", new byte[] { _version });
-            writer.Write("KN", Encoding.ASCII.GetBytes(keyName));
-            writer.Write("KS", encKeysData);
+            BinaryHelper.WriteByte(output, _version);
+            BinaryHelper.WriteLV(output, Encoding.ASCII.GetBytes(keyName));
+            BinaryHelper.WriteLV(output, encKeysData);
 
             bool padDone = false;
             int bytesRead;
@@ -85,7 +87,7 @@ namespace DotNetToolBox.Cryptography
                     {
                         byte[] smallBuffer = new byte[bytesRead];
                         Array.Copy(buffer, 0, smallBuffer, 0, bytesRead);
-                        byte[] padData = Padding.Pad(smallBuffer, AES.BLOCK_SIZE, PaddingStyle.Pkcs7);
+                        byte[] padData = Padding.Pad(smallBuffer, AES.BLOCK_SIZE, _paddingStyle);
                         padDone = true;
 
                         GeneratePadAndXor(padData.Length, padData, ref rpad, ref xor);
@@ -94,23 +96,23 @@ namespace DotNetToolBox.Cryptography
                     d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
                     d2 = AES.Encrypt(xor, key1, iv1);
 
-                    writer.Write("D1", d1);
-                    writer.Write("D2", d2);
+                    BinaryHelper.WriteLV(output, d1);
+                    BinaryHelper.WriteLV(output, d2);
                 }
             } while (bytesRead == _bufferSize);
 
             if (!padDone)
             {
                 buffer = new byte[0];
-                byte[] padData = Padding.Pad(buffer, AES.BLOCK_SIZE, PaddingStyle.Pkcs7);
+                byte[] padData = Padding.Pad(buffer, AES.BLOCK_SIZE, _paddingStyle);
 
                 GeneratePadAndXor(AES.BLOCK_SIZE, padData, ref rpad, ref xor);
 
                 d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
                 d2 = AES.Encrypt(xor, key1, iv1);
 
-                writer.Write("D1", d1);
-                writer.Write("D2", d2);
+                BinaryHelper.WriteLV(output, d1);
+                BinaryHelper.WriteLV(output, d2);
             }
         }
 
