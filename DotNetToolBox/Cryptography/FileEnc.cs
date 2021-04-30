@@ -42,12 +42,12 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="rsa">RSA key</param>
         /// <param name="keyName">Key name</param>
-        public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName, Action<int> notifyProgression = null)
+        public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName)
         {
-            byte[] key1 = RandomHelper.GenerateBytes(AES.KEY_SIZE);
-            byte[] iv1 = RandomHelper.GenerateBytes(AES.IV_SIZE);
-            byte[] key2 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.KEY_SIZE);
-            byte[] iv2 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.NONCE_SIZE);
+            byte[] key1 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.KEY_SIZE);
+            byte[] iv1 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.NONCE_SIZE);
+            byte[] key2 = RandomHelper.GenerateBytes(AES.KEY_SIZE);
+            byte[] iv2 = RandomHelper.GenerateBytes(AES.IV_SIZE);
 
             byte[] keysData;
             using (MemoryStream ms = new MemoryStream())
@@ -69,9 +69,6 @@ namespace DotNetToolBox.Cryptography
             bool padDone = false;
             int bytesRead;
             byte[] buffer = new byte[_bufferSize];
-            byte[] rpad = new byte[0];
-            byte[] xor = new byte[0];
-            byte[] d1, d2;
 
             do
             {
@@ -81,7 +78,7 @@ namespace DotNetToolBox.Cryptography
                 {
                     if (bytesRead == _bufferSize)
                     {
-                        GeneratePadAndXor(bytesRead, buffer, ref rpad, ref xor);
+                        XorEncryptAndWrite(output, bytesRead, buffer, key1, iv1, key2, iv2);
                     }
                     else
                     {
@@ -90,14 +87,8 @@ namespace DotNetToolBox.Cryptography
                         byte[] padData = Padding.Pad(smallBuffer, AES.BLOCK_SIZE, _paddingStyle);
                         padDone = true;
 
-                        GeneratePadAndXor(padData.Length, padData, ref rpad, ref xor);
+                        XorEncryptAndWrite(output, padData.Length, padData, key1, iv1, key2, iv2);
                     }
-
-                    d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
-                    d2 = AES.Encrypt(xor, key1, iv1);
-
-                    BinaryHelper.WriteLV(output, d1);
-                    BinaryHelper.WriteLV(output, d2);
                 }
             } while (bytesRead == _bufferSize);
 
@@ -106,23 +97,25 @@ namespace DotNetToolBox.Cryptography
                 buffer = new byte[0];
                 byte[] padData = Padding.Pad(buffer, AES.BLOCK_SIZE, _paddingStyle);
 
-                GeneratePadAndXor(AES.BLOCK_SIZE, padData, ref rpad, ref xor);
-
-                d1 = ChaCha20Rfc7539.Encrypt(rpad, key2, iv2);
-                d2 = AES.Encrypt(xor, key1, iv1);
-
-                BinaryHelper.WriteLV(output, d1);
-                BinaryHelper.WriteLV(output, d2);
+                XorEncryptAndWrite(output, AES.BLOCK_SIZE, padData, key1, iv1, key2, iv2);
             }
+
+            BinaryHelper.WriteLV(output, new byte[0]);
         }
 
-        internal static void GeneratePadAndXor(int size, byte[] data, ref byte[] rpad, ref byte[] xor)
+        internal static void XorEncryptAndWrite(Stream output, int size, byte[] data, byte[] key1, byte[] iv1, byte[] key2, byte[] iv2)
         {
-            rpad = RandomHelper.GenerateBytes(size);
-            xor = new byte[size];
+            byte[] rpad = RandomHelper.GenerateBytes(size);
+            byte[] xor = new byte[size];
 
             for (int i = 0; i < size; i++)
                 xor[i] = (byte)(data[i] ^ rpad[i]);
+
+            byte[] d1 = ChaCha20Rfc7539.Encrypt(rpad, key1, iv1);
+            byte[] d2 = AES.Encrypt(xor, key2, iv2);
+
+            BinaryHelper.WriteLV(output, d1);
+            BinaryHelper.WriteLV(output, d2);
         }
 
         /// <summary>
@@ -131,20 +124,20 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="password">Password</param>
-        public static void EncryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
+        public static void EncryptWithPassword(Stream input, Stream output, string password)
         {
-            //byte[] salt = RandomHelper.GenerateBytes(16);
-            //byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
-            //byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
+            byte[] salt = RandomHelper.GenerateBytes(16);
+            byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
+            byte[] iv = RandomHelper.GenerateBytes(AES.IV_SIZE);
 
-            //BinaryHelper.WriteString(output, "ENCP!", Encoding.ASCII);
-            //BinaryHelper.WriteByte(output, _version);
-            //BinaryHelper.WriteByte(output, (byte)iv.Length);
-            //BinaryHelper.WriteByte(output, (byte)salt.Length);
-            //BinaryHelper.WriteBytes(output, iv);
-            //BinaryHelper.WriteBytes(output, salt);
+            BinaryHelper.WriteString(output, "ENCP!", Encoding.ASCII);
+            BinaryHelper.WriteByte(output, _version);
+            BinaryHelper.WriteByte(output, (byte)iv.Length);
+            BinaryHelper.WriteByte(output, (byte)salt.Length);
+            BinaryHelper.WriteBytes(output, iv);
+            BinaryHelper.WriteBytes(output, salt);
 
-            //AES.Encrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
+            AES.Encrypt(input, output, key, iv, _paddingStyle);
         }
 
         /// <summary>
@@ -153,26 +146,53 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="rsa">RSA key</param>
-        public static void DecryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, Action<int> notifyProgression = null)
+        public static void DecryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa)
         {
-            //input.Seek(5, SeekOrigin.Current); // Header
-            //input.Seek(1, SeekOrigin.Current); // Version
+            input.Seek(5, SeekOrigin.Current); // Header
+            input.Seek(1, SeekOrigin.Current); // Version
 
-            //byte keyNameLength = BinaryHelper.ReadByte(input);
-            //Int16 encKeyLength = BinaryHelper.ReadInt16(input);
-            //byte ivLength = BinaryHelper.ReadByte(input);
+            BinaryHelper.ReadLV(input);
+            byte[] encKeysData = BinaryHelper.ReadLV(input);
+            byte[] keysData = RSA.Decrypt(rsa, encKeysData);
 
-            //input.Seek(keyNameLength, SeekOrigin.Current); // Key name
+            byte[] key1, iv1, key2, iv2;
+            using (MemoryStream ms = new MemoryStream(keysData))
+            {
+                key1 = BinaryHelper.ReadLV(ms);
+                iv1 = BinaryHelper.ReadLV(ms);
+                key2 = BinaryHelper.ReadLV(ms);
+                iv2 = BinaryHelper.ReadLV(ms);
+            }
 
-            //byte[] encKey = BinaryHelper.ReadBytes(input, encKeyLength);
-            //byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
+            byte[] d1, d2;
+            byte[] backup = null;
 
-            //byte[] key = RSA.Decrypt(rsa, encKey);
+            do
+            {
+                d1 = BinaryHelper.ReadLV(input);
+                if (d1.Length > 0)
+                {
+                    if (backup != null)
+                        output.Write(backup, 0, backup.Length);
 
-            //if (notifyProgression != null)
-            //    notifyProgression(5 + 1 + 1 + 2 + 1 + keyNameLength + encKeyLength + ivLength);
+                    byte[] rpad = ChaCha20Rfc7539.Decrypt(d1, key1, iv1);
+                    d2 = BinaryHelper.ReadLV(input);
+                    byte[] xor = AES.Decrypt(d2, key2, iv2);
 
-            //AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
+                    byte[] data = new byte[rpad.Length];
+                    for (int i = 0; i < rpad.Length; i++)
+                        data[i] = (byte)(rpad[i] ^ xor[i]);
+
+                    backup = new byte[data.Length];
+                    Array.Copy(data, 0, backup, 0, data.Length);
+                }
+                else
+                {
+                    byte[] unpadData = Padding.Unpad(backup, AES.BLOCK_SIZE, _paddingStyle);
+                    output.Write(unpadData, 0, unpadData.Length);
+                }
+
+            } while (d1.Length > 0);
         }
 
         /// <summary>
@@ -181,22 +201,19 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="password">Password</param>
-        public static void DecryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
+        public static void DecryptWithPassword(Stream input, Stream output, string password)
         {
-            //input.Seek(5, SeekOrigin.Current); // Header
-            //input.Seek(1, SeekOrigin.Current); // Version
+            input.Seek(5, SeekOrigin.Current); // Header
+            input.Seek(1, SeekOrigin.Current); // Version
 
-            //byte ivLength = BinaryHelper.ReadByte(input);
-            //byte saltLength = BinaryHelper.ReadByte(input);
-            //byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
-            //byte[] salt = BinaryHelper.ReadBytes(input, saltLength);
+            byte ivLength = BinaryHelper.ReadByte(input);
+            byte saltLength = BinaryHelper.ReadByte(input);
+            byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
+            byte[] salt = BinaryHelper.ReadBytes(input, saltLength);
 
-            //byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
+            byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
 
-            //if (notifyProgression != null)
-            //    notifyProgression(5 + 1 + 1 + 1 + ivLength + saltLength);
-
-            //AES.Decrypt(input, output, key, iv, CipherMode.CBC, PaddingMode.PKCS7, 4096, notifyProgression);
+            AES.Decrypt(input, output, key, iv, _paddingStyle);
         }
     }
 }
