@@ -82,9 +82,16 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="data\aes.dat" />
     <None Include="data\b64.dat" />
+    <None Include="data\blowfish.dat" />
+    <None Include="data\chacha20.dat" />
+    <None Include="data\chacha20rfc7539.dat" />
+    <None Include="data\des.dat" />
+    <None Include="data\des3.dat" />
     <None Include="data\hex.dat" />
     <None Include="data\md5.dat" />
+    <None Include="data\salsa20.dat" />
     <None Include="data\sha1.dat" />
     <None Include="data\sha256.dat" />
     <None Include="data\sha3.dat" />
@@ -97,9 +104,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="data\scripts\aes.py" />
     <Content Include="data\scripts\b64.py" />
+    <Content Include="data\scripts\blowfish.py" />
+    <Content Include="data\scripts\chacha20.py" />
+    <Content Include="data\scripts\chacha20rfc7539.py" />
+    <Content Include="data\scripts\des.py" />
+    <Content Include="data\scripts\des3.py" />
     <Content Include="data\scripts\hex.py" />
     <Content Include="data\scripts\md5.py" />
+    <Content Include="data\scripts\salsa20.py" />
     <Content Include="data\scripts\sha1.py" />
     <Content Include="data\scripts\sha256.py" />
     <Content Include="data\scripts\sha3.py" />
