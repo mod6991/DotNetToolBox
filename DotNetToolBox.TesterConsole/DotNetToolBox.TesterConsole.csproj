@@ -73,9 +73,22 @@
     <Compile Include="TestFailedException.cs" />
     <Compile Include="TestResult.cs" />
     <Compile Include="Tests\Base64Tests.cs" />
+    <Compile Include="Tests\HexTests.cs" />
+    <Compile Include="Tests\MD5Tests.cs" />
+    <Compile Include="Tests\SHA1Tests.cs" />
+    <Compile Include="Tests\SHA256Tests.cs" />
+    <Compile Include="Tests\SHA3Tests.cs" />
+    <Compile Include="Tests\SHA512Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="data\b64.dat" />
+    <None Include="data\hex.dat" />
+    <None Include="data\md5.dat" />
+    <None Include="data\sha1.dat" />
+    <None Include="data\sha256.dat" />
+    <None Include="data\sha3.dat" />
+    <None Include="data\sha512.dat" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetToolBox\DotNetToolBox.csproj">
@@ -83,8 +96,6 @@
       <Name>DotNetToolBox</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="data\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

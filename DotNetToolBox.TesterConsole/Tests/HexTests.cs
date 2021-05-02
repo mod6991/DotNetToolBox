@@ -4,7 +4,7 @@ using System.Text;
 
 namespace DotNetToolBox.TesterConsole.Tests
 {
-    internal static class Base64Tests
+    internal static class HexTests
     {
         internal static void Encode(string file)
         {
@@ -19,12 +19,12 @@ namespace DotNetToolBox.TesterConsole.Tests
                         using (MemoryStream ms = new MemoryStream(rec))
                         {
                             byte[] data = BinaryHelper.ReadLV(ms);
-                            string b64 = Encoding.ASCII.GetString(BinaryHelper.ReadLV(ms));
+                            string hex = Encoding.ASCII.GetString(BinaryHelper.ReadLV(ms));
 
-                            string calcB64 = Base64.Encode(data);
+                            string calcHex = Hex.Encode(data);
 
-                            if (b64 != calcB64)
-                                throw new TestFailedException(b64, calcB64);
+                            if (hex != calcHex)
+                                throw new TestFailedException(hex, calcHex);
                         }
                     }
                 } while (rec.Length > 0);
@@ -44,14 +44,14 @@ namespace DotNetToolBox.TesterConsole.Tests
                         using (MemoryStream ms = new MemoryStream(rec))
                         {
                             byte[] data = BinaryHelper.ReadLV(ms);
-                            string b64 = Encoding.ASCII.GetString(BinaryHelper.ReadLV(ms));
+                            string hex = Encoding.ASCII.GetString(BinaryHelper.ReadLV(ms));
 
-                            byte[] calcData = Base64.Decode(b64);
+                            byte[] calcData = Hex.Decode(hex);
 
-                            string hexData = Hex.Encode(data);
-                            string hexCalcData = Hex.Encode(calcData);
-                            if (hexData != hexCalcData)
-                                throw new TestFailedException(hexData, hexCalcData);
+                            string b64Data = Base64.Encode(data);
+                            string b64CalcData = Base64.Encode(calcData);
+                            if (b64Data != b64CalcData)
+                                throw new TestFailedException(b64Data, b64CalcData);
                         }
                     }
                 } while (rec.Length > 0);

@@ -1,12 +1,11 @@
 ﻿using DotNetToolBox.IO;
 using System.IO;
-using System.Text;
 
 namespace DotNetToolBox.TesterConsole.Tests
 {
-    internal static class Base64Tests
+    internal static class SHA1Tests
     {
-        internal static void Encode(string file)
+        internal static void Hash(string file)
         {
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
@@ -19,19 +18,22 @@ namespace DotNetToolBox.TesterConsole.Tests
                         using (MemoryStream ms = new MemoryStream(rec))
                         {
                             byte[] data = BinaryHelper.ReadLV(ms);
-                            string b64 = Encoding.ASCII.GetString(BinaryHelper.ReadLV(ms));
+                            byte[] sha1 = BinaryHelper.ReadLV(ms);
 
-                            string calcB64 = Base64.Encode(data);
+                            byte[] calcSHA1 = Cryptography.SHA1.Hash(data);
 
-                            if (b64 != calcB64)
-                                throw new TestFailedException(b64, calcB64);
+                            string hexSHA1 = Hex.Encode(sha1);
+                            string hexCalcSHA1 = Hex.Encode(calcSHA1);
+
+                            if (hexSHA1 != hexCalcSHA1)
+                                throw new TestFailedException(hexSHA1, hexCalcSHA1);
                         }
                     }
                 } while (rec.Length > 0);
             }
         }
 
-        internal static void Decode(string file)
+        internal static void HashStream(string file)
         {
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
@@ -44,14 +46,19 @@ namespace DotNetToolBox.TesterConsole.Tests
                         using (MemoryStream ms = new MemoryStream(rec))
                         {
                             byte[] data = BinaryHelper.ReadLV(ms);
-                            string b64 = Encoding.ASCII.GetString(BinaryHelper.ReadLV(ms));
+                            byte[] sha1 = BinaryHelper.ReadLV(ms);
 
-                            byte[] calcData = Base64.Decode(b64);
+                            byte[] calcSHA1;
+                            using (MemoryStream ms2 = new MemoryStream(data))
+                            {
+                                calcSHA1 = Cryptography.SHA1.Hash(ms2);
+                            }
 
-                            string hexData = Hex.Encode(data);
-                            string hexCalcData = Hex.Encode(calcData);
-                            if (hexData != hexCalcData)
-                                throw new TestFailedException(hexData, hexCalcData);
+                            string hexSHA1 = Hex.Encode(sha1);
+                            string hexCalcSHA1 = Hex.Encode(calcSHA1);
+
+                            if (hexSHA1 != hexCalcSHA1)
+                                throw new TestFailedException(hexSHA1, hexCalcSHA1);
                         }
                     }
                 } while (rec.Length > 0);

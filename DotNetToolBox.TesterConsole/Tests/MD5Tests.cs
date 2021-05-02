@@ -1,12 +1,11 @@
 ﻿using DotNetToolBox.IO;
 using System.IO;
-using System.Text;
 
 namespace DotNetToolBox.TesterConsole.Tests
 {
-    internal static class Base64Tests
+    internal static class MD5Tests
     {
-        internal static void Encode(string file)
+        internal static void Hash(string file)
         {
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
@@ -19,19 +18,22 @@ namespace DotNetToolBox.TesterConsole.Tests
                         using (MemoryStream ms = new MemoryStream(rec))
                         {
                             byte[] data = BinaryHelper.ReadLV(ms);
-                            string b64 = Encoding.ASCII.GetString(BinaryHelper.ReadLV(ms));
+                            byte[] md5 = BinaryHelper.ReadLV(ms);
 
-                            string calcB64 = Base64.Encode(data);
+                            byte[] calcMD5 = Cryptography.MD5.Hash(data);
 
-                            if (b64 != calcB64)
-                                throw new TestFailedException(b64, calcB64);
+                            string hexMD5 = Hex.Encode(md5);
+                            string hexCalcMD5 = Hex.Encode(calcMD5);
+
+                            if (hexMD5 != hexCalcMD5)
+                                throw new TestFailedException(hexMD5, hexCalcMD5);
                         }
                     }
                 } while (rec.Length > 0);
             }
         }
 
-        internal static void Decode(string file)
+        internal static void HashStream(string file)
         {
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
@@ -44,14 +46,19 @@ namespace DotNetToolBox.TesterConsole.Tests
                         using (MemoryStream ms = new MemoryStream(rec))
                         {
                             byte[] data = BinaryHelper.ReadLV(ms);
-                            string b64 = Encoding.ASCII.GetString(BinaryHelper.ReadLV(ms));
+                            byte[] md5 = BinaryHelper.ReadLV(ms);
 
-                            byte[] calcData = Base64.Decode(b64);
+                            byte[] calcMD5;
+                            using (MemoryStream ms2 = new MemoryStream(data))
+                            {
+                                calcMD5 = Cryptography.MD5.Hash(ms2);
+                            }
 
-                            string hexData = Hex.Encode(data);
-                            string hexCalcData = Hex.Encode(calcData);
-                            if (hexData != hexCalcData)
-                                throw new TestFailedException(hexData, hexCalcData);
+                            string hexMD5 = Hex.Encode(md5);
+                            string hexCalcMD5 = Hex.Encode(calcMD5);
+
+                            if (hexMD5 != hexCalcMD5)
+                                throw new TestFailedException(hexMD5, hexCalcMD5);
                         }
                     }
                 } while (rec.Length > 0);
