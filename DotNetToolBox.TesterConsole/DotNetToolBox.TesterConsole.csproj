@@ -91,6 +91,10 @@
     <None Include="data\des3.dat" />
     <None Include="data\hex.dat" />
     <None Include="data\md5.dat" />
+    <None Include="data\padding_iso7816.dat" />
+    <None Include="data\padding_pkcs7.dat" />
+    <None Include="data\padding_x923.dat" />
+    <None Include="data\pbkdf2.dat" />
     <None Include="data\salsa20.dat" />
     <None Include="data\sha1.dat" />
     <None Include="data\sha256.dat" />
@@ -113,6 +117,10 @@
     <Content Include="data\scripts\des3.py" />
     <Content Include="data\scripts\hex.py" />
     <Content Include="data\scripts\md5.py" />
+    <Content Include="data\scripts\padding_iso7816.py" />
+    <Content Include="data\scripts\padding_pkcs7.py" />
+    <Content Include="data\scripts\padding_x923.py" />
+    <Content Include="data\scripts\pbkdf2.py" />
     <Content Include="data\scripts\salsa20.py" />
     <Content Include="data\scripts\sha1.py" />
     <Content Include="data\scripts\sha256.py" />
