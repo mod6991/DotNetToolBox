@@ -99,6 +99,7 @@ namespace DotNetToolBox.IO
             int loops = str.Length / 4;
             int i;
             int b1, b2, b3, b4;
+            int paddings = 0;
 
             for (i = 0; i < loops; i++)
             {
@@ -111,17 +112,28 @@ namespace DotNetToolBox.IO
                     throw new Base64DecodeException($"Invalid base64 char2 '{str[i * 4 + 1]}'");
 
                 b3 = chars.IndexOf(str[i * 4 + 2]);
-                if (b3 == -1 && str[i * 4 + 2] != '=')
+                if (b3 == -1 && str[i * 4 + 2] != padding)
                     throw new Base64DecodeException($"Invalid base64 char3 '{str[i * 4 + 2]}'");
+                if (str[i * 4 + 2] == padding)
+                    paddings++;
 
                 b4 = chars.IndexOf(str[i * 4 + 3]);
-                if (b4 == -1 && str[i * 4 + 3] != '=')
+                if (b4 == -1 && str[i * 4 + 3] != padding)
                     throw new Base64DecodeException($"Invalid base64 char4 '{str[i * 4 + 3]}'");
+                if (str[i * 4 + 3] == padding)
+                    paddings++;
 
 
                 data[i * 3] = (byte)(b1 << 2 | b2 >> 4);
                 data[i * 3 + 1] = (byte)((b2 & 0x0f) << 4 | b3 >> 2);
                 data[i * 3 + 2] = (byte)((b3 & 0x03) << 6 | b4 & 0x3f);
+            }
+
+            if(paddings > 0)
+            {
+                byte[] newData = new byte[data.Length - paddings];
+                Array.Copy(data, 0, newData, 0, data.Length - paddings);
+                return newData;
             }
 
             return data;
