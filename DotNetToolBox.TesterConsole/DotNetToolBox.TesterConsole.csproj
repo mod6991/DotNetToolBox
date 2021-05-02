@@ -70,6 +70,9 @@
   <ItemGroup>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestFailedException.cs" />
+    <Compile Include="TestResult.cs" />
+    <Compile Include="Tests\Base64Tests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -79,6 +82,9 @@
       <Project>{72717138-6942-4bcb-81f0-b614e419b367}</Project>
       <Name>DotNetToolBox</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="data\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
