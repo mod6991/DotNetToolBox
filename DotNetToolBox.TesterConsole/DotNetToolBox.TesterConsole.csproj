@@ -96,6 +96,14 @@
       <Name>DotNetToolBox</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Content Include="data\scripts\b64.py" />
+    <Content Include="data\scripts\hex.py" />
+    <Content Include="data\scripts\md5.py" />
+    <Content Include="data\scripts\sha1.py" />
+    <Content Include="data\scripts\sha256.py" />
+    <Content Include="data\scripts\sha3.py" />
+    <Content Include="data\scripts\sha512.py" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
