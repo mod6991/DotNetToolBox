@@ -45,6 +45,18 @@ namespace DotNetToolBox.TesterConsole
                 Test(TripleDESTests.Decrypt, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Decrypt");
                 Test(TripleDESTests.DecryptStream, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Decrypt stream");
 
+                Test(ChaCha20Tests.Encrypt, Path.Combine(path, "chacha20.dat"), "Cryptography.ChaCha20.Encrypt");
+                Test(ChaCha20Tests.EncryptStream, Path.Combine(path, "chacha20.dat"), "Cryptography.ChaCha20.Encrypt stream");
+                Test(ChaCha20Tests.Decrypt, Path.Combine(path, "chacha20.dat"), "Cryptography.ChaCha20.Decrypt");
+                Test(ChaCha20Tests.DecryptStream, Path.Combine(path, "chacha20.dat"), "Cryptography.ChaCha20.Decrypt stream");
+                Test(ChaCha20Rfc7539Tests.Encrypt, Path.Combine(path, "chacha20rfc7539.dat"), "Cryptography.ChaCha20Rfc7539.Encrypt");
+                Test(ChaCha20Rfc7539Tests.EncryptStream, Path.Combine(path, "chacha20rfc7539.dat"), "Cryptography.ChaCha20Rfc7539.Encrypt stream");
+                Test(ChaCha20Rfc7539Tests.Decrypt, Path.Combine(path, "chacha20rfc7539.dat"), "Cryptography.ChaCha20Rfc7539.Decrypt");
+                Test(ChaCha20Rfc7539Tests.DecryptStream, Path.Combine(path, "chacha20rfc7539.dat"), "Cryptography.ChaCha20Rfc7539.Decrypt stream");
+                Test(Salsa20Tests.Encrypt, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Encrypt");
+                Test(Salsa20Tests.EncryptStream, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Encrypt stream");
+                Test(Salsa20Tests.Decrypt, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Decrypt");
+                Test(Salsa20Tests.DecryptStream, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Decrypt stream");
 
 
                 Console.Read();

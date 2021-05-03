@@ -75,9 +75,12 @@
     <Compile Include="Tests\AESTests.cs" />
     <Compile Include="Tests\Base64Tests.cs" />
     <Compile Include="Tests\BlowfishTests.cs" />
+    <Compile Include="Tests\ChaCha20Rfc7539Tests.cs" />
+    <Compile Include="Tests\ChaCha20Tests.cs" />
     <Compile Include="Tests\DESTests.cs" />
     <Compile Include="Tests\HexTests.cs" />
     <Compile Include="Tests\MD5Tests.cs" />
+    <Compile Include="Tests\Salsa20Tests.cs" />
     <Compile Include="Tests\SHA1Tests.cs" />
     <Compile Include="Tests\SHA256Tests.cs" />
     <Compile Include="Tests\SHA3Tests.cs" />
