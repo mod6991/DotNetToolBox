@@ -3,7 +3,7 @@ using System.IO;
 
 namespace DotNetToolBox.TesterConsole.Tests
 {
-    internal static class AESTests
+    internal static class DESTests
     {
         internal static int Encrypt(string file)
         {
@@ -24,7 +24,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                             byte[] data = BinaryHelper.ReadLV(ms);
                             byte[] enc = BinaryHelper.ReadLV(ms);
 
-                            byte[] calcEnc = Cryptography.AES.Encrypt(data, key, iv);
+                            byte[] calcEnc = Cryptography.DES.Encrypt(data, key, iv);
 
                             string hexEnc = Hex.Encode(enc);
                             string hexCalcEnc = Hex.Encode(calcEnc);
@@ -63,7 +63,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                             {
                                 using (MemoryStream msOut = new MemoryStream())
                                 {
-                                    Cryptography.AES.Encrypt(msIn, msOut, key, iv, Cryptography.PaddingStyle.None);
+                                    Cryptography.DES.Encrypt(msIn, msOut, key, iv, Cryptography.PaddingStyle.None);
                                     calcEnc = msOut.ToArray();
                                 }
                             }
@@ -100,7 +100,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                             byte[] data = BinaryHelper.ReadLV(ms);
                             byte[] enc = BinaryHelper.ReadLV(ms);
 
-                            byte[] calcDec = Cryptography.AES.Decrypt(enc, key, iv);
+                            byte[] calcDec = Cryptography.DES.Decrypt(enc, key, iv);
 
                             string hexDec = Hex.Encode(data);
                             string hexCalcDec = Hex.Encode(calcDec);
@@ -136,11 +136,11 @@ namespace DotNetToolBox.TesterConsole.Tests
                             byte[] enc = BinaryHelper.ReadLV(ms);
 
                             byte[] calcDec;
-                            using(MemoryStream msIn = new MemoryStream(enc))
+                            using (MemoryStream msIn = new MemoryStream(enc))
                             {
                                 using (MemoryStream msOut = new MemoryStream())
                                 {
-                                    Cryptography.AES.Decrypt(msIn, msOut, key, iv, Cryptography.PaddingStyle.None);
+                                    Cryptography.DES.Decrypt(msIn, msOut, key, iv, Cryptography.PaddingStyle.None);
                                     calcDec = msOut.ToArray();
                                 }
                             }

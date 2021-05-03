@@ -74,12 +74,15 @@
     <Compile Include="TestResult.cs" />
     <Compile Include="Tests\AESTests.cs" />
     <Compile Include="Tests\Base64Tests.cs" />
+    <Compile Include="Tests\BlowfishTests.cs" />
+    <Compile Include="Tests\DESTests.cs" />
     <Compile Include="Tests\HexTests.cs" />
     <Compile Include="Tests\MD5Tests.cs" />
     <Compile Include="Tests\SHA1Tests.cs" />
     <Compile Include="Tests\SHA256Tests.cs" />
     <Compile Include="Tests\SHA3Tests.cs" />
     <Compile Include="Tests\SHA512Tests.cs" />
+    <Compile Include="Tests\TripleDESTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
