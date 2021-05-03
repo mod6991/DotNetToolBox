@@ -10,8 +10,10 @@ namespace DotNetToolBox.TesterConsole.Tests
 {
     internal static class AESTests
     {
-        internal static void Encrypt(string file)
+        internal static int Encrypt(string file)
         {
+            int i = 0;
+
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
                 byte[] rec;
@@ -35,13 +37,17 @@ namespace DotNetToolBox.TesterConsole.Tests
                             if (hexEnc != hexCalcEnc)
                                 throw new TestFailedException(hexEnc, hexCalcEnc);
                         }
+                        i++;
                     }
                 } while (rec.Length > 0);
             }
+            return i;
         }
 
-        internal static void Decrypt(string file)
+        internal static int Decrypt(string file)
         {
+            int i = 0;
+
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
                 byte[] rec;
@@ -65,9 +71,12 @@ namespace DotNetToolBox.TesterConsole.Tests
                             if (hexDec != hexCalcDec)
                                 throw new TestFailedException(hexDec, hexCalcDec);
                         }
+                        i++;
                     }
                 } while (rec.Length > 0);
             }
+
+            return i;
         }
     }
 }

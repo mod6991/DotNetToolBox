@@ -5,8 +5,10 @@ namespace DotNetToolBox.TesterConsole.Tests
 {
     internal static class MD5Tests
     {
-        internal static void Hash(string file)
+        internal static int Hash(string file)
         {
+            int i = 0;
+
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
                 byte[] rec;
@@ -28,13 +30,18 @@ namespace DotNetToolBox.TesterConsole.Tests
                             if (hexMD5 != hexCalcMD5)
                                 throw new TestFailedException(hexMD5, hexCalcMD5);
                         }
+                        i++;
                     }
                 } while (rec.Length > 0);
             }
+
+            return i;
         }
 
-        internal static void HashStream(string file)
+        internal static int HashStream(string file)
         {
+            int i = 0;
+
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
                 byte[] rec;
@@ -60,9 +67,12 @@ namespace DotNetToolBox.TesterConsole.Tests
                             if (hexMD5 != hexCalcMD5)
                                 throw new TestFailedException(hexMD5, hexCalcMD5);
                         }
+                        i++;
                     }
                 } while (rec.Length > 0);
             }
+
+            return i;
         }
     }
 }

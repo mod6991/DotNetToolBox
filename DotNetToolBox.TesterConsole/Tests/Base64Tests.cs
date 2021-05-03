@@ -6,8 +6,10 @@ namespace DotNetToolBox.TesterConsole.Tests
 {
     internal static class Base64Tests
     {
-        internal static void Encode(string file)
+        internal static int Encode(string file)
         {
+            int i = 0;
+
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
                 byte[] rec;
@@ -26,13 +28,17 @@ namespace DotNetToolBox.TesterConsole.Tests
                             if (b64 != calcB64)
                                 throw new TestFailedException(b64, calcB64);
                         }
+                        i++;
                     }
                 } while (rec.Length > 0);
             }
+            return i;
         }
 
-        internal static void Decode(string file)
+        internal static int Decode(string file)
         {
+            int i = 0;
+
             using (FileStream fs = StreamHelper.GetFileStreamOpen(file))
             {
                 byte[] rec;
@@ -53,9 +59,12 @@ namespace DotNetToolBox.TesterConsole.Tests
                             if (hexData != hexCalcData)
                                 throw new TestFailedException(hexData, hexCalcData);
                         }
+                        i++;
                     }
                 } while (rec.Length > 0);
             }
+
+            return i;
         }
     }
 }

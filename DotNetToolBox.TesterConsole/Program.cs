@@ -39,14 +39,14 @@ namespace DotNetToolBox.TesterConsole
             }
         }
 
-        static void Test(Action<string> action, string file, string title)
+        static void Test(TestAction action, string file, string title)
         {
             Console.Write(title);
 
             try
             {
-                action(file);
-                Console.WriteLine("OK");
+                int total = action(file);
+                Console.WriteLine($"({total} tests) OK");
             }
             catch(Exception ex)
             {
@@ -56,4 +56,6 @@ namespace DotNetToolBox.TesterConsole
             }
         }
     }
+
+    internal delegate int TestAction(string file);
 }
