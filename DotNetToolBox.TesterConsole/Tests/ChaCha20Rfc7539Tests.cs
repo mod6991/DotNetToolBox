@@ -36,6 +36,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                     }
                 } while (rec.Length > 0);
             }
+
             return i;
         }
 
@@ -78,6 +79,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                     }
                 } while (rec.Length > 0);
             }
+
             return i;
         }
 
