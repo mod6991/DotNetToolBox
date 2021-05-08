@@ -34,7 +34,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                         }
                         i++;
                     }
-                } while (rec.Length > 0 && i < 20);
+                } while (rec.Length > 0 && i < 10);
             }
 
             return i;

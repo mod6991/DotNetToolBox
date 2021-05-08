@@ -60,6 +60,12 @@ namespace DotNetToolBox.TesterConsole
 
                 Test(PBKDF2Tests.GenerateKey, Path.Combine(path, "pbkdf2.dat"), "Cryptography.PBKDF2.GenerateKeyFromPassword");
 
+                Test(PaddingIso7816Tests.Pad, Path.Combine(path, "padding_iso7816.dat"), "Cryptography.Padding.Pad Iso7816");
+                Test(PaddingIso7816Tests.Unpad, Path.Combine(path, "padding_iso7816.dat"), "Cryptography.Padding.Unpad Iso7816");
+                Test(PaddingPkcs7Tests.Pad, Path.Combine(path, "padding_pkcs7.dat"), "Cryptography.Padding.Pad Pkcs7");
+                Test(PaddingPkcs7Tests.Unpad, Path.Combine(path, "padding_pkcs7.dat"), "Cryptography.Padding.Unpad Pkcs7");
+                Test(PaddingX923Tests.Pad, Path.Combine(path, "padding_x923.dat"), "Cryptography.Padding.Pad AnsiX923");
+                Test(PaddingX923Tests.Unpad, Path.Combine(path, "padding_x923.dat"), "Cryptography.Padding.Unpad AnsiX923");
 
                 Console.Read();
             }

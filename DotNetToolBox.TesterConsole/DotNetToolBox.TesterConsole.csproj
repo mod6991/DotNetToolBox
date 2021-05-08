@@ -80,6 +80,9 @@
     <Compile Include="Tests\DESTests.cs" />
     <Compile Include="Tests\HexTests.cs" />
     <Compile Include="Tests\MD5Tests.cs" />
+    <Compile Include="Tests\PaddingIso7816Tests.cs" />
+    <Compile Include="Tests\PaddingPkcs7Tests.cs" />
+    <Compile Include="Tests\PaddingX923Tests.cs" />
     <Compile Include="Tests\PBKDF2Tests.cs" />
     <Compile Include="Tests\Salsa20Tests.cs" />
     <Compile Include="Tests\SHA1Tests.cs" />
