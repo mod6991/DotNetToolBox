@@ -58,6 +58,8 @@ namespace DotNetToolBox.TesterConsole
                 Test(Salsa20Tests.Decrypt, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Decrypt");
                 Test(Salsa20Tests.DecryptStream, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Decrypt stream");
 
+                Test(PBKDF2Tests.GenerateKey, Path.Combine(path, "pbkdf2.dat"), "Cryptography.PBKDF2.GenerateKeyFromPassword");
+
 
                 Console.Read();
             }
