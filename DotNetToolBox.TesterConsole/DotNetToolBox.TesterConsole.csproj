@@ -94,24 +94,60 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="data\aes.dat" />
-    <None Include="data\b64.dat" />
-    <None Include="data\blowfish.dat" />
-    <None Include="data\chacha20.dat" />
-    <None Include="data\chacha20rfc7539.dat" />
-    <None Include="data\des.dat" />
-    <None Include="data\des3.dat" />
-    <None Include="data\hex.dat" />
-    <None Include="data\md5.dat" />
-    <None Include="data\padding_iso7816.dat" />
-    <None Include="data\padding_pkcs7.dat" />
-    <None Include="data\padding_x923.dat" />
-    <None Include="data\pbkdf2.dat" />
-    <None Include="data\salsa20.dat" />
-    <None Include="data\sha1.dat" />
-    <None Include="data\sha256.dat" />
-    <None Include="data\sha3.dat" />
-    <None Include="data\sha512.dat" />
+    <None Include="data\aes.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\b64.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\blowfish.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\chacha20.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\chacha20rfc7539.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\des.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\des3.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\hex.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\md5.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\padding_iso7816.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\padding_pkcs7.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\padding_x923.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\pbkdf2.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\salsa20.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\sha1.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\sha256.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\sha3.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="data\sha512.dat">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNetToolBox\DotNetToolBox.csproj">

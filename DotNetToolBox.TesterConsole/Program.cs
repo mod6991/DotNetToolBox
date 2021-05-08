@@ -1,6 +1,7 @@
 ﻿using DotNetToolBox.TesterConsole.Tests;
 using System;
 using System.IO;
+using System.Reflection;
 
 namespace DotNetToolBox.TesterConsole
 {
@@ -10,7 +11,9 @@ namespace DotNetToolBox.TesterConsole
         {
             try
             {
-                string path = @"C:\Temp\testData";
+                Assembly assembly = Assembly.GetExecutingAssembly();
+                string path = Path.GetDirectoryName(assembly.Location);
+                path = Path.Combine(path, "data");
 
                 Test(Base64Tests.Encode, Path.Combine(path, "b64.dat"), "IO.Base64.Encode");
                 Test(Base64Tests.Decode, Path.Combine(path, "b64.dat"), "IO.Base64.Decode");
