@@ -73,6 +73,9 @@ namespace DotNetToolBox.TesterConsole
                 Test(PaddingX923Tests.Unpad, Path.Combine(path, "padding_x923.dat"), "Cryptography.Padding.Unpad AnsiX923");
                 Console.WriteLine();
 
+                Test(FileEncTests.EncryptDecrypt, null, "Cryptography.FileEnc");
+                Console.WriteLine();
+
                 Console.WriteLine("Press ENTER to exit...");
                 Console.Read();
             }

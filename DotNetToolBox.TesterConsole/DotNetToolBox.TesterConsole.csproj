@@ -78,6 +78,7 @@
     <Compile Include="Tests\ChaCha20Rfc7539Tests.cs" />
     <Compile Include="Tests\ChaCha20Tests.cs" />
     <Compile Include="Tests\DESTests.cs" />
+    <Compile Include="Tests\FileEncTests.cs" />
     <Compile Include="Tests\HexTests.cs" />
     <Compile Include="Tests\MD5Tests.cs" />
     <Compile Include="Tests\PaddingIso7816Tests.cs" />
