@@ -2,6 +2,7 @@ Version 7.7 TODO list:
 ----------------------
 
  - Update log4net and wpftoolkit
+ - Add Util Process to launch exe, handle parameters, output, ...
  - Add progress notification in crypto stream methods
  - Add GPG
  - Create doc
