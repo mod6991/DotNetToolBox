@@ -30,22 +30,22 @@ namespace DotNetToolBox.TesterConsole
                 Test(SHA3Tests.HashStream, Path.Combine(path, "sha3.dat"), "Cryptography.SHA3.Hash stream");
                 Console.WriteLine();
 
-                Test(AESTests.Encrypt, Path.Combine(path, "aes.dat"), "Cryptography.AES.Encrypt");
-                Test(AESTests.EncryptStream, Path.Combine(path, "aes.dat"), "Cryptography.AES.Encrypt stream");
-                Test(AESTests.Decrypt, Path.Combine(path, "aes.dat"), "Cryptography.AES.Decrypt");
-                Test(AESTests.DecryptStream, Path.Combine(path, "aes.dat"), "Cryptography.AES.Decrypt stream");
-                Test(BlowfishTests.Encrypt, Path.Combine(path, "blowfish.dat"), "Cryptography.Blowfish.Encrypt");
-                Test(BlowfishTests.EncryptStream, Path.Combine(path, "blowfish.dat"), "Cryptography.Blowfish.Encrypt stream");
-                Test(BlowfishTests.Decrypt, Path.Combine(path, "blowfish.dat"), "Cryptography.Blowfish.Decrypt");
-                Test(BlowfishTests.DecryptStream, Path.Combine(path, "blowfish.dat"), "Cryptography.Blowfish.Decrypt stream");
-                Test(DESTests.Encrypt, Path.Combine(path, "des.dat"), "Cryptography.DES.Encrypt");
-                Test(DESTests.EncryptStream, Path.Combine(path, "des.dat"), "Cryptography.DES.Encrypt stream");
-                Test(DESTests.Decrypt, Path.Combine(path, "des.dat"), "Cryptography.DES.Decrypt");
-                Test(DESTests.DecryptStream, Path.Combine(path, "des.dat"), "Cryptography.DES.Decrypt stream");
-                Test(TripleDESTests.Encrypt, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Encrypt");
-                Test(TripleDESTests.EncryptStream, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Encrypt stream");
-                Test(TripleDESTests.Decrypt, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Decrypt");
-                Test(TripleDESTests.DecryptStream, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Decrypt stream");
+                Test(AESTests.EncryptCBC, Path.Combine(path, "aes.dat"), "Cryptography.AES.EncryptCBC");
+                Test(AESTests.EncryptCBCStream, Path.Combine(path, "aes.dat"), "Cryptography.AES.EncryptCBC stream");
+                Test(AESTests.DecryptCBC, Path.Combine(path, "aes.dat"), "Cryptography.AES.DecryptCBC");
+                Test(AESTests.DecryptCBCStream, Path.Combine(path, "aes.dat"), "Cryptography.AES.DecryptCBC stream");
+                Test(BlowfishTests.EncryptCBC, Path.Combine(path, "blowfish.dat"), "Cryptography.Blowfish.EncryptCBC");
+                Test(BlowfishTests.EncryptCBCStream, Path.Combine(path, "blowfish.dat"), "Cryptography.Blowfish.EncryptCBC stream");
+                Test(BlowfishTests.DecryptCBC, Path.Combine(path, "blowfish.dat"), "Cryptography.Blowfish.DecryptCBC");
+                Test(BlowfishTests.DecryptCBCStream, Path.Combine(path, "blowfish.dat"), "Cryptography.Blowfish.DecryptCBC stream");
+                Test(DESTests.EncryptCBC, Path.Combine(path, "des.dat"), "Cryptography.DES.EncryptCBC");
+                Test(DESTests.EncryptCBCStream, Path.Combine(path, "des.dat"), "Cryptography.DES.EncryptCBC stream");
+                Test(DESTests.DecryptCBC, Path.Combine(path, "des.dat"), "Cryptography.DES.DecryptCBC");
+                Test(DESTests.DecryptCBCStream, Path.Combine(path, "des.dat"), "Cryptography.DES.DecryptCBC stream");
+                Test(TripleDESTests.EncryptCBC, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.EncryptCBC");
+                Test(TripleDESTests.EncryptCBCStream, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.EncryptCBC stream");
+                Test(TripleDESTests.DecryptCBC, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.DecryptCBC");
+                Test(TripleDESTests.DecryptCBCStream, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.DecryptCBC stream");
                 Console.WriteLine();
 
                 Test(ChaCha20Tests.Encrypt, Path.Combine(path, "chacha20.dat"), "Cryptography.ChaCha20.Encrypt");

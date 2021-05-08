@@ -5,7 +5,7 @@ namespace DotNetToolBox.TesterConsole.Tests
 {
     internal static class AESTests
     {
-        internal static int Encrypt(string file)
+        internal static int EncryptCBC(string file)
         {
             int i = 0;
 
@@ -24,7 +24,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                             byte[] data = BinaryHelper.ReadLV(ms);
                             byte[] enc = BinaryHelper.ReadLV(ms);
 
-                            byte[] calcEnc = Cryptography.AES.Encrypt(data, key, iv);
+                            byte[] calcEnc = Cryptography.AES.EncryptCBC(data, key, iv);
 
                             string hexEnc = Hex.Encode(enc);
                             string hexCalcEnc = Hex.Encode(calcEnc);
@@ -40,7 +40,7 @@ namespace DotNetToolBox.TesterConsole.Tests
             return i;
         }
 
-        internal static int EncryptStream(string file)
+        internal static int EncryptCBCStream(string file)
         {
             int i = 0;
 
@@ -64,7 +64,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                             {
                                 using (MemoryStream msOut = new MemoryStream())
                                 {
-                                    Cryptography.AES.Encrypt(msIn, msOut, key, iv, Cryptography.PaddingStyle.None);
+                                    Cryptography.AES.EncryptCBC(msIn, msOut, key, iv, Cryptography.PaddingStyle.None);
                                     calcEnc = msOut.ToArray();
                                 }
                             }
@@ -83,7 +83,7 @@ namespace DotNetToolBox.TesterConsole.Tests
             return i;
         }
 
-        internal static int Decrypt(string file)
+        internal static int DecryptCBC(string file)
         {
             int i = 0;
 
@@ -102,7 +102,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                             byte[] data = BinaryHelper.ReadLV(ms);
                             byte[] enc = BinaryHelper.ReadLV(ms);
 
-                            byte[] calcDec = Cryptography.AES.Decrypt(enc, key, iv);
+                            byte[] calcDec = Cryptography.AES.DecryptCBC(enc, key, iv);
 
                             string hexDec = Hex.Encode(data);
                             string hexCalcDec = Hex.Encode(calcDec);
@@ -118,7 +118,7 @@ namespace DotNetToolBox.TesterConsole.Tests
             return i;
         }
 
-        internal static int DecryptStream(string file)
+        internal static int DecryptCBCStream(string file)
         {
             int i = 0;
 
@@ -142,7 +142,7 @@ namespace DotNetToolBox.TesterConsole.Tests
                             {
                                 using (MemoryStream msOut = new MemoryStream())
                                 {
-                                    Cryptography.AES.Decrypt(msIn, msOut, key, iv, Cryptography.PaddingStyle.None);
+                                    Cryptography.AES.DecryptCBC(msIn, msOut, key, iv, Cryptography.PaddingStyle.None);
                                     calcDec = msOut.ToArray();
                                 }
                             }

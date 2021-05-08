@@ -41,7 +41,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
         /// <returns>Encrypted data</returns>
-        public static byte[] Encrypt(byte[] data, byte[] key, byte[] iv)
+        public static byte[] EncryptCBC(byte[] data, byte[] key, byte[] iv)
         {
             byte[] enc = new byte[data.Length];
 
@@ -62,7 +62,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="iv">IV</param>
         /// <param name="paddingStyle">Padding</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, int bufferSize = 4096)
+        public static void EncryptCBC(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, int bufferSize = 4096)
         {
             IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new DesEdeEngine()));
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), iv, 0, iv.Length);
@@ -109,7 +109,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
         /// <returns>Decrypted data</returns>
-        public static byte[] Decrypt(byte[] data, byte[] key, byte[] iv)
+        public static byte[] DecryptCBC(byte[] data, byte[] key, byte[] iv)
         {
             byte[] dec = new byte[data.Length];
 
@@ -130,7 +130,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="iv">IV</param>
         /// <param name="paddingStyle">Padding</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, int bufferSize = 4096)
+        public static void DecryptCBC(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, int bufferSize = 4096)
         {
             IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new DesEdeEngine()));
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), iv, 0, iv.Length);

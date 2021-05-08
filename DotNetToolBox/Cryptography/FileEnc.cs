@@ -111,7 +111,7 @@ namespace DotNetToolBox.Cryptography
                 xor[i] = (byte)(data[i] ^ rpad[i]);
 
             byte[] d1 = ChaCha20Rfc7539.Encrypt(rpad, key1, iv1);
-            byte[] d2 = AES.Encrypt(xor, key2, iv2);
+            byte[] d2 = AES.EncryptCBC(xor, key2, iv2);
 
             BinaryHelper.WriteLV(output, d1);
             BinaryHelper.WriteLV(output, d2);
@@ -136,7 +136,7 @@ namespace DotNetToolBox.Cryptography
             BinaryHelper.WriteBytes(output, iv);
             BinaryHelper.WriteBytes(output, salt);
 
-            AES.Encrypt(input, output, key, iv, _paddingStyle);
+            AES.EncryptCBC(input, output, key, iv, _paddingStyle);
         }
 
         /// <summary>
@@ -176,7 +176,7 @@ namespace DotNetToolBox.Cryptography
 
                     byte[] rpad = ChaCha20Rfc7539.Decrypt(d1, key1, iv1);
                     d2 = BinaryHelper.ReadLV(input);
-                    byte[] xor = AES.Decrypt(d2, key2, iv2);
+                    byte[] xor = AES.DecryptCBC(d2, key2, iv2);
 
                     byte[] data = new byte[rpad.Length];
                     for (int i = 0; i < rpad.Length; i++)
@@ -212,7 +212,7 @@ namespace DotNetToolBox.Cryptography
 
             byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
 
-            AES.Decrypt(input, output, key, iv, _paddingStyle);
+            AES.DecryptCBC(input, output, key, iv, _paddingStyle);
         }
     }
 }
