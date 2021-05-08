@@ -16,6 +16,7 @@ namespace DotNetToolBox.TesterConsole
                 Test(Base64Tests.Decode, Path.Combine(path, "b64.dat"), "IO.Base64.Decode");
                 Test(HexTests.Encode, Path.Combine(path, "hex.dat"), "IO.Hex.Encode");
                 Test(HexTests.Decode, Path.Combine(path, "hex.dat"), "IO.Hex.Decode");
+                Console.WriteLine();
 
                 Test(MD5Tests.Hash, Path.Combine(path, "md5.dat"), "Cryptography.MD5.Hash");
                 Test(MD5Tests.HashStream, Path.Combine(path, "md5.dat"), "Cryptography.MD5.Hash stream");
@@ -27,6 +28,7 @@ namespace DotNetToolBox.TesterConsole
                 Test(SHA512Tests.HashStream, Path.Combine(path, "sha512.dat"), "Cryptography.SHA512.Hash stream");
                 Test(SHA3Tests.Hash, Path.Combine(path, "sha3.dat"), "Cryptography.SHA3.Hash");
                 Test(SHA3Tests.HashStream, Path.Combine(path, "sha3.dat"), "Cryptography.SHA3.Hash stream");
+                Console.WriteLine();
 
                 Test(AESTests.Encrypt, Path.Combine(path, "aes.dat"), "Cryptography.AES.Encrypt");
                 Test(AESTests.EncryptStream, Path.Combine(path, "aes.dat"), "Cryptography.AES.Encrypt stream");
@@ -44,6 +46,7 @@ namespace DotNetToolBox.TesterConsole
                 Test(TripleDESTests.EncryptStream, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Encrypt stream");
                 Test(TripleDESTests.Decrypt, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Decrypt");
                 Test(TripleDESTests.DecryptStream, Path.Combine(path, "des3.dat"), "Cryptography.TripleDES.Decrypt stream");
+                Console.WriteLine();
 
                 Test(ChaCha20Tests.Encrypt, Path.Combine(path, "chacha20.dat"), "Cryptography.ChaCha20.Encrypt");
                 Test(ChaCha20Tests.EncryptStream, Path.Combine(path, "chacha20.dat"), "Cryptography.ChaCha20.Encrypt stream");
@@ -57,8 +60,10 @@ namespace DotNetToolBox.TesterConsole
                 Test(Salsa20Tests.EncryptStream, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Encrypt stream");
                 Test(Salsa20Tests.Decrypt, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Decrypt");
                 Test(Salsa20Tests.DecryptStream, Path.Combine(path, "salsa20.dat"), "Cryptography.Salsa20.Decrypt stream");
+                Console.WriteLine();
 
                 Test(PBKDF2Tests.GenerateKey, Path.Combine(path, "pbkdf2.dat"), "Cryptography.PBKDF2.GenerateKeyFromPassword");
+                Console.WriteLine();
 
                 Test(PaddingIso7816Tests.Pad, Path.Combine(path, "padding_iso7816.dat"), "Cryptography.Padding.Pad Iso7816");
                 Test(PaddingIso7816Tests.Unpad, Path.Combine(path, "padding_iso7816.dat"), "Cryptography.Padding.Unpad Iso7816");
@@ -66,7 +71,9 @@ namespace DotNetToolBox.TesterConsole
                 Test(PaddingPkcs7Tests.Unpad, Path.Combine(path, "padding_pkcs7.dat"), "Cryptography.Padding.Unpad Pkcs7");
                 Test(PaddingX923Tests.Pad, Path.Combine(path, "padding_x923.dat"), "Cryptography.Padding.Pad AnsiX923");
                 Test(PaddingX923Tests.Unpad, Path.Combine(path, "padding_x923.dat"), "Cryptography.Padding.Unpad AnsiX923");
+                Console.WriteLine();
 
+                Console.WriteLine("Press ENTER to exit...");
                 Console.Read();
             }
             catch (Exception ex)
