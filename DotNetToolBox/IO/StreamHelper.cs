@@ -54,6 +54,9 @@ namespace DotNetToolBox.IO
         /// <param name="bufferSize">Buffer size</param>
         public static void WriteStream(Stream input, Stream output, Action<int> notifyProgression, int bufferSize = 4096)
         {
+            if (notifyProgression == null)
+                throw new ArgumentNullException("notifyProgression");
+
             byte[] buffer = new byte[bufferSize];
             int bytesRead;
 
