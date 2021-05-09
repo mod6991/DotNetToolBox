@@ -201,6 +201,7 @@
     <Compile Include="Utils\AssemblyHelper.cs" />
     <Compile Include="Utils\LogHelper.cs" />
     <Compile Include="Utils\PerformanceAnalyser.cs" />
+    <Compile Include="Utils\ProcessHelper.cs" />
     <Compile Include="Utils\RandomHelper.cs" />
     <Compile Include="Utils\ReflectionHelper.cs" />
   </ItemGroup>
