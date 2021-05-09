@@ -36,7 +36,7 @@ namespace DotNetToolBox.TesterConsole
                 Test(MD5Tests.Hash, Path.Combine(path, "md5.dat"), "Cryptography.MD5.Hash");
                 Test(MD5Tests.HashStream, Path.Combine(path, "md5.dat"), "Cryptography.MD5.Hash stream");
                 Test(SHA1Tests.Hash, Path.Combine(path, "sha1.dat"), "Cryptography.SHA1.Hash");
-                Test(SHA1Tests.HashStream, Path.Combine(path, "sha1.dat"), "Cryptography.SHA1.Hash 2");
+                Test(SHA1Tests.HashStream, Path.Combine(path, "sha1.dat"), "Cryptography.SHA1.Hash stream");
                 Test(SHA256Tests.Hash, Path.Combine(path, "sha256.dat"), "Cryptography.SHA256.Hash");
                 Test(SHA256Tests.HashStream, Path.Combine(path, "sha256.dat"), "Cryptography.SHA256.Hash stream");
                 Test(SHA512Tests.Hash, Path.Combine(path, "sha512.dat"), "Cryptography.SHA512.Hash");
