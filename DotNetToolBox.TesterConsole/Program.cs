@@ -11,6 +11,18 @@ namespace DotNetToolBox.TesterConsole
         {
             try
             {
+                StartTests();
+            }
+            catch(Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+
+        internal static void StartTests()
+        {
+            try
+            {
                 Assembly assembly = Assembly.GetExecutingAssembly();
                 string path = Path.GetDirectoryName(assembly.Location);
                 path = Path.Combine(path, "data");
@@ -88,7 +100,7 @@ namespace DotNetToolBox.TesterConsole
             }
         }
 
-        static void Test(TestAction action, string file, string title)
+        internal static void Test(TestAction action, string file, string title)
         {
             Console.Write(title);
 
