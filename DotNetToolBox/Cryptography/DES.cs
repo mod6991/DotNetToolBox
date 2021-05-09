@@ -61,8 +61,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
         /// <param name="paddingStyle">Padding</param>
+        /// <param name="notifyProgression">Padding</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void EncryptCBC(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, int bufferSize = 4096)
+        public static void EncryptCBC(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, Action<int> notifyProgression = null, int bufferSize = 4096)
         {
             IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new DesEngine()));
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), iv, 0, iv.Length);
@@ -91,6 +92,9 @@ namespace DotNetToolBox.Cryptography
                     output.Write(enc, 0, padData.Length);
                     padDone = true;
                 }
+
+                if (notifyProgression != null && bytesRead > 0)
+                    notifyProgression(bytesRead);
             } while (bytesRead == bufferSize);
 
             if (!padDone)
@@ -129,8 +133,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
         /// <param name="paddingStyle">Padding</param>
+        /// <param name="notifyProgression">Padding</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void DecryptCBC(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, int bufferSize = 4096)
+        public static void DecryptCBC(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, Action<int> notifyProgression = null, int bufferSize = 4096)
         {
             IBufferedCipher cipher = new BufferedBlockCipher(new CbcBlockCipher(new DesEngine()));
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), iv, 0, iv.Length);
@@ -168,6 +173,9 @@ namespace DotNetToolBox.Cryptography
                         byte[] unpadData = Padding.Unpad(dec, BLOCK_SIZE, paddingStyle);
                         output.Write(unpadData, 0, unpadData.Length);
                     }
+
+                    if (notifyProgression != null)
+                        notifyProgression(bytesRead);
                 }
                 else
                 {

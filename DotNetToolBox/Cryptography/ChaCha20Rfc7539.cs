@@ -21,6 +21,7 @@
 
 using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.Parameters;
+using System;
 using System.IO;
 
 namespace DotNetToolBox.Cryptography
@@ -56,8 +57,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="key">Key</param>
         /// <param name="nonce">Nonce</param>
+        /// <param name="notifyProgression">Padding</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] nonce, int bufferSize = 4096)
+        public static void Encrypt(Stream input, Stream output, byte[] key, byte[] nonce, Action<int> notifyProgression = null, int bufferSize = 4096)
         {
             ChaCha7539Engine engine = new ChaCha7539Engine();
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), nonce, 0, nonce.Length);
@@ -73,9 +75,12 @@ namespace DotNetToolBox.Cryptography
                 {
                     engine.ProcessBytes(buffer, 0, bytesRead, enc, 0);
                     output.Write(enc, 0, bytesRead);
+
+                    if (notifyProgression != null)
+                        notifyProgression(bytesRead);
                 }
 
-            } while (bytesRead > 0);
+            } while (bytesRead == bufferSize);
         }
 
         /// <summary>
@@ -104,8 +109,9 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="key">Key</param>
         /// <param name="nonce">Nonce</param>
+        /// <param name="notifyProgression">Padding</param>
         /// <param name="bufferSize">Buffer size</param>
-        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] nonce, int bufferSize = 4096)
+        public static void Decrypt(Stream input, Stream output, byte[] key, byte[] nonce, Action<int> notifyProgression = null, int bufferSize = 4096)
         {
             ChaCha7539Engine engine = new ChaCha7539Engine();
             ParametersWithIV parameters = new ParametersWithIV(new KeyParameter(key, 0, key.Length), nonce, 0, nonce.Length);
@@ -121,9 +127,12 @@ namespace DotNetToolBox.Cryptography
                 {
                     engine.ProcessBytes(buffer, 0, bytesRead, dec, 0);
                     output.Write(dec, 0, bytesRead);
+
+                    if (notifyProgression != null)
+                        notifyProgression(bytesRead);
                 }
 
-            } while (bytesRead > 0);
+            } while (bytesRead == bufferSize);
         }
     }
 }
