@@ -32,33 +32,40 @@ namespace DotNetToolBox.IO
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="bufferSize">Buffer size</param>
-        /// <param name="notifyProgression">Notify progression method</param>
-        public static void WriteStream(Stream input, Stream output, int bufferSize = 4096, Action<int> notifyProgression = null)
+        public static void WriteStream(Stream input, Stream output, int bufferSize = 4096)
         {
             byte[] buffer = new byte[bufferSize];
             int bytesRead;
 
-            if (notifyProgression == null)
+            do
             {
-                do
-                {
-                    bytesRead = input.Read(buffer, 0, bufferSize);
-                    if (bytesRead > 0)
-                        output.Write(buffer, 0, bytesRead);
-                } while (bytesRead == bufferSize);
-            }
-            else
+                bytesRead = input.Read(buffer, 0, bufferSize);
+                if (bytesRead > 0)
+                    output.Write(buffer, 0, bytesRead);
+            } while (bytesRead == bufferSize);
+        }
+
+        /// <summary>
+        /// Write the input stream into the output stream and notifies the progression
+        /// </summary>
+        /// <param name="input">Input stream</param>
+        /// <param name="output">Output stream</param>
+        /// <param name="notifyProgression">Notify progression method</param>
+        /// <param name="bufferSize">Buffer size</param>
+        public static void WriteStream(Stream input, Stream output, Action<int> notifyProgression, int bufferSize = 4096)
+        {
+            byte[] buffer = new byte[bufferSize];
+            int bytesRead;
+
+            do
             {
-                do
+                bytesRead = input.Read(buffer, 0, bufferSize);
+                if (bytesRead > 0)
                 {
-                    bytesRead = input.Read(buffer, 0, bufferSize);
-                    if (bytesRead > 0)
-                    {
-                        output.Write(buffer, 0, bytesRead);
-                        notifyProgression(bytesRead);
-                    }
-                } while (bytesRead == bufferSize);
-            }
+                    output.Write(buffer, 0, bytesRead);
+                    notifyProgression(bytesRead);
+                }
+            } while (bytesRead == bufferSize);
         }
 
         /// <summary>
