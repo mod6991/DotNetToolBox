@@ -57,7 +57,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="key">Key</param>
         /// <param name="nonce">Nonce</param>
-        /// <param name="notifyProgression">Padding</param>
+        /// <param name="notifyProgression">Notify progression method</param>
         /// <param name="bufferSize">Buffer size</param>
         public static void Encrypt(Stream input, Stream output, byte[] key, byte[] nonce, Action<int> notifyProgression = null, int bufferSize = 4096)
         {
@@ -109,7 +109,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="key">Key</param>
         /// <param name="nonce">Nonce</param>
-        /// <param name="notifyProgression">Padding</param>
+        /// <param name="notifyProgression">Notify progression method</param>
         /// <param name="bufferSize">Buffer size</param>
         public static void Decrypt(Stream input, Stream output, byte[] key, byte[] nonce, Action<int> notifyProgression = null, int bufferSize = 4096)
         {

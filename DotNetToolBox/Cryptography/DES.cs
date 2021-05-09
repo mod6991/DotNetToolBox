@@ -61,7 +61,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
         /// <param name="paddingStyle">Padding</param>
-        /// <param name="notifyProgression">Padding</param>
+        /// <param name="notifyProgression">Notify progression method</param>
         /// <param name="bufferSize">Buffer size</param>
         public static void EncryptCBC(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, Action<int> notifyProgression = null, int bufferSize = 4096)
         {
@@ -133,7 +133,7 @@ namespace DotNetToolBox.Cryptography
         /// <param name="key">Key</param>
         /// <param name="iv">IV</param>
         /// <param name="paddingStyle">Padding</param>
-        /// <param name="notifyProgression">Padding</param>
+        /// <param name="notifyProgression">Notify progression method</param>
         /// <param name="bufferSize">Buffer size</param>
         public static void DecryptCBC(Stream input, Stream output, byte[] key, byte[] iv, PaddingStyle paddingStyle = PaddingStyle.Pkcs7, Action<int> notifyProgression = null, int bufferSize = 4096)
         {

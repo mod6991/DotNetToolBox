@@ -41,7 +41,8 @@ namespace DotNetToolBox.Cryptography
         /// <param name="output">Output stream</param>
         /// <param name="rsa">RSA key</param>
         /// <param name="keyName">Key name</param>
-        public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void EncryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, string keyName, Action<int> notifyProgression = null)
         {
             byte[] key1 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.KEY_SIZE);
             byte[] iv1 = RandomHelper.GenerateBytes(ChaCha20Rfc7539.NONCE_SIZE);
@@ -88,6 +89,9 @@ namespace DotNetToolBox.Cryptography
 
                         XorEncryptAndWrite(output, padData.Length, padData, key1, iv1, key2, iv2);
                     }
+
+                    if (notifyProgression != null)
+                        notifyProgression(bytesRead);
                 }
             } while (bytesRead == _bufferSize);
 
@@ -123,7 +127,8 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="password">Password</param>
-        public static void EncryptWithPassword(Stream input, Stream output, string password)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void EncryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
         {
             byte[] salt = RandomHelper.GenerateBytes(16);
             byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
@@ -136,7 +141,7 @@ namespace DotNetToolBox.Cryptography
             BinaryHelper.WriteBytes(output, iv);
             BinaryHelper.WriteBytes(output, salt);
 
-            AES.EncryptCBC(input, output, key, iv, _paddingStyle);
+            AES.EncryptCBC(input, output, key, iv, _paddingStyle, notifyProgression);
         }
 
         /// <summary>
@@ -145,13 +150,18 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="rsa">RSA key</param>
-        public static void DecryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void DecryptWithKey(Stream input, Stream output, RSACryptoServiceProvider rsa, Action<int> notifyProgression = null)
         {
             input.Seek(5, SeekOrigin.Current); // Header
             input.Seek(1, SeekOrigin.Current); // Version
 
-            BinaryHelper.ReadLV(input);
+            byte[] keyNameData = BinaryHelper.ReadLV(input);
             byte[] encKeysData = BinaryHelper.ReadLV(input);
+
+            if (notifyProgression != null)
+                notifyProgression(5 + 1 + 2 * 4 + keyNameData.Length + encKeysData.Length);
+
             byte[] keysData = RSA.Decrypt(rsa, encKeysData);
 
             byte[] key1, iv1, key2, iv2;
@@ -178,6 +188,9 @@ namespace DotNetToolBox.Cryptography
                     d2 = BinaryHelper.ReadLV(input);
                     byte[] xor = AES.DecryptCBC(d2, key2, iv2);
 
+                    if (notifyProgression != null)
+                        notifyProgression(2 * 4 + d1.Length + d2.Length);
+
                     byte[] data = new byte[rpad.Length];
                     for (int i = 0; i < rpad.Length; i++)
                         data[i] = (byte)(rpad[i] ^ xor[i]);
@@ -200,7 +213,8 @@ namespace DotNetToolBox.Cryptography
         /// <param name="input">Input stream</param>
         /// <param name="output">Output stream</param>
         /// <param name="password">Password</param>
-        public static void DecryptWithPassword(Stream input, Stream output, string password)
+        /// <param name="notifyProgression">Notify progression method</param>
+        public static void DecryptWithPassword(Stream input, Stream output, string password, Action<int> notifyProgression = null)
         {
             input.Seek(5, SeekOrigin.Current); // Header
             input.Seek(1, SeekOrigin.Current); // Version
@@ -210,9 +224,12 @@ namespace DotNetToolBox.Cryptography
             byte[] iv = BinaryHelper.ReadBytes(input, ivLength);
             byte[] salt = BinaryHelper.ReadBytes(input, saltLength);
 
+            if (notifyProgression != null)
+                notifyProgression(5 + 1 + 1 + 1 + ivLength + saltLength);
+
             byte[] key = PBKDF2.GenerateKeyFromPassword(AES.KEY_SIZE, password, salt);
 
-            AES.DecryptCBC(input, output, key, iv, _paddingStyle);
+            AES.DecryptCBC(input, output, key, iv, _paddingStyle, notifyProgression);
         }
     }
 }
