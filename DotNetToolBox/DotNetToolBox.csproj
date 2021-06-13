@@ -161,6 +161,7 @@
     <Compile Include="Cryptography\SHA512.cs" />
     <Compile Include="Cryptography\TripleDES.cs" />
     <Compile Include="Database\DbManager.cs" />
+    <Compile Include="Database\DbManagerExceptions.cs" />
     <Compile Include="Database\IDbObject.cs" />
     <Compile Include="Database\RequestFileManager.cs" />
     <Compile Include="Icons\OpenIconLibrary\IconName.cs" />

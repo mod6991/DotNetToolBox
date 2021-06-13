@@ -33,30 +33,14 @@ namespace DotNetToolBox.Database
 
     public class DbObjectMapping
     {
-        private string _propertyName;
-        private string _dbFieldName;
-
-        public DbObjectMapping()
-        {
-
-        }
-
         public DbObjectMapping(string propertyName, string dbFieldName)
         {
-            _propertyName = propertyName;
-            _dbFieldName = dbFieldName;
+            PropertyName = propertyName;
+            DbFieldName = dbFieldName;
         }
 
-        public string PropertyName
-        {
-            get { return _propertyName; }
-            set { _propertyName = value; }
-        }
-
-        public string DbFieldName
-        {
-            get { return _dbFieldName; }
-            set { _dbFieldName = value; }
-        }
+        public string PropertyName { get; set; }
+        public string DbFieldName { get; set; }
+        public bool UseField { get; set; }
     }
 }

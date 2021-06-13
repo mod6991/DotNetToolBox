@@ -295,7 +295,7 @@ namespace DotNetToolBox.Database
                 throw new ObjectDisposedException(typeof(DbManager).FullName);
 
             if (!_typeMappings.ContainsKey(typeof(T)) || !_typeAccessors.ContainsKey(typeof(T)))
-                throw new InvalidOperationException($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
+                throw new ObjectNotRegisteredException($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
 
             List<T> list = new List<T>();
             List<DbObjectMapping> mappingList = _typeMappings[typeof(T)];
@@ -317,15 +317,30 @@ namespace DotNetToolBox.Database
 
                 using (DbDataReader reader = command.ExecuteReader())
                 {
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        for (int j = 0; j < mappingList.Count; j++)
+                        {
+                            if (reader.GetName(i) == mappingList[j].DbFieldName)
+                            {
+                                mappingList[j].UseField = true;
+                                break;
+                            }
+                        }
+                    }
+
                     while (reader.Read())
                     {
                         T obj = (T)Activator.CreateInstance(typeof(T));
 
                         for (int i = 0, l = mappingList.Count; i < l; i++)
                         {
-                            object readerValue = reader[mappingList[i].DbFieldName];
-                            if (!(readerValue is DBNull))
-                                ta[obj, mappingList[i].PropertyName] = readerValue;
+                            if (mappingList[i].UseField)
+                            {
+                                object readerValue = reader[mappingList[i].DbFieldName];
+                                if (!(readerValue is DBNull))
+                                    ta[obj, mappingList[i].PropertyName] = readerValue;
+                            }
                         }
 
                         list.Add(obj);
@@ -350,7 +365,7 @@ namespace DotNetToolBox.Database
                 throw new ObjectDisposedException(typeof(DbManager).FullName);
 
             if (!_typeMappings.ContainsKey(typeof(T)) || !_typeAccessors.ContainsKey(typeof(T)))
-                throw new InvalidOperationException($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
+                throw new ObjectNotRegisteredException($"Type '{typeof(T).FullName}' not registered. Use DbManager RegisterDbObject method first");
 
             List<T> list = new List<T>();
             List<DbObjectMapping> mappingList = _typeMappings[typeof(T)];
@@ -372,15 +387,30 @@ namespace DotNetToolBox.Database
 
                 using (DbDataReader reader = command.ExecuteReader())
                 {
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        for (int j = 0; j < mappingList.Count; j++)
+                        {
+                            if (reader.GetName(i) == mappingList[j].DbFieldName)
+                            {
+                                mappingList[j].UseField = true;
+                                break;
+                            }
+                        }
+                    }
+
                     while (reader.Read())
                     {
                         T obj = (T)Activator.CreateInstance(typeof(T));
 
                         for (int i = 0, l = mappingList.Count; i < l; i++)
                         {
-                            object readerValue = reader[mappingList[i].DbFieldName];
-                            if (!(readerValue is DBNull))
-                                ta[obj, mappingList[i].PropertyName] = readerValue;
+                            if (mappingList[i].UseField)
+                            {
+                                object readerValue = reader[mappingList[i].DbFieldName];
+                                if (!(readerValue is DBNull))
+                                    ta[obj, mappingList[i].PropertyName] = readerValue;
+                            }
                         }
 
                         list.Add(obj);
@@ -519,11 +549,8 @@ namespace DotNetToolBox.Database
             if (_disposed)
                 throw new ObjectDisposedException(typeof(DbManager).FullName);
 
-            if (!File.Exists(filePath))
-                throw new FileNotFoundException("Request file not found", filePath);
-
             if (_requests.ContainsKey(name))
-                throw new InvalidOperationException($"Name '{name}' already added");
+                throw new RequestFileAlreadyAddedException($"Name '{name}' already added");
 
             _requests.Add(name, new Dictionary<string, string>());
             
@@ -537,7 +564,7 @@ namespace DotNetToolBox.Database
                 XmlAttribute nameAttr = requestNode.Attributes["Name"];
 
                 if (nameAttr == null)
-                    throw new InvalidOperationException("Name attribute missing on a Request node");
+                    throw new InvalidRequestFileException("Name attribute missing on a Request node");
 
                 _requests[name].Add(nameAttr.Value, requestNode.InnerText);
             }
@@ -558,7 +585,7 @@ namespace DotNetToolBox.Database
                     throw new ObjectDisposedException(typeof(DbManager).FullName);
 
                 if (!_requestFileManagers.ContainsKey(name))
-                    throw new InvalidOperationException($"Request file '{name}' not found");
+                    throw new RequestFileNotFoundException($"Request file '{name}' not found");
                 return _requestFileManagers[name];
             }
         }

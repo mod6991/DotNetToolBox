@@ -39,7 +39,7 @@ namespace DotNetToolBox.Database
             _dbManager = dbManager;
 
             if (!_dbManager.Requests.ContainsKey(name))
-                throw new InvalidOperationException($"Requests not found for name '{name}'");
+                throw new RequestsNotFoundException($"Requests not found for name '{name}'");
 
             _requests = _dbManager.Requests[name];
         }
@@ -57,7 +57,7 @@ namespace DotNetToolBox.Database
         public void FillDataTable(string requestName, List<DbParameter> parameters, DataTable table)
         {
             if (!_requests.ContainsKey(requestName))
-                throw new InvalidOperationException($"Request '{requestName}' not found");
+                throw new RequestNotFoundException($"Request '{requestName}' not found");
 
             using (DbCommand command = _dbManager.Connection.CreateCommand())
             {
@@ -90,9 +90,9 @@ namespace DotNetToolBox.Database
         public List<T> FillObjects<T>(string requestName, List<DbParameter> parameters)
         {
             if (!_requests.ContainsKey(requestName))
-                throw new InvalidOperationException($"Request '{requestName}' not found");
+                throw new RequestNotFoundException($"Request '{requestName}' not found");
             if (!_dbManager.TypeMappings.ContainsKey(typeof(T)) || !_dbManager.TypeAccessors.ContainsKey(typeof(T)))
-                throw new InvalidOperationException($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
+                throw new ObjectNotRegisteredException($"Type '{typeof(T).FullName}' not registered! Use DbManager RegisterDbObject method");
 
             List<T> list = new List<T>();
             List<DbObjectMapping> mappingList = _dbManager.TypeMappings[typeof(T)];
@@ -114,15 +114,30 @@ namespace DotNetToolBox.Database
 
                 using (DbDataReader reader = command.ExecuteReader())
                 {
+                    for (int i = 0; i < reader.FieldCount; i++)
+                    {
+                        for (int j = 0; j < mappingList.Count; j++)
+                        {
+                            if (reader.GetName(i) == mappingList[j].DbFieldName)
+                            {
+                                mappingList[j].UseField = true;
+                                break;
+                            }
+                        }
+                    }
+
                     while (reader.Read())
                     {
                         T obj = (T)Activator.CreateInstance(typeof(T));
 
                         for (int i = 0, l = mappingList.Count; i < l; i++)
                         {
-                            object readerValue = reader[mappingList[i].DbFieldName];
-                            if (!(readerValue is DBNull))
-                                ta[obj, mappingList[i].PropertyName] = readerValue;
+                            if (mappingList[i].UseField)
+                            {
+                                object readerValue = reader[mappingList[i].DbFieldName];
+                                if (!(readerValue is DBNull))
+                                    ta[obj, mappingList[i].PropertyName] = readerValue;
+                            }
                         }
 
                         list.Add(obj);
@@ -143,7 +158,7 @@ namespace DotNetToolBox.Database
         public int ExecuteNonQuery(string requestName, List<DbParameter> parameters)
         {
             if (!_requests.ContainsKey(requestName))
-                throw new InvalidOperationException($"Request '{requestName}' not found");
+                throw new RequestNotFoundException($"Request '{requestName}' not found");
 
             using (DbCommand command = _dbManager.Connection.CreateCommand())
             {
@@ -171,7 +186,7 @@ namespace DotNetToolBox.Database
         public object ExecuteScalar(string requestName, List<DbParameter> parameters)
         {
             if (!_requests.ContainsKey(requestName))
-                throw new InvalidOperationException($"Request '{requestName}' not found");
+                throw new RequestNotFoundException($"Request '{requestName}' not found");
 
             using (DbCommand command = _dbManager.Connection.CreateCommand())
             {
